@@ -586,6 +586,26 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 4,
   },
+  productActions: {
+    marginTop: 8,
+  },
+  viewDetailButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#007AFF',
+  },
+  viewDetailText: {
+    color: '#007AFF',
+    fontSize: 12,
+    fontWeight: '500',
+    marginLeft: 4,
+  },
   bannersSection: {
     paddingVertical: 16,
     backgroundColor: '#fff',
