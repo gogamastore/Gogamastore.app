@@ -307,9 +307,9 @@ export default function HomeScreen() {
                     <Text style={styles.bannerTitle}>
                       {banner.title || banner.judul || banner.nama || 'No Title'}
                     </Text>
-                    {(banner.subtitle || banner.deskripsi || banner.description) && (
+                    {(banner.description || banner.subtitle || banner.deskripsi) && (
                       <Text style={styles.bannerSubtitle}>
-                        {banner.subtitle || banner.deskripsi || banner.description}
+                        {banner.description || banner.subtitle || banner.deskripsi}
                       </Text>
                     )}
                   </View>
