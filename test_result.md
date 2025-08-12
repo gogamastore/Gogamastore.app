@@ -268,6 +268,30 @@ frontend:
         agent: "main"
         comment: "Implemented auth check and automatic routing based on login status"
 
+  - task: "Promotional Banners Display"
+    implemented: true
+    working: "NA" 
+    file: "app/(tabs)/index.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented horizontal scrolling banner carousel that fetches from Firebase 'banners' collection. Shows banner image with overlay text (title/subtitle). Conditionally rendered based on data availability."
+
+  - task: "Brand Directory Display"
+    implemented: true
+    working: "NA"
+    file: "app/(tabs)/index.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented brand grid layout that fetches from Firebase 'brands' collection. Shows brand logo or placeholder icon with brand name. Uses 2-column grid layout with proper mobile spacing."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
