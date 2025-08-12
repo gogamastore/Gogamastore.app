@@ -195,6 +195,30 @@ export default function HomeScreen() {
     (product.deskripsi || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const endIndex = startIndex + PRODUCTS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -424,18 +448,99 @@ export default function HomeScreen() {
 
       {/* Products */}
       <View style={styles.productsSection}>
-        <Text style={styles.sectionTitle}>
-          {selectedCategory ? `Produk ${selectedCategory}` : 'Semua Produk'}
-        </Text>
+        <View style={styles.productsSectionHeader}>
+          <Text style={styles.sectionTitle}>
+            {selectedCategory ? `Produk ${selectedCategory}` : 'Semua Produk'}
+          </Text>
+          <Text style={styles.productsCount}>
+            {filteredProducts.length} produk
+          </Text>
+        </View>
         
+        {/* Product Grid */}
         <FlatList
-          data={filteredProducts}
+          data={currentProducts}
           renderItem={renderProduct}
           keyExtractor={(item) => item.id}
           numColumns={2}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.productsContainer}
+          scrollEnabled={false} // Disable FlatList scroll since we're in ScrollView
         />
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <View style={styles.paginationContainer}>
+            {/* Page Info */}
+            <Text style={styles.pageInfo}>
+              Halaman {currentPage} dari {totalPages}
+            </Text>
+            
+            {/* Page Navigation */}
+            <View style={styles.paginationControls}>
+              <TouchableOpacity
+                style={[
+                  styles.paginationButton,
+                  currentPage === 1 && styles.paginationButtonDisabled
+                ]}
+                onPress={goToPreviousPage}
+                disabled={currentPage === 1}
+              >
+                <MaterialIcons 
+                  name="chevron-left" 
+                  size={20} 
+                  color={currentPage === 1 ? "#C7C7CC" : "#007AFF"} 
+                />
+              </TouchableOpacity>
+
+              {/* Page Numbers */}
+              <View style={styles.pageNumbers}>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
+                  let pageNumber;
+                  if (totalPages <= 5) {
+                    pageNumber = index + 1;
+                  } else {
+                    const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+                    pageNumber = start + index;
+                  }
+                  
+                  return (
+                    <TouchableOpacity
+                      key={pageNumber}
+                      style={[
+                        styles.pageNumberButton,
+                        currentPage === pageNumber && styles.pageNumberButtonActive
+                      ]}
+                      onPress={() => goToPage(pageNumber)}
+                    >
+                      <Text style={[
+                        styles.pageNumberText,
+                        currentPage === pageNumber && styles.pageNumberTextActive
+                      ]}>
+                        {pageNumber}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <TouchableOpacity
+                style={[
+                  styles.paginationButton,
+                  currentPage === totalPages && styles.paginationButtonDisabled
+                ]}
+                onPress={goToNextPage}
+                disabled={currentPage === totalPages}
+              >
+                <MaterialIcons 
+                  name="chevron-right" 
+                  size={20} 
+                  color={currentPage === totalPages ? "#C7C7CC" : "#007AFF"} 
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </View>
       </ScrollView>
     </SafeAreaView>
@@ -723,5 +828,77 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#1a1a1a',
     textAlign: 'center',
+  },
+  productsSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginBottom: 16,
+  },
+  productsCount: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  paginationContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  pageInfo: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  paginationControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paginationButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f8f9fa',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  paginationButtonDisabled: {
+    backgroundColor: '#f0f0f0',
+    borderColor: '#E5E5EA',
+  },
+  pageNumbers: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  pageNumberButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#f8f9fa',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  pageNumberButtonActive: {
+    backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
+  },
+  pageNumberText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  pageNumberTextActive: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });
