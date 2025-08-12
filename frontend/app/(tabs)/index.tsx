@@ -33,15 +33,32 @@ interface Category {
   nama: string;
 }
 
+interface Brand {
+  id: string;
+  nama: string;
+  logo?: string;
+}
+
+interface Banner {
+  id: string;
+  title: string;
+  subtitle?: string;
+  image: string;
+  link?: string;
+}
+
+const { width } = Dimensions.get('window');
+
 export default function HomeScreen() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [banners, setBanners] = useState<Banner[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { user } = useAuth();
-
   useEffect(() => {
     loadInitialData();
   }, []);
