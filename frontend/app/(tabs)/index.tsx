@@ -226,59 +226,6 @@ export default function HomeScreen() {
         />
       </View>
 
-      {/* Promotional Banners */}
-      {banners.length > 0 && (
-        <View style={styles.bannersSection}>
-          <Text style={styles.sectionTitle}>Penawaran Spesial</Text>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            style={styles.bannersContainer}
-          >
-            {banners.map((banner, index) => (
-              <TouchableOpacity key={banner.id} style={styles.bannerCard}>
-                <Image 
-                  source={{ uri: banner.image }} 
-                  style={styles.bannerImage}
-                  resizeMode="cover"
-                />
-                <View style={styles.bannerOverlay}>
-                  <Text style={styles.bannerTitle}>{banner.title}</Text>
-                  {banner.subtitle && (
-                    <Text style={styles.bannerSubtitle}>{banner.subtitle}</Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      )}
-
-      {/* Brand Directory */}
-      {brands.length > 0 && (
-        <View style={styles.brandsSection}>
-          <Text style={styles.sectionTitle}>Brand Terpercaya</Text>
-          <View style={styles.brandsGrid}>
-            {brands.map((brand) => (
-              <TouchableOpacity key={brand.id} style={styles.brandCard}>
-                {brand.logo ? (
-                  <Image 
-                    source={{ uri: brand.logo }} 
-                    style={styles.brandLogo}
-                    resizeMode="contain"
-                  />
-                ) : (
-                  <View style={styles.brandLogoPlaceholder}>
-                    <MaterialIcons name="business" size={24} color="#666" />
-                  </View>
-                )}
-                <Text style={styles.brandName}>{brand.nama}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      )}
-
       {/* Categories */}
       <View style={styles.categoriesSection}>
         <TouchableOpacity
@@ -341,10 +288,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -354,10 +303,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5EA',
+  },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#1a1a1a',
+  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -369,18 +320,22 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#E5E5EA',
+  },
   searchInput: {
     flex: 1,
     marginLeft: 8,
     fontSize: 16,
     color: '#1a1a1a',
+  },
   categoriesSection: {
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5EA',
     backgroundColor: '#fff',
+  },
   categoriesContainer: {
     paddingHorizontal: 16,
+  },
   categoryChip: {
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -389,15 +344,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#ddd',
+  },
   categoryChipSelected: {
     backgroundColor: '#007AFF',
     borderColor: '#007AFF',
+  },
   categoryChipText: {
     fontSize: 14,
     color: '#666',
+  },
   categoryChipTextSelected: {
     color: '#fff',
     fontWeight: '500',
+  },
   resetButton: {
     position: 'absolute',
     right: 16,
@@ -406,21 +365,26 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     backgroundColor: '#FF3B30',
     borderRadius: 12,
+  },
   resetButtonText: {
     color: '#fff',
     fontSize: 12,
     fontWeight: '500',
+  },
   productsSection: {
     flex: 1,
     paddingTop: 16,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1a1a1a',
     marginHorizontal: 16,
     marginBottom: 16,
+  },
   productsContainer: {
     paddingHorizontal: 16,
+  },
   productCard: {
     flex: 1,
     backgroundColor: '#fff',
@@ -435,33 +399,40 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
   productImage: {
     width: '100%',
     height: 120,
     borderRadius: 8,
     marginBottom: 8,
     backgroundColor: '#f0f0f0',
+  },
   productInfo: {
     flex: 1,
+  },
   productName: {
     fontSize: 14,
     fontWeight: '600',
     color: '#1a1a1a',
     marginBottom: 4,
+  },
   productDescription: {
     fontSize: 12,
     color: '#666',
     marginBottom: 8,
     lineHeight: 16,
+  },
   productPrice: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#007AFF',
     marginBottom: 4,
+  },
   productStock: {
     fontSize: 12,
     color: '#666',
     marginBottom: 8,
+  },
   addToCartButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -470,76 +441,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 6,
+  },
   addToCartText: {
     color: '#fff',
     fontSize: 12,
     fontWeight: '500',
     marginLeft: 4,
-  bannersSection: {
-    paddingVertical: 16,
-    backgroundColor: '#fff',
-    marginBottom: 8,
-  bannersContainer: {
-    paddingHorizontal: 16,
-  bannerCard: {
-    width: 280,
-    height: 140,
-    marginRight: 12,
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: '#f0f0f0',
-  bannerImage: {
-    width: '100%',
-    height: '100%',
-  bannerOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 12,
-  bannerTitle: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  bannerSubtitle: {
-    color: '#fff',
-    fontSize: 12,
-    opacity: 0.9,
-  brandsSection: {
-    paddingVertical: 16,
-    backgroundColor: '#fff',
-    marginBottom: 8,
-  brandsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 16,
-    justifyContent: 'space-between',
-  brandCard: {
-    width: '48%',
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-  brandLogo: {
-    width: 40,
-    height: 40,
-    marginBottom: 8,
-  brandLogoPlaceholder: {
-    width: 40,
-    height: 40,
-    backgroundColor: '#E5E5EA',
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  brandName: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#1a1a1a',
-    textAlign: 'center',
+  },
 });
