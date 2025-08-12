@@ -82,7 +82,7 @@ export default function HomeScreen() {
           // Scroll to next banner
           if (bannerScrollRef.current) {
             bannerScrollRef.current.scrollTo({
-              x: nextIndex * 280, // banner width
+              x: nextIndex * width, // Use full screen width
               y: 0,
               animated: true,
             });
