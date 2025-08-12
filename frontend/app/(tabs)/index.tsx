@@ -334,9 +334,6 @@ export default function HomeScreen() {
           keyExtractor={(item) => item.id}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
           contentContainerStyle={styles.productsContainer}
         />
       </View>
