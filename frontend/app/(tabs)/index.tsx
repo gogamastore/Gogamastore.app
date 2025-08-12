@@ -276,7 +276,7 @@ export default function HomeScreen() {
       {/* Promotional Banners */}
       {banners.length > 0 && (
         <View style={styles.bannersSection}>
-          <Text style={styles.sectionTitle}>Penawaran Spesial</Text>
+          <Text style={styles.sectionTitle}>Penawaran Spesial ({banners.length})</Text>
           <ScrollView 
             ref={bannerScrollRef}
             horizontal 
@@ -285,21 +285,30 @@ export default function HomeScreen() {
             style={styles.bannersContainer}
             scrollEnabled={false} // Disable manual scroll for auto-slide
           >
-            {banners.map((banner, index) => (
-              <TouchableOpacity key={banner.id} style={styles.bannerCard}>
-                <Image 
-                  source={{ uri: banner.image }} 
-                  style={styles.bannerImage}
-                  resizeMode="cover"
-                />
-                <View style={styles.bannerOverlay}>
-                  <Text style={styles.bannerTitle}>{banner.title}</Text>
-                  {banner.subtitle && (
-                    <Text style={styles.bannerSubtitle}>{banner.subtitle}</Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-            ))}
+            {banners.map((banner, index) => {
+              console.log('Rendering banner:', banner);
+              return (
+                <TouchableOpacity key={banner.id} style={styles.bannerCard}>
+                  <Image 
+                    source={{ uri: banner.image || banner.gambar || banner.url || '' }} 
+                    style={styles.bannerImage}
+                    resizeMode="cover"
+                    onError={() => console.log('Banner image failed to load:', banner)}
+                    onLoad={() => console.log('Banner image loaded:', banner)}
+                  />
+                  <View style={styles.bannerOverlay}>
+                    <Text style={styles.bannerTitle}>
+                      {banner.title || banner.judul || banner.nama || 'No Title'}
+                    </Text>
+                    {(banner.subtitle || banner.deskripsi || banner.description) && (
+                      <Text style={styles.bannerSubtitle}>
+                        {banner.subtitle || banner.deskripsi || banner.description}
+                      </Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
           
           {/* Banner Indicators */}
