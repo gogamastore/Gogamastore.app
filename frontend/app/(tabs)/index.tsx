@@ -64,7 +64,7 @@ export default function HomeScreen() {
   }, []);
 
   const loadInitialData = async () => {
-    await Promise.all([fetchProducts(), fetchCategories()]);
+    await Promise.all([fetchProducts(), fetchCategories(), fetchBrands(), fetchBanners()]);
     setLoading(false);
   };
 
@@ -90,6 +90,26 @@ export default function HomeScreen() {
     } catch (error) {
       console.error('Error fetching categories:', error);
       Alert.alert('Error', 'Gagal memuat kategori');
+    }
+  };
+
+  const fetchBrands = async () => {
+    try {
+      const data = await brandService.getAllBrands();
+      setBrands(data);
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+      // Don't show error for brands as it's not critical
+    }
+  };
+
+  const fetchBanners = async () => {
+    try {
+      const data = await bannerService.getAllBanners();
+      setBanners(data);
+    } catch (error) {
+      console.error('Error fetching banners:', error);
+      // Don't show error for banners as it's not critical
     }
   };
 
