@@ -1,0 +1,95 @@
+<analysis>
+The previous AI engineer successfully initiated and built a React Native/Expo mobile application, cloning the UI and core e-commerce functionalities (login, cart) of the  website. Initially, a FastAPI and MongoDB backend was set up and tested. However, the user requested a complete migration to Firebase for authentication and database. This involved several iterative debugging phases, primarily due to Firebase configuration mismatches (web vs. Android/iOS API keys), authorized domain issues, and crucial discrepancies between the application's data models and the user-provided Firestore security rules. The engineer systematically addressed these by updating configurations, refactoring data fetching logic to align with the actual Firebase collection names (, , nested ), and recommending precise security rule adjustments. The  error was also fixed with null-safety. The last phase involves extending the app with promotional banners and brand directories.
+</analysis>
+
+<product_requirements>
+The user requested cloning their existing e-commerce website, , into a mobile application using React Native/Expo. The core functionalities required are standard e-commerce features: login, shopping cart, product browsing, and user profiles. The application should visually and functionally replicate the provided website for resellers. Initially, the backend was set up with FastAPI and MongoDB. However, the user later explicitly requested migrating the entire authentication and database system to Firebase, providing their Firebase configuration (both web and subsequently Android/iOS  and  files) and detailed Firestore security rules, which dictated the precise collection and document structure (e.g.,  instead of ,  instead of , and nested  for cart items). The application's current state supports Firebase authentication, product display, and cart functionality, with the latest work focusing on enhancing the UI with promotional banners and brand directories.
+</product_requirements>
+
+<key_technical_concepts>
+- **Frontend**: Expo, React Native, Expo Router (file-based routing), React Navigation, AsyncStorage, , , .
+- **Backend (Initial)**: FastAPI, MongoDB.
+- **Backend (Current)**: Firebase Authentication, Firebase Firestore.
+- **UI/UX**: Flexbox, safe area insets, , , , emphasis on thumb-friendly and glanceable interfaces.
+</key_technical_concepts>
+
+<code_architecture>
+The application has a monorepo structure with  (FastAPI/MongoDB, currently phased out by Firebase) and  (Expo/React Native) directories.
+
+
+
+- ****:
+    -   Summary: This file initially contained the FastAPI backend logic, including MongoDB integration for user authentication (register/login), product management, and cart operations.
+    -   Changes: Although initially functional, its role has been superseded by Firebase as the primary data source and authentication provider. While not explicitly deleted, the frontend now bypasses it.
+
+- ****:
+    -   Summary: Expo application configuration file. It defines app name, bundle ID, and includes plugins.
+    -   Changes: Updated to include  paths for both Android and iOS ( and  respectively), and to configure the React Native Firebase plugin. This is critical for native Firebase setup.
+
+- ****:
+    -   Summary: Initializes the Firebase app and exports ,  (Firestore), and  instances.
+    -   Changes: Initially configured with a general Firebase web config, it was later updated to use the specific API keys and app IDs provided by the user via  object (for web) and then further updated with API keys from  (for iOS) for correct multi-platform Firebase integration.
+
+- ****:
+    -   Summary: Contains functions to interact with Firebase Firestore for CRUD operations on various collections.
+    -   Changes: Significantly refactored to align with the user's explicit Firestore security rules and actual database structure. This includes changing collection references from  to ,  to , and handling cart items as nested documents within  instead of a single  collection. It also includes functions for  and .
+        
+
+- ****:
+    -   Summary: The main home screen displaying products and categories.
+    -   Changes: Updated to fetch products and categories from the new . Crucially, null-safety checks were added to string operations like  to prevent crashes when product data fields (e.g., , ) might be  or . Also, the initial state and logic for fetching  and  were added.
+        
+
+- ** and **:
+    -   Summary: Authentication screens.
+    -   Changes: Integrated with Firebase Authentication for user registration and login.
+    -   : Now creates user profiles in the  collection after successful Firebase Auth registration.
+
+- ****:
+    -   Summary: User profile screen.
+    -   Changes: Updated to fetch user profile data from the  collection in Firestore. Includes a button to Initialize Sample Data for populating Firestore with sample products, categories, etc., based on the correct collection structure.
+
+- ****:
+    -   Summary: Shopping cart screen.
+    -   Changes: Updated to use the nested  structure for managing cart items, ensuring user-specific cart data persistence.
+
+- ****:
+    -   Summary: Provides authentication context throughout the app.
+    -   Changes: Modified to interact with Firebase Auth and to create/read user profiles from the  collection in Firestore.
+
+- ** and **:
+    -   Summary: Firebase configuration files for Android and iOS native builds, respectively.
+    -   Changes: Downloaded and placed in the  directory as requested by the user, and referenced in .
+
+- ****:
+    -   Summary: Define access permissions for Firestore collections.
+    -   Changes: The AI engineer provided updated rules that align with the  role and allow all authenticated users (including resellers) to  products, and only admins (or specific users for their own documents) to . This was a critical manual step for the user to perform.
+
+The architecture has fully shifted from a FastAPI/MongoDB backend to a Firebase-centric backend, with the frontend components and services refactored to consume Firebase Auth and Firestore directly, adhering to precise collection naming and nested structures based on user-provided security rules.
+</code_architecture>
+
+<pending_tasks>
+- Implementing detailed **Product Detail View** for individual products.
+- Adding **Pagination/Infinite Scrolling** for product lists.
+- Developing **Wishlist/Favorites** functionality.
+- Implementing the full **Order Management** and checkout flow.
+- Implementing **Pull-to-refresh** for data updates.
+- Completing advanced **Product search & filter**.
+</pending_tasks>
+
+<current_work>
+Currently, the application has successfully migrated its entire backend to Firebase Authentication and Firestore. The authentication flow (register, login, logout, session persistence) is fully functional and uses the user's provided Firebase project, correctly handling authorized domains and app IDs for both web and native platforms. All core e-commerce features (products, categories, shopping cart, user profile) are now powered by Firestore.
+
+A significant amount of recent work involved debugging and refactoring the Firestore integration to match the user's specific database structure and security rules. This included:
+1.  **Collection Renaming**: Changing  to  and  to .
+2.  **Nested Cart Structure**: Adapting the cart to be  instead of a flat  collection.
+3.  **Data Field Mapping**: Ensuring  is handled as a string (e.g., Rp 10.000) and  as a URL, as per the user's existing Firebase data.
+4.  **Firestore Rules Alignment**: Providing corrected Firebase security rules to the user to allow reseller role users to read products and prevent permission denied errors.
+5.  **Error Handling**: Fixing a  error in  by adding null-safety checks to product data fields.
+
+The application now correctly loads the login screen, allows user registration and login, and has the foundational data services for product browsing and cart management aligned with the user's Firebase setup. The immediate next task is to enhance the UI by integrating promotional banners and brand directories. Initial code changes have already been made to  to include state and logic for fetching and displaying these new elements, and the  has been extended with  and  functions.
+</current_work>
+
+<optional_next_step>
+The next step is to complete the implementation of fetching and displaying promotional banners and brand directories in the application.
+</optional_next_step>
