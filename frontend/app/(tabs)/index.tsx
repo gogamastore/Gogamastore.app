@@ -297,7 +297,7 @@ export default function HomeScreen() {
               return (
                 <TouchableOpacity key={banner.id} style={styles.bannerCard}>
                   <Image 
-                    source={{ uri: banner.image || banner.gambar || banner.url || '' }} 
+                    source={{ uri: banner.imageUrl || banner.image || banner.gambar || banner.url || '' }} 
                     style={styles.bannerImage}
                     resizeMode="cover"
                     onError={() => console.log('Banner image failed to load:', banner)}
