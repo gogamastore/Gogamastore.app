@@ -52,17 +52,33 @@ export const productService = {
     try {
       const q = query(
         collection(db, 'products'),
-        where('kategori', '==', categoryName)
+        where('category', '==', categoryName)
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
+        // Map fields to match our app expectations
+        nama: doc.data().name,
+        deskripsi: doc.data().description,
+        gambar: doc.data().image,
+        kategori: doc.data().category,
+        harga: this.parsePrice(doc.data().price)
       }));
     } catch (error) {
       console.error('Error getting products by category:', error);
       throw error;
     }
+  },
+
+  // Helper function to parse price from string format
+  parsePrice(priceString) {
+    if (typeof priceString === 'number') return priceString;
+    if (typeof priceString === 'string') {
+      // Remove "Rp", dots, commas and convert to number
+      return parseInt(priceString.replace(/[Rp\s\.,]/g, '')) || 0;
+    }
+    return 0;
   }
 };
 
