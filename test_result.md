@@ -211,11 +211,14 @@ frontend:
     file: "app/(tabs)/index.tsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created products listing with search, category filtering, and add to cart"
+      - working: "NA"
+        agent: "main"
+        comment: "Added promotional banners section with horizontal scroll and brand directory with grid layout. Banners display with image overlay text, brands show logo/placeholder with names. Both sections are conditionally rendered based on Firebase data availability."
 
   - task: "Categories Screen"
     implemented: true
