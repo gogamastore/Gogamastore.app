@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
         nama_lengkap,
         email,
         nomor_whatsapp,
+        role: 'reseller', // Default role for new users
         created_at: new Date().toISOString()
       });
 
