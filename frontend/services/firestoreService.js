@@ -66,12 +66,12 @@ export const productService = {
   }
 };
 
-// Categories Service
+// Categories Service - Updated to use product_categories collection
 export const categoryService = {
   // Get all categories
   async getAllCategories() {
     try {
-      const querySnapshot = await getDocs(collection(db, 'categories'));
+      const querySnapshot = await getDocs(collection(db, 'product_categories'));
       return querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -83,27 +83,30 @@ export const categoryService = {
   }
 };
 
-// Cart Service
+// Cart Service - Updated to use user/{userId}/cart/{productId} structure
 export const cartService = {
   // Get user cart
   async getUserCart(userId) {
     try {
-      const cartRef = doc(db, 'carts', userId);
-      const cartSnap = await getDoc(cartRef);
+      const cartRef = collection(db, 'user', userId, 'cart');
+      const cartSnap = await getDocs(cartRef);
       
-      if (cartSnap.exists()) {
-        return { id: cartSnap.id, ...cartSnap.data() };
-      } else {
-        // Create empty cart if doesn't exist
-        const emptyCart = {
-          user_id: userId,
-          items: [],
-          total: 0,
-          updated_at: new Date().toISOString()
-        };
-        await setDoc(cartRef, emptyCart);
-        return { id: userId, ...emptyCart };
-      }
+      let items = [];
+      let total = 0;
+      
+      cartSnap.forEach(doc => {
+        const item = { id: doc.id, ...doc.data() };
+        items.push(item);
+        total += item.harga * item.quantity;
+      });
+      
+      return {
+        id: userId,
+        user_id: userId,
+        items: items,
+        total: total,
+        updated_at: new Date().toISOString()
+      };
     } catch (error) {
       console.error('Error getting cart:', error);
       throw error;
@@ -113,44 +116,31 @@ export const cartService = {
   // Add item to cart
   async addToCart(userId, product, quantity = 1) {
     try {
-      const cartRef = doc(db, 'carts', userId);
-      const cartSnap = await getDoc(cartRef);
+      const cartItemRef = doc(db, 'user', userId, 'cart', product.id);
+      const cartItemSnap = await getDoc(cartItemRef);
       
-      let cart;
-      if (cartSnap.exists()) {
-        cart = cartSnap.data();
-      } else {
-        cart = {
-          user_id: userId,
-          items: [],
-          total: 0,
-          updated_at: new Date().toISOString()
-        };
-      }
-
-      // Check if item already exists in cart
-      const existingItemIndex = cart.items.findIndex(item => item.product_id === product.id);
-      
-      if (existingItemIndex > -1) {
+      if (cartItemSnap.exists()) {
         // Update quantity if item exists
-        cart.items[existingItemIndex].quantity += quantity;
+        const currentData = cartItemSnap.data();
+        await updateDoc(cartItemRef, {
+          quantity: currentData.quantity + quantity,
+          updated_at: new Date().toISOString()
+        });
       } else {
         // Add new item
-        cart.items.push({
+        await setDoc(cartItemRef, {
           product_id: product.id,
           nama: product.nama,
           harga: product.harga,
           gambar: product.gambar,
-          quantity: quantity
+          quantity: quantity,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         });
       }
-
-      // Calculate total
-      cart.total = cart.items.reduce((total, item) => total + (item.harga * item.quantity), 0);
-      cart.updated_at = new Date().toISOString();
-
-      await setDoc(cartRef, cart);
-      return { id: userId, ...cart };
+      
+      // Return updated cart
+      return await this.getUserCart(userId);
     } catch (error) {
       console.error('Error adding to cart:', error);
       throw error;
@@ -160,24 +150,11 @@ export const cartService = {
   // Remove item from cart
   async removeFromCart(userId, productId) {
     try {
-      const cartRef = doc(db, 'carts', userId);
-      const cartSnap = await getDoc(cartRef);
+      const cartItemRef = doc(db, 'user', userId, 'cart', productId);
+      await deleteDoc(cartItemRef);
       
-      if (!cartSnap.exists()) {
-        throw new Error('Cart not found');
-      }
-
-      const cart = cartSnap.data();
-      
-      // Remove item
-      cart.items = cart.items.filter(item => item.product_id !== productId);
-      
-      // Recalculate total
-      cart.total = cart.items.reduce((total, item) => total + (item.harga * item.quantity), 0);
-      cart.updated_at = new Date().toISOString();
-
-      await setDoc(cartRef, cart);
-      return { id: userId, ...cart };
+      // Return updated cart
+      return await this.getUserCart(userId);
     } catch (error) {
       console.error('Error removing from cart:', error);
       throw error;
@@ -187,15 +164,19 @@ export const cartService = {
   // Clear cart
   async clearCart(userId) {
     try {
-      const cartRef = doc(db, 'carts', userId);
-      const emptyCart = {
+      const cartRef = collection(db, 'user', userId, 'cart');
+      const cartSnap = await getDocs(cartRef);
+      
+      const deletePromises = cartSnap.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+      
+      return {
+        id: userId,
         user_id: userId,
         items: [],
         total: 0,
         updated_at: new Date().toISOString()
       };
-      await setDoc(cartRef, emptyCart);
-      return { id: userId, ...emptyCart };
     } catch (error) {
       console.error('Error clearing cart:', error);
       throw error;
@@ -203,12 +184,12 @@ export const cartService = {
   }
 };
 
-// User Service
+// User Service - Updated to use user collection (not users)
 export const userService = {
   // Get user profile
   async getUserProfile(userId) {
     try {
-      const userRef = doc(db, 'users', userId);
+      const userRef = doc(db, 'user', userId);
       const userSnap = await getDoc(userRef);
       
       if (userSnap.exists()) {
@@ -225,7 +206,7 @@ export const userService = {
   // Update user profile
   async updateUserProfile(userId, updateData) {
     try {
-      const userRef = doc(db, 'users', userId);
+      const userRef = doc(db, 'user', userId);
       await updateDoc(userRef, {
         ...updateData,
         updated_at: new Date().toISOString()
@@ -237,10 +218,78 @@ export const userService = {
   }
 };
 
-// Initialize sample data (call this once to populate Firestore)
+// Brands Service - New service based on your rules
+export const brandService = {
+  async getAllBrands() {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'brands'));
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error getting brands:', error);
+      throw error;
+    }
+  }
+};
+
+// Banners Service - New service based on your rules
+export const bannerService = {
+  async getAllBanners() {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'banners'));
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error getting banners:', error);
+      throw error;
+    }
+  }
+};
+
+// Orders Service - New service based on your rules
+export const orderService = {
+  // Get user orders
+  async getUserOrders(userId) {
+    try {
+      const q = query(
+        collection(db, 'orders'),
+        where('customerId', '==', userId)
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error getting orders:', error);
+      throw error;
+    }
+  },
+
+  // Create new order
+  async createOrder(orderData) {
+    try {
+      const orderRef = await addDoc(collection(db, 'orders'), {
+        ...orderData,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+      return orderRef.id;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      throw error;
+    }
+  }
+};
+
+// Initialize sample data - Updated to match your structure
 export const initializeSampleData = async () => {
   try {
-    // Sample categories
+    // Sample categories - use product_categories collection
     const categories = [
       { nama: 'Elektronik', created_at: new Date().toISOString() },
       { nama: 'Fashion', created_at: new Date().toISOString() },
@@ -248,9 +297,9 @@ export const initializeSampleData = async () => {
       { nama: 'Kesehatan', created_at: new Date().toISOString() }
     ];
 
-    // Add categories
+    // Add categories to product_categories collection
     for (const category of categories) {
-      const categoryRef = doc(db, 'categories', category.nama);
+      const categoryRef = doc(db, 'product_categories', category.nama);
       await setDoc(categoryRef, category);
     }
 
@@ -299,7 +348,18 @@ export const initializeSampleData = async () => {
       await addDoc(collection(db, 'products'), product);
     }
 
-    console.log('Sample data initialized successfully');
+    // Sample brands
+    const brands = [
+      { nama: 'Samsung', logo: '', created_at: new Date().toISOString() },
+      { nama: 'Apple', logo: '', created_at: new Date().toISOString() },
+      { nama: 'Nike', logo: '', created_at: new Date().toISOString() }
+    ];
+
+    for (const brand of brands) {
+      await addDoc(collection(db, 'brands'), brand);
+    }
+
+    console.log('Sample data initialized successfully with correct structure');
   } catch (error) {
     console.error('Error initializing sample data:', error);
   }
