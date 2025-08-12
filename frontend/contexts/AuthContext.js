@@ -57,11 +57,13 @@ export const AuthProvider = ({ children }) => {
 
       // Save additional user data to Firestore
       await setDoc(doc(db, 'user', firebaseUser.uid), {
-        nama_lengkap,
+        name: nama_lengkap,  // menggunakan 'name' bukan 'nama_lengkap'
         email,
-        nomor_whatsapp,
-        role: 'reseller', // Default role for new users
-        created_at: new Date().toISOString()
+        whatsapp: nomor_whatsapp,  // menggunakan 'whatsapp' bukan 'nomor_whatsapp'
+        role: 'reseller',  // default role reseller
+        photoURL: '',  // empty photoURL initially
+        addresses: {},  // empty addresses initially
+        createdAt: new Date()  // menggunakan timestamp
       });
 
       return firebaseUser;
