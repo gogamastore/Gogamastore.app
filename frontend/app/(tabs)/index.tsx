@@ -226,6 +226,59 @@ export default function HomeScreen() {
         />
       </View>
 
+      {/* Promotional Banners */}
+      {banners.length > 0 && (
+        <View style={styles.bannersSection}>
+          <Text style={styles.sectionTitle}>Penawaran Spesial</Text>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.bannersContainer}
+          >
+            {banners.map((banner, index) => (
+              <TouchableOpacity key={banner.id} style={styles.bannerCard}>
+                <Image 
+                  source={{ uri: banner.image }} 
+                  style={styles.bannerImage}
+                  resizeMode="cover"
+                />
+                <View style={styles.bannerOverlay}>
+                  <Text style={styles.bannerTitle}>{banner.title}</Text>
+                  {banner.subtitle && (
+                    <Text style={styles.bannerSubtitle}>{banner.subtitle}</Text>
+                  )}
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
+      {/* Brand Directory */}
+      {brands.length > 0 && (
+        <View style={styles.brandsSection}>
+          <Text style={styles.sectionTitle}>Brand Terpercaya</Text>
+          <View style={styles.brandsGrid}>
+            {brands.map((brand) => (
+              <TouchableOpacity key={brand.id} style={styles.brandCard}>
+                {brand.logo ? (
+                  <Image 
+                    source={{ uri: brand.logo }} 
+                    style={styles.brandLogo}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <View style={styles.brandLogoPlaceholder}>
+                    <MaterialIcons name="business" size={24} color="#666" />
+                  </View>
+                )}
+                <Text style={styles.brandName}>{brand.nama}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
       {/* Categories */}
       <View style={styles.categoriesSection}>
         <TouchableOpacity
