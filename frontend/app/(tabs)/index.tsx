@@ -169,20 +169,6 @@ export default function HomeScreen() {
     router.push(`/product/${productId}`);
   };
 
-  const addToCart = async (product: Product) => {
-    if (!user) {
-      Alert.alert('Error', 'Anda harus login terlebih dahulu');
-      return;
-    }
-
-    try {
-      await cartService.addToCart(user.uid, product, 1);
-      Alert.alert('Berhasil', 'Produk ditambahkan ke keranjang');
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      Alert.alert('Error', 'Gagal menambahkan ke keranjang');
-    }
-  };
 
   const filteredProducts = products.filter(product =>
     (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
