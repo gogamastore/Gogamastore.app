@@ -58,6 +58,9 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const bannerScrollRef = useRef<ScrollView>(null);
+  const bannerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { user } = useAuth();
   useEffect(() => {
     loadInitialData();
