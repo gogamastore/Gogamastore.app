@@ -16,7 +16,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { productService, categoryService, cartService, bannerService, brandService } from '../../services/firestoreService';
+import { productService, categoryService, bannerService, brandService } from '../../services/firestoreService';
+import { useRouter } from 'expo-router';
 
 interface Product {
   id: string;
@@ -59,9 +60,14 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
   const bannerScrollRef = useRef<ScrollView>(null);
   const bannerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { user } = useAuth();
+  const router = useRouter();
+
+  const PRODUCTS_PER_PAGE = 25;
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -114,7 +120,23 @@ export default function HomeScreen() {
       } else {
         data = await productService.getAllProducts();
       }
-      setProducts(data);
+      
+      // Sort products: available stock first, out of stock last
+      const sortedData = data.sort((a, b) => {
+        const aStock = a.stok || 0;
+        const bStock = b.stok || 0;
+        
+        // If both have stock or both are out of stock, sort by name
+        if ((aStock > 0 && bStock > 0) || (aStock === 0 && bStock === 0)) {
+          return (a.nama || '').localeCompare(b.nama || '');
+        }
+        
+        // Products with stock come first
+        return bStock - aStock;
+      });
+      
+      setProducts(sortedData);
+      setCurrentPage(1); // Reset to first page when products change
     } catch (error) {
       console.error('Error fetching products:', error);
       Alert.alert('Error', 'Gagal memuat produk');
@@ -163,20 +185,10 @@ export default function HomeScreen() {
     setSelectedCategory(categoryName === selectedCategory ? '' : categoryName);
   };
 
-  const addToCart = async (product: Product) => {
-    if (!user) {
-      Alert.alert('Error', 'Anda harus login terlebih dahulu');
-      return;
-    }
-
-    try {
-      await cartService.addToCart(user.uid, product, 1);
-      Alert.alert('Berhasil', 'Produk ditambahkan ke keranjang');
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      Alert.alert('Error', 'Gagal menambahkan ke keranjang');
-    }
+  const navigateToProduct = (productId: string) => {
+    router.push(`/product/${productId}`);
   };
+
 
   const filteredProducts = products.filter(product =>
     (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -192,7 +204,11 @@ export default function HomeScreen() {
   };
 
   const renderProduct = ({ item }: { item: Product }) => (
-    <View style={styles.productCard}>
+    <TouchableOpacity 
+      style={styles.productCard}
+      onPress={() => navigateToProduct(item.id)}
+      activeOpacity={0.7}
+    >
       <Image source={{ uri: item.gambar }} style={styles.productImage} />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={2}>
@@ -203,15 +219,18 @@ export default function HomeScreen() {
         </Text>
         <Text style={styles.productPrice}>{formatPrice(item.harga)}</Text>
         <Text style={styles.productStock}>Stok: {item.stok}</Text>
-        <TouchableOpacity
-          style={styles.addToCartButton}
-          onPress={() => addToCart(item)}
-        >
-          <MaterialIcons name="add-shopping-cart" size={16} color="#fff" />
-          <Text style={styles.addToCartText}>Tambah ke Keranjang</Text>
-        </TouchableOpacity>
+        
+        <View style={styles.productActions}>
+          <TouchableOpacity
+            style={styles.viewDetailButton}
+            onPress={() => navigateToProduct(item.id)}
+          >
+            <MaterialIcons name="visibility" size={16} color="#007AFF" />
+            <Text style={styles.viewDetailText}>Lihat Detail</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderCategory = ({ item }: { item: Category }) => (
@@ -273,6 +292,13 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
+      {/* Debug Info */}
+      <View style={{ padding: 16, backgroundColor: '#f0f0f0' }}>
+        <Text style={{ fontSize: 12, color: '#666' }}>
+          Debug: Banners: {banners.length}, Brands: {brands.length}
+        </Text>
+      </View>
+      
       {/* Promotional Banners */}
       {banners.length > 0 && (
         <View style={styles.bannersSection}>
@@ -290,7 +316,7 @@ export default function HomeScreen() {
               return (
                 <TouchableOpacity key={banner.id} style={styles.bannerCard}>
                   <Image 
-                    source={{ uri: banner.image || banner.gambar || banner.url || '' }} 
+                    source={{ uri: banner.imageUrl || banner.image || banner.gambar || banner.url || '' }} 
                     style={styles.bannerImage}
                     resizeMode="cover"
                     onError={() => console.log('Banner image failed to load:', banner)}
@@ -300,9 +326,9 @@ export default function HomeScreen() {
                     <Text style={styles.bannerTitle}>
                       {banner.title || banner.judul || banner.nama || 'No Title'}
                     </Text>
-                    {(banner.subtitle || banner.deskripsi || banner.description) && (
+                    {(banner.description || banner.subtitle || banner.deskripsi) && (
                       <Text style={styles.bannerSubtitle}>
-                        {banner.subtitle || banner.deskripsi || banner.description}
+                        {banner.description || banner.subtitle || banner.deskripsi}
                       </Text>
                     )}
                   </View>
@@ -337,9 +363,9 @@ export default function HomeScreen() {
               console.log('Rendering brand:', brand);
               return (
                 <TouchableOpacity key={brand.id} style={styles.brandCard}>
-                  {(brand.logo || brand.gambar || brand.image) ? (
+                  {(brand.logoUrl || brand.logo || brand.gambar || brand.image) ? (
                     <Image 
-                      source={{ uri: brand.logo || brand.gambar || brand.image }} 
+                      source={{ uri: brand.logoUrl || brand.logo || brand.gambar || brand.image }} 
                       style={styles.brandLogo}
                       resizeMode="contain"
                       onError={() => console.log('Brand image failed to load:', brand)}
@@ -576,6 +602,26 @@ const styles = StyleSheet.create({
   },
   addToCartText: {
     color: '#fff',
+    fontSize: 12,
+    fontWeight: '500',
+    marginLeft: 4,
+  },
+  productActions: {
+    marginTop: 8,
+  },
+  viewDetailButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#007AFF',
+  },
+  viewDetailText: {
+    color: '#007AFF',
     fontSize: 12,
     fontWeight: '500',
     marginLeft: 4,
