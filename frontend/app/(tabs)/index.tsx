@@ -165,6 +165,10 @@ export default function HomeScreen() {
     setSelectedCategory(categoryName === selectedCategory ? '' : categoryName);
   };
 
+  const navigateToProduct = (productId: string) => {
+    router.push(`/product/${productId}`);
+  };
+
   const addToCart = async (product: Product) => {
     if (!user) {
       Alert.alert('Error', 'Anda harus login terlebih dahulu');
