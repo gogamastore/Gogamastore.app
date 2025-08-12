@@ -1,33 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Index() {
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      
-      if (token) {
+    if (!loading) {
+      if (user) {
         // User is logged in, redirect to main app
         router.replace('/(tabs)');
       } else {
         // User is not logged in, redirect to login
         router.replace('/(auth)/login');
       }
-    } catch (error) {
-      console.error('Auth check error:', error);
-      router.replace('/(auth)/login');
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [user, loading]);
 
   if (loading) {
     return (

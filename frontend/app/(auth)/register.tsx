@@ -12,10 +12,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link, router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+import { Link } from 'expo-router';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function RegisterScreen() {
   const [formData, setFormData] = useState({
@@ -25,8 +23,9 @@ export default function RegisterScreen() {
     password: '',
   });
   const [loading, setLoading] = useState(false);
+  const { register } = useAuth();
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
 
@@ -43,35 +42,37 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nama_lengkap: formData.nama_lengkap,
-          email: formData.email.toLowerCase(),
-          nomor_whatsapp: formData.nomor_whatsapp,
-          password: formData.password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Store token and user data
-        await AsyncStorage.setItem('access_token', data.access_token);
-        await AsyncStorage.setItem('user_data', JSON.stringify(data.user));
-        
-        Alert.alert('Berhasil', 'Registrasi berhasil!', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)') }
-        ]);
-      } else {
-        Alert.alert('Error', data.detail || 'Registrasi gagal');
-      }
+      await register(
+        formData.nama_lengkap,
+        formData.email.toLowerCase(),
+        formData.nomor_whatsapp,
+        formData.password
+      );
+      
+      Alert.alert('Berhasil', 'Registrasi berhasil! Anda sekarang sudah login.');
+      // Navigation will be handled by AuthContext
     } catch (error) {
       console.error('Register error:', error);
-      Alert.alert('Error', 'Terjadi kesalahan. Coba lagi nanti.');
+      let errorMessage = 'Registrasi gagal';
+      
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = 'Email sudah terdaftar';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Email tidak valid';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'Password terlalu lemah';
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Koneksi internet bermasalah';
+          break;
+        default:
+          errorMessage = error.message || 'Terjadi kesalahan';
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }

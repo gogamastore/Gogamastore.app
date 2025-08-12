@@ -13,14 +13,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -30,32 +29,33 @@ export default function LoginScreen() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email.toLowerCase(),
-          password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Store token and user data
-        await AsyncStorage.setItem('access_token', data.access_token);
-        await AsyncStorage.setItem('user_data', JSON.stringify(data.user));
-        
-        // Navigate to main app
-        router.replace('/(tabs)');
-      } else {
-        Alert.alert('Error', data.detail || 'Login gagal');
-      }
+      await login(email.toLowerCase(), password);
+      // Navigation will be handled by AuthContext
     } catch (error) {
       console.error('Login error:', error);
-      Alert.alert('Error', 'Terjadi kesalahan. Coba lagi nanti.');
+      let errorMessage = 'Login gagal';
+      
+      switch (error.code) {
+        case 'auth/user-not-found':
+          errorMessage = 'Email tidak ditemukan';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Password salah';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Email tidak valid';
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Terlalu banyak percobaan. Coba lagi nanti';
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Koneksi internet bermasalah';
+          break;
+        default:
+          errorMessage = error.message || 'Terjadi kesalahan';
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }
