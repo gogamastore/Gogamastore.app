@@ -109,7 +109,8 @@ export default function CategoriesScreen() {
   );
 
   const getCategoryIcon = (categoryName: string) => {
-    switch (categoryName.toLowerCase()) {
+    const safeCategoryName = (categoryName || '').toLowerCase();
+    switch (safeCategoryName) {
       case 'elektronik':
         return 'devices';
       case 'fashion':
