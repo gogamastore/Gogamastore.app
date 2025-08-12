@@ -242,7 +242,12 @@ export default function HomeScreen() {
           {item.deskripsi}
         </Text>
         <Text style={styles.productPrice}>{formatPrice(item.harga)}</Text>
-        <Text style={styles.productStock}>Stok: {item.stok}</Text>
+        <Text style={[
+          styles.productStock,
+          { color: item.stok === 0 ? '#FF3B30' : '#666' }
+        ]}>
+          {item.stok === 0 ? 'Stok: Habis' : `Stok: ${item.stok}`}
+        </Text>
         
         <View style={styles.productActions}>
           <TouchableOpacity
