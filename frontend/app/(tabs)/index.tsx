@@ -66,6 +66,41 @@ export default function HomeScreen() {
     loadInitialData();
   }, []);
 
+  // Auto-slide banner effect
+  useEffect(() => {
+    if (banners.length > 1) {
+      // Clear any existing interval
+      if (bannerIntervalRef.current) {
+        clearInterval(bannerIntervalRef.current);
+      }
+
+      // Set new interval for auto-slide
+      bannerIntervalRef.current = setInterval(() => {
+        setCurrentBannerIndex(prevIndex => {
+          const nextIndex = (prevIndex + 1) % banners.length;
+          
+          // Scroll to next banner
+          if (bannerScrollRef.current) {
+            bannerScrollRef.current.scrollTo({
+              x: nextIndex * 280, // banner width
+              y: 0,
+              animated: true,
+            });
+          }
+          
+          return nextIndex;
+        });
+      }, 6000); // 6 seconds interval
+    }
+
+    // Cleanup interval on component unmount or when banners change
+    return () => {
+      if (bannerIntervalRef.current) {
+        clearInterval(bannerIntervalRef.current);
+      }
+    };
+  }, [banners]);
+
   const loadInitialData = async () => {
     await Promise.all([fetchProducts(), fetchCategories(), fetchBrands(), fetchBanners()]);
     setLoading(false);
