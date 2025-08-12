@@ -386,13 +386,59 @@ export const initializeSampleData = async () => {
 
     // Sample brands
     const brands = [
-      { nama: 'Samsung', logo: '', created_at: new Date().toISOString() },
-      { nama: 'Apple', logo: '', created_at: new Date().toISOString() },
-      { nama: 'Nike', logo: '', created_at: new Date().toISOString() }
+      { 
+        nama: 'Samsung', 
+        logo: 'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=200&h=200&fit=crop&crop=center',
+        created_at: new Date().toISOString() 
+      },
+      { 
+        nama: 'Apple', 
+        logo: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=200&h=200&fit=crop&crop=center',
+        created_at: new Date().toISOString() 
+      },
+      { 
+        nama: 'Nike', 
+        logo: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop&crop=center',
+        created_at: new Date().toISOString() 
+      },
+      { 
+        nama: 'Uniqlo', 
+        logo: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=200&h=200&fit=crop&crop=center',
+        created_at: new Date().toISOString() 
+      }
     ];
 
     for (const brand of brands) {
       await addDoc(collection(db, 'brands'), brand);
+    }
+
+    // Sample banners
+    const banners = [
+      {
+        title: 'Flash Sale 70% OFF',
+        subtitle: 'Diskon besar-besaran hari ini!',
+        image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=600&h=300&fit=crop&crop=center',
+        link: '',
+        created_at: new Date().toISOString()
+      },
+      {
+        title: 'Koleksi Terbaru',
+        subtitle: 'Fashion terkini untuk gaya hidup modern',
+        image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=300&fit=crop&crop=center',
+        link: '',
+        created_at: new Date().toISOString()
+      },
+      {
+        title: 'Gratis Ongkir',
+        subtitle: 'Untuk pembelian minimal Rp 100.000',
+        image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop&crop=center',
+        link: '',
+        created_at: new Date().toISOString()
+      }
+    ];
+
+    for (const banner of banners) {
+      await addDoc(collection(db, 'banners'), banner);
     }
 
     console.log('Sample data initialized successfully with correct structure');
