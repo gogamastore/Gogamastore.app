@@ -601,6 +601,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.9,
   },
+  bannerIndicators: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 12,
+    paddingHorizontal: 16,
+  },
+  bannerIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#D1D5DB',
+    marginHorizontal: 4,
+  },
+  bannerIndicatorActive: {
+    backgroundColor: '#007AFF',
+    width: 20,
+  },
   brandsSection: {
     paddingVertical: 16,
     backgroundColor: '#fff',
