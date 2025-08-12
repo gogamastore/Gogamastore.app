@@ -12,9 +12,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+import { useAuth } from '../../contexts/AuthContext';
+import { cartService } from '../../services/firestoreService';
 
 interface CartItem {
   product_id: string;
@@ -35,26 +34,23 @@ export default function CartScreen() {
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
-    fetchCart();
-  }, []);
+    if (user) {
+      fetchCart();
+    }
+  }, [user]);
 
   const fetchCart = async () => {
+    if (!user) return;
+    
     try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/cart`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCart(data);
-      }
+      const data = await cartService.getUserCart(user.uid);
+      setCart(data);
     } catch (error) {
       console.error('Error fetching cart:', error);
+      Alert.alert('Error', 'Gagal memuat keranjang');
     } finally {
       setLoading(false);
     }
@@ -64,27 +60,18 @@ export default function CartScreen() {
     setRefreshing(true);
     await fetchCart();
     setRefreshing(false);
-  }, []);
+  }, [user]);
 
   const removeFromCart = async (productId: string) => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/cart/remove/${productId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    if (!user) return;
 
-      if (response.ok) {
-        await fetchCart(); // Refresh cart
-        Alert.alert('Berhasil', 'Item dihapus dari keranjang');
-      } else {
-        Alert.alert('Error', 'Gagal menghapus item');
-      }
+    try {
+      const updatedCart = await cartService.removeFromCart(user.uid, productId);
+      setCart(updatedCart);
+      Alert.alert('Berhasil', 'Item dihapus dari keranjang');
     } catch (error) {
       console.error('Error removing from cart:', error);
-      Alert.alert('Error', 'Terjadi kesalahan');
+      Alert.alert('Error', 'Gagal menghapus item');
     }
   };
 

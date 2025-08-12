@@ -10,12 +10,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../../contexts/AuthContext';
+import { userService, initializeSampleData } from '../../services/firestoreService';
 
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-interface User {
+interface UserProfile {
   id: string;
   nama_lengkap: string;
   email: string;
@@ -24,30 +22,38 @@ interface User {
 }
 
 export default function ProfileScreen() {
-  const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);
 
   const fetchUserProfile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/profile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    if (!user) return;
 
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data);
-      } else {
-        console.error('Failed to fetch profile');
-      }
+    try {
+      const profile = await userService.getUserProfile(user.uid);
+      setUserProfile({
+        id: profile.id,
+        nama_lengkap: profile.nama_lengkap || user.displayName || '',
+        email: profile.email || user.email || '',
+        nomor_whatsapp: profile.nomor_whatsapp || '',
+        created_at: profile.created_at || new Date().toISOString()
+      });
     } catch (error) {
       console.error('Error fetching profile:', error);
+      // Use auth user data as fallback
+      setUserProfile({
+        id: user.uid,
+        nama_lengkap: user.displayName || '',
+        email: user.email || '',
+        nomor_whatsapp: '',
+        created_at: new Date().toISOString()
+      });
     } finally {
       setLoading(false);
     }
@@ -64,13 +70,34 @@ export default function ProfileScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await AsyncStorage.multiRemove(['access_token', 'user_data']);
-              router.replace('/(auth)/login');
+              await logout();
             } catch (error) {
               console.error('Logout error:', error);
             }
           },
         },
+      ]
+    );
+  };
+
+  const handleInitializeSampleData = async () => {
+    Alert.alert(
+      'Initialize Sample Data',
+      'Apakah Anda ingin menambahkan data sample produk dan kategori?',
+      [
+        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Ya',
+          onPress: async () => {
+            try {
+              await initializeSampleData();
+              Alert.alert('Berhasil', 'Data sample berhasil ditambahkan');
+            } catch (error) {
+              console.error('Error initializing sample data:', error);
+              Alert.alert('Error', 'Gagal menambahkan data sample');
+            }
+          }
+        }
       ]
     );
   };
@@ -101,6 +128,11 @@ export default function ProfileScreen() {
       onPress: () => Alert.alert('Info', 'Fitur pengaturan alamat akan segera tersedia'),
     },
     {
+      title: 'Initialize Sample Data',
+      icon: 'data-usage',
+      onPress: handleInitializeSampleData,
+    },
+    {
       title: 'Bantuan',
       icon: 'help',
       onPress: () => Alert.alert('Bantuan', 'Hubungi customer service untuk bantuan'),
@@ -108,7 +140,7 @@ export default function ProfileScreen() {
     {
       title: 'Tentang Aplikasi',
       icon: 'info',
-      onPress: () => Alert.alert('Tentang', 'Gogama Store - Aplikasi Reseller v1.0.0'),
+      onPress: () => Alert.alert('Tentang', 'Gogama Store - Aplikasi Reseller v1.0.0\nPowered by Firebase'),
     },
   ];
 
@@ -131,17 +163,19 @@ export default function ProfileScreen() {
         </View>
 
         {/* User Info Section */}
-        {user && (
+        {userProfile && (
           <View style={styles.userSection}>
             <View style={styles.userAvatar}>
               <MaterialIcons name="person" size={48} color="#007AFF" />
             </View>
             <View style={styles.userInfo}>
-              <Text style={styles.userName}>{user.nama_lengkap}</Text>
-              <Text style={styles.userEmail}>{user.email}</Text>
-              <Text style={styles.userPhone}>{user.nomor_whatsapp}</Text>
+              <Text style={styles.userName}>{userProfile.nama_lengkap}</Text>
+              <Text style={styles.userEmail}>{userProfile.email}</Text>
+              {userProfile.nomor_whatsapp && (
+                <Text style={styles.userPhone}>{userProfile.nomor_whatsapp}</Text>
+              )}
               <Text style={styles.joinDate}>
-                Bergabung sejak {formatDate(user.created_at)}
+                Bergabung sejak {formatDate(userProfile.created_at)}
               </Text>
             </View>
           </View>
@@ -178,7 +212,7 @@ export default function ProfileScreen() {
 
         {/* App Version */}
         <View style={styles.versionSection}>
-          <Text style={styles.versionText}>Gogama Store v1.0.0</Text>
+          <Text style={styles.versionText}>Gogama Store v1.0.0 - Firebase Edition</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

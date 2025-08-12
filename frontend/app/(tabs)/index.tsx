@@ -13,9 +13,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+import { useAuth } from '../../contexts/AuthContext';
+import { productService, categoryService, cartService } from '../../services/firestoreService';
 
 interface Product {
   id: string;
@@ -39,6 +38,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { user } = useAuth();
 
   useEffect(() => {
     loadInitialData();
@@ -51,41 +51,26 @@ export default function HomeScreen() {
 
   const fetchProducts = async () => {
     try {
-      const token = await AsyncStorage.getItem('access_token');
-      const url = selectedCategory 
-        ? `${EXPO_PUBLIC_BACKEND_URL}/api/products/by-category/${selectedCategory}`
-        : `${EXPO_PUBLIC_BACKEND_URL}/api/products`;
-      
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data);
+      let data;
+      if (selectedCategory) {
+        data = await productService.getProductsByCategory(selectedCategory);
+      } else {
+        data = await productService.getAllProducts();
       }
+      setProducts(data);
     } catch (error) {
       console.error('Error fetching products:', error);
+      Alert.alert('Error', 'Gagal memuat produk');
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/categories`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCategories(data);
-      }
+      const data = await categoryService.getAllCategories();
+      setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
+      Alert.alert('Error', 'Gagal memuat kategori');
     }
   };
 
@@ -100,23 +85,17 @@ export default function HomeScreen() {
   };
 
   const addToCart = async (product: Product) => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/cart/add?product_id=${product.id}&quantity=1`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    if (!user) {
+      Alert.alert('Error', 'Anda harus login terlebih dahulu');
+      return;
+    }
 
-      if (response.ok) {
-        Alert.alert('Berhasil', 'Produk ditambahkan ke keranjang');
-      } else {
-        Alert.alert('Error', 'Gagal menambahkan ke keranjang');
-      }
+    try {
+      await cartService.addToCart(user.uid, product, 1);
+      Alert.alert('Berhasil', 'Produk ditambahkan ke keranjang');
     } catch (error) {
       console.error('Error adding to cart:', error);
-      Alert.alert('Error', 'Terjadi kesalahan');
+      Alert.alert('Error', 'Gagal menambahkan ke keranjang');
     }
   };
 
