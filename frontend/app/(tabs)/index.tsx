@@ -10,11 +10,13 @@ import {
   ActivityIndicator,
   Alert,
   RefreshControl,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { productService, categoryService, cartService } from '../../services/firestoreService';
+import { productService, categoryService, cartService, bannerService, brandService } from '../../services/firestoreService';
 
 interface Product {
   id: string;
