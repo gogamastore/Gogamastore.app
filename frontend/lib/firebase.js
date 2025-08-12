@@ -10,7 +10,7 @@ const firebaseConfig = {
   projectId: "orderflow-r7jsk",
   storageBucket: "orderflow-r7jsk.firebasestorage.app",
   messagingSenderId: "954515661623",
-  appId: "1:954515661623:android:b8d6000e0456b43c2ef0b2"
+  appId: "1:954515661623:web:19d89bf3722600e02ef0b2"
 };
 
 // Initialize Firebase
