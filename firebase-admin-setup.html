@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Admin User Creator</title>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            collection,
+            addDoc
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCv8M05daKu55b075KK7S5Xbctql-E822c",
+            authDomain: "orderflow-r7jsk.firebaseapp.com",
+            projectId: "orderflow-r7jsk",
+            storageBucket: "orderflow-r7jsk.firebasestorage.app",
+            messagingSenderId: "954515661623",
+            appId: "1:954515661623:web:19d89bf3722600e02ef0b2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        console.log("✅ Firebase initialized!");
+
+        // Create admin user
+        window.createAdminUser = async function() {
+            try {
+                const adminEmail = 'admin@gogama.store';
+                const adminPassword = 'admin123456';
+                
+                document.getElementById('adminResult').innerHTML = 'Creating admin user...';
+                
+                // Create admin user
+                const userCredential = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
+                const user = userCredential.user;
+                
+                // Set admin role in Firestore
+                await setDoc(doc(db, 'user', user.uid), {
+                    nama_lengkap: 'Admin Gogama Store',
+                    email: adminEmail,
+                    nomor_whatsapp: '081234567890',
+                    role: 'admin', // 🔑 KEY: Admin role
+                    created_at: new Date().toISOString()
+                });
+                
+                document.getElementById('adminResult').innerHTML = `
+                    <h3 style="color: green;">✅ Admin User Created!</h3>
+                    <p><strong>Email:</strong> ${adminEmail}</p>
+                    <p><strong>Password:</strong> ${adminPassword}</p>
+                    <p><strong>Role:</strong> admin</p>
+                    <p><strong>UID:</strong> ${user.uid}</p>
+                `;
+                
+                console.log('✅ Admin user created successfully');
+                
+            } catch (error) {
+                console.error('❌ Admin creation error:', error);
+                document.getElementById('adminResult').innerHTML = `
+                    <h3 style="color: red;">❌ Admin Creation Failed</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        };
+
+        // Initialize all data as admin
+        window.initAllData = async function() {
+            try {
+                document.getElementById('dataResult').innerHTML = 'Initializing all data as admin...';
+                
+                // First login as admin
+                const adminCredential = await signInWithEmailAndPassword(auth, 'admin@gogama.store', 'admin123456');
+                console.log('✅ Logged in as admin');
+                
+                // 1. Create product categories
+                const categories = [
+                    { nama: 'Elektronik', created_at: new Date().toISOString() },
+                    { nama: 'Fashion', created_at: new Date().toISOString() },
+                    { nama: 'Makanan', created_at: new Date().toISOString() },
+                    { nama: 'Kesehatan', created_at: new Date().toISOString() }
+                ];
+
+                for (const category of categories) {
+                    await setDoc(doc(db, 'product_categories', category.nama), category);
+                }
+                console.log('✅ Categories created');
+
+                // 2. Create products
+                const products = [
+                    {
+                        nama: 'Smartphone Android',
+                        deskripsi: 'Smartphone terbaru dengan kamera canggih',
+                        harga: 2500000,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iNSIgeT0iMiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjIwIiByeD0iMiIgZmlsbD0iIzMzNzNkYyIvPgo8L3N2Zz4K',
+                        kategori: 'Elektronik',
+                        stok: 50,
+                        created_at: new Date().toISOString()
+                    },
+                    {
+                        nama: 'T-Shirt Cotton Premium',
+                        deskripsi: 'T-Shirt berbahan cotton premium yang nyaman',
+                        harga: 150000,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMgN0gyMUwyMCAxNkg0TDMgN0gxMUwxMiAyWiIgZmlsbD0iIzEwYjk4MSIvPgo8L3N2Zz4K',
+                        kategori: 'Fashion',
+                        stok: 100,
+                        created_at: new Date().toISOString()
+                    },
+                    {
+                        nama: 'Vitamin C 1000mg',
+                        deskripsi: 'Suplemen vitamin C untuk daya tahan tubuh',
+                        harga: 85000,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNlZjQ0NDQiLz4KPHN2Zz4K',
+                        kategori: 'Kesehatan',
+                        stok: 200,
+                        created_at: new Date().toISOString()
+                    },
+                    {
+                        nama: 'Snack Sehat Organik',
+                        deskripsi: 'Camilan sehat rendah gula dan organik',
+                        harga: 25000,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMiIgeT0iMyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE4IiByeD0iMiIgZmlsbD0iI2Y1OTcwOCIvPgo8L3N2Zz4K',
+                        kategori: 'Makanan',
+                        stok: 150,
+                        created_at: new Date().toISOString()
+                    }
+                ];
+
+                for (const product of products) {
+                    await addDoc(collection(db, 'products'), product);
+                }
+                console.log('✅ Products created');
+
+                // 3. Create brands
+                const brands = [
+                    { nama: 'Samsung', logo: '', created_at: new Date().toISOString() },
+                    { nama: 'Apple', logo: '', created_at: new Date().toISOString() },
+                    { nama: 'Uniqlo', logo: '', created_at: new Date().toISOString() },
+                    { nama: 'Blackmores', logo: '', created_at: new Date().toISOString() }
+                ];
+
+                for (const brand of brands) {
+                    await addDoc(collection(db, 'brands'), brand);
+                }
+                console.log('✅ Brands created');
+
+                document.getElementById('dataResult').innerHTML = `
+                    <h3 style="color: green;">✅ All Data Initialized Successfully!</h3>
+                    <p>✅ ${categories.length} categories created</p>
+                    <p>✅ ${products.length} products created</p>
+                    <p>✅ ${brands.length} brands created</p>
+                    <p><strong>Now test the mobile app!</strong></p>
+                `;
+                
+            } catch (error) {
+                console.error('❌ Data initialization error:', error);
+                document.getElementById('dataResult').innerHTML = `
+                    <h3 style="color: red;">❌ Data Initialization Failed</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        };
+
+        // Test user registration
+        window.testUserRegister = async function() {
+            try {
+                const userEmail = `user${Date.now()}@test.com`;
+                const userPassword = 'test123456';
+                
+                document.getElementById('userResult').innerHTML = 'Creating test user...';
+                
+                const userCredential = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
+                const user = userCredential.user;
+                
+                // Create user with reseller role
+                await setDoc(doc(db, 'user', user.uid), {
+                    nama_lengkap: 'Test User',
+                    email: userEmail,
+                    nomor_whatsapp: '081234567890',
+                    role: 'reseller', // Regular user role
+                    created_at: new Date().toISOString()
+                });
+                
+                document.getElementById('userResult').innerHTML = `
+                    <h3 style="color: green;">✅ Test User Created!</h3>
+                    <p><strong>Email:</strong> ${userEmail}</p>
+                    <p><strong>Password:</strong> ${userPassword}</p>
+                    <p><strong>Role:</strong> reseller</p>
+                `;
+                
+            } catch (error) {
+                document.getElementById('userResult').innerHTML = `
+                    <h3 style="color: red;">❌ User Creation Failed</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        };
+
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        .section { margin: 30px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 15px 25px; margin: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-primary { background: #007AFF; color: white; }
+        .btn-success { background: #34C759; color: white; }
+        .btn-warning { background: #FF9500; color: white; }
+        .result { margin-top: 15px; padding: 15px; border-radius: 5px; background: #f9f9f9; }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #007AFF; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firebase Data Initialization Tool</h1>
+        
+        <div class="section">
+            <h2>1. Create Admin User</h2>
+            <p>Buat user admin dengan role 'admin' untuk manage data</p>
+            <button class="btn-primary" onclick="createAdminUser()">Create Admin User</button>
+            <div id="adminResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>2. Initialize All Sample Data</h2>
+            <p>Buat semua data sample (categories, products, brands) dengan admin privileges</p>
+            <button class="btn-success" onclick="initAllData()">Initialize All Data</button>
+            <div id="dataResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>3. Create Test User</h2>
+            <p>Buat test user dengan role 'reseller' untuk testing</p>
+            <button class="btn-warning" onclick="testUserRegister()">Create Test User</button>
+            <div id="userResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>📋 Instructions:</h3>
+            <ol>
+                <li><strong>Step 1:</strong> Klik "Create Admin User" untuk buat admin</li>
+                <li><strong>Step 2:</strong> Klik "Initialize All Data" untuk populate Firestore</li>
+                <li><strong>Step 3:</strong> Test mobile app - products seharusnya muncul</li>
+                <li><strong>Step 4:</strong> Opsional: Create test user untuk testing</li>
+            </ol>
+            <p><strong>⚠️ Note:</strong> Admin diperlukan untuk create/update products dan categories sesuai Firestore rules Anda</p>
+        </div>
+    </div>
+</body>
+</html>
