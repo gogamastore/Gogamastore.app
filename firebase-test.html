@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Test - Gogama Store</title>
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { getFirestore, doc, setDoc, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        // Firebase configuration with correct API key
+        const firebaseConfig = {
+            apiKey: "AIzaSyAUU71TYtfCIqTKwj1SHlbVhqqgbfEHx6U",
+            authDomain: "orderflow-r7jsk.firebaseapp.com",
+            projectId: "orderflow-r7jsk",
+            storageBucket: "orderflow-r7jsk.firebasestorage.app",
+            messagingSenderId: "954515661623",
+            appId: "1:954515661623:android:b8d6000e0456b43c2ef0b2"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        console.log("Firebase initialized successfully!");
+
+        // Test functions
+        window.testFirebaseConnection = async function() {
+            try {
+                console.log("Testing Firebase connection...");
+                
+                // Test creating a test user
+                const testEmail = `test.${Date.now()}@gogama.store`;
+                const testPassword = 'test123456';
+                
+                const userCredential = await createUserWithEmailAndPassword(auth, testEmail, testPassword);
+                const user = userCredential.user;
+                
+                console.log("✅ User created successfully:", user.uid);
+                
+                // Add user data to Firestore
+                await setDoc(doc(db, 'users', user.uid), {
+                    nama_lengkap: 'Test User',
+                    email: testEmail,
+                    nomor_whatsapp: '081234567890',
+                    created_at: new Date().toISOString()
+                });
+                
+                console.log("✅ User data saved to Firestore");
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>✅ Firebase Connection Test SUCCESSFUL!</h3>
+                    <p><strong>Test User Created:</strong></p>
+                    <p>Email: ${testEmail}</p>
+                    <p>Password: ${testPassword}</p>
+                    <p>User ID: ${user.uid}</p>
+                `;
+                
+                return { email: testEmail, password: testPassword, uid: user.uid };
+                
+            } catch (error) {
+                console.error("❌ Firebase test failed:", error);
+                document.getElementById('result').innerHTML = `
+                    <h3>❌ Firebase Connection Test FAILED!</h3>
+                    <p>Error: ${error.message}</p>
+                    <p>Code: ${error.code}</p>
+                `;
+            }
+        };
+
+        window.initializeSampleData = async function() {
+            try {
+                console.log("Initializing sample data...");
+                
+                // Sample categories
+                const categories = [
+                    { nama: 'Elektronik', created_at: new Date().toISOString() },
+                    { nama: 'Fashion', created_at: new Date().toISOString() },
+                    { nama: 'Makanan', created_at: new Date().toISOString() },
+                    { nama: 'Kesehatan', created_at: new Date().toISOString() }
+                ];
+
+                // Add categories
+                for (const category of categories) {
+                    await setDoc(doc(db, 'categories', category.nama), category);
+                }
+
+                // Sample products
+                const products = [
+                    {
+                        nama: 'Smartphone Android',
+                        deskripsi: 'Smartphone terbaru dengan kamera canggih',
+                        harga: 2500000,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iNSIgeT0iMiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjIwIiByeD0iMiIgZmlsbD0iIzMzNzNkYyIvPgo8L3N2Zz4K',
+                        kategori: 'Elektronik',
+                        stok: 50,
+                        created_at: new Date().toISOString()
+                    },
+                    {
+                        nama: 'T-Shirt Cotton',
+                        deskripsi: 'T-Shirt berbahan cotton premium',
+                        harga: 150000,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMgN0gyMUwyMCAxNkg0TDMgN0gxMUwxMiAyWiIgZmlsbD0iIzEwYjk4MSIvPgo8L3N2Zz4K',
+                        kategori: 'Fashion',
+                        stok: 100,
+                        created_at: new Date().toISOString()
+                    },
+                    {
+                        nama: 'Vitamin C 1000mg',
+                        deskripsi: 'Suplemen vitamin C untuk daya tahan tubuh',
+                        harga: 85000,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNlZjQ0NDQiLz4KPHN2Zz4K',
+                        kategori: 'Kesehatan',
+                        stok: 200,
+                        created_at: new Date().toISOString()
+                    },
+                    {
+                        nama: 'Snack Sehat',
+                        deskripsi: 'Camilan sehat rendah gula',
+                        harga: 25000,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMiIgeT0iMyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE4IiByeD0iMiIgZmlsbD0iI2Y1OTcwOCIvPgo8L3N2Zz4K',
+                        kategori: 'Makanan',
+                        stok: 150,
+                        created_at: new Date().toISOString()
+                    }
+                ];
+
+                // Add products
+                for (const product of products) {
+                    await addDoc(collection(db, 'products'), product);
+                }
+
+                console.log("✅ Sample data initialized successfully");
+                document.getElementById('sampleResult').innerHTML = `
+                    <h3>✅ Sample Data Initialized!</h3>
+                    <p>Added ${categories.length} categories and ${products.length} products</p>
+                `;
+
+            } catch (error) {
+                console.error("❌ Sample data initialization failed:", error);
+                document.getElementById('sampleResult').innerHTML = `
+                    <h3>❌ Sample Data Initialization Failed!</h3>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        };
+        
+    </script>
+</head>
+<body>
+    <h1>Firebase Test - Gogama Store</h1>
+    
+    <div>
+        <h2>1. Test Firebase Connection</h2>
+        <button onclick="testFirebaseConnection()">Test Firebase Connection</button>
+        <div id="result"></div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <h2>2. Initialize Sample Data</h2>
+        <button onclick="initializeSampleData()">Initialize Sample Data</button>
+        <div id="sampleResult"></div>
+    </div>
+
+</body>
+</html>
