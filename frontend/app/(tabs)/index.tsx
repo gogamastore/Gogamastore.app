@@ -276,9 +276,12 @@ export default function HomeScreen() {
         <View style={styles.bannersSection}>
           <Text style={styles.sectionTitle}>Penawaran Spesial</Text>
           <ScrollView 
+            ref={bannerScrollRef}
             horizontal 
             showsHorizontalScrollIndicator={false}
+            pagingEnabled={true}
             style={styles.bannersContainer}
+            scrollEnabled={false} // Disable manual scroll for auto-slide
           >
             {banners.map((banner, index) => (
               <TouchableOpacity key={banner.id} style={styles.bannerCard}>
@@ -296,6 +299,21 @@ export default function HomeScreen() {
               </TouchableOpacity>
             ))}
           </ScrollView>
+          
+          {/* Banner Indicators */}
+          {banners.length > 1 && (
+            <View style={styles.bannerIndicators}>
+              {banners.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.bannerIndicator,
+                    currentBannerIndex === index && styles.bannerIndicatorActive
+                  ]}
+                />
+              ))}
+            </View>
+          )}
         </View>
       )}
 
