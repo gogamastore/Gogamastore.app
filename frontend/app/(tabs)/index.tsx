@@ -60,10 +60,14 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
   const bannerScrollRef = useRef<ScrollView>(null);
   const bannerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { user } = useAuth();
   const router = useRouter();
+
+  const PRODUCTS_PER_PAGE = 25;
   useEffect(() => {
     loadInitialData();
   }, []);
