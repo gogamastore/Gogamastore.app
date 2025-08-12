@@ -571,9 +571,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   bannerCard: {
-    width: 280,
+    width: width - 32, // Full width minus padding
     height: 140,
-    marginRight: 12,
+    marginHorizontal: 16,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#f0f0f0',
