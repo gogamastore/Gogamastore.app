@@ -100,8 +100,8 @@ export default function HomeScreen() {
   };
 
   const filteredProducts = products.filter(product =>
-    product.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.deskripsi.toLowerCase().includes(searchQuery.toLowerCase())
+    (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (product.deskripsi || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const formatPrice = (price: number) => {
