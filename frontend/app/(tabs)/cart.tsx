@@ -178,18 +178,48 @@ export default function CartScreen() {
           {item.nama}
         </Text>
         <Text style={styles.itemPrice}>{formatPrice(item.harga)}</Text>
-        <View style={styles.quantityRow}>
-          <Text style={styles.quantityLabel}>Jumlah: {item.quantity}</Text>
+        
+        {/* Quantity Controls */}
+        <View style={styles.quantityContainer}>
+          <View style={styles.quantityControls}>
+            <TouchableOpacity
+              style={[
+                styles.quantityButton,
+                item.quantity <= 1 && styles.quantityButtonDisabled
+              ]}
+              onPress={() => decrementQuantity(item.product_id, item.quantity)}
+              disabled={item.quantity <= 1}
+            >
+              <MaterialIcons 
+                name="remove" 
+                size={20} 
+                color={item.quantity <= 1 ? "#C7C7CC" : "#007AFF"} 
+              />
+            </TouchableOpacity>
+            
+            <View style={styles.quantityDisplay}>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+            </View>
+            
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => incrementQuantity(item.product_id, item.quantity)}
+            >
+              <MaterialIcons name="add" size={20} color="#007AFF" />
+            </TouchableOpacity>
+          </View>
+          
           <Text style={styles.subtotal}>
             {formatPrice(item.harga * item.quantity)}
           </Text>
         </View>
       </View>
+      
       <TouchableOpacity
         style={styles.removeButton}
         onPress={() => confirmRemoveItem(item)}
       >
-        <MaterialIcons name="delete" size={20} color="#FF3B30" />
+        <MaterialIcons name="delete" size={24} color="#FF3B30" />
       </TouchableOpacity>
     </View>
   );
@@ -402,5 +432,51 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  quantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+  },
+  quantityButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 6,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  quantityButtonDisabled: {
+    backgroundColor: '#f0f0f0',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  quantityDisplay: {
+    minWidth: 40,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
   },
 });
