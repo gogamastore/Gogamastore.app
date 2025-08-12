@@ -178,18 +178,48 @@ export default function CartScreen() {
           {item.nama}
         </Text>
         <Text style={styles.itemPrice}>{formatPrice(item.harga)}</Text>
-        <View style={styles.quantityRow}>
-          <Text style={styles.quantityLabel}>Jumlah: {item.quantity}</Text>
+        
+        {/* Quantity Controls */}
+        <View style={styles.quantityContainer}>
+          <View style={styles.quantityControls}>
+            <TouchableOpacity
+              style={[
+                styles.quantityButton,
+                item.quantity <= 1 && styles.quantityButtonDisabled
+              ]}
+              onPress={() => decrementQuantity(item.product_id, item.quantity)}
+              disabled={item.quantity <= 1}
+            >
+              <MaterialIcons 
+                name="remove" 
+                size={20} 
+                color={item.quantity <= 1 ? "#C7C7CC" : "#007AFF"} 
+              />
+            </TouchableOpacity>
+            
+            <View style={styles.quantityDisplay}>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+            </View>
+            
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => incrementQuantity(item.product_id, item.quantity)}
+            >
+              <MaterialIcons name="add" size={20} color="#007AFF" />
+            </TouchableOpacity>
+          </View>
+          
           <Text style={styles.subtotal}>
             {formatPrice(item.harga * item.quantity)}
           </Text>
         </View>
       </View>
+      
       <TouchableOpacity
         style={styles.removeButton}
         onPress={() => confirmRemoveItem(item)}
       >
-        <MaterialIcons name="delete" size={20} color="#FF3B30" />
+        <MaterialIcons name="delete" size={24} color="#FF3B30" />
       </TouchableOpacity>
     </View>
   );
