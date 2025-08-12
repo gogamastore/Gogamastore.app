@@ -331,24 +331,31 @@ export default function HomeScreen() {
       {/* Brand Directory */}
       {brands.length > 0 && (
         <View style={styles.brandsSection}>
-          <Text style={styles.sectionTitle}>Brand Terpercaya</Text>
+          <Text style={styles.sectionTitle}>Brand Terpercaya ({brands.length})</Text>
           <View style={styles.brandsGrid}>
-            {brands.map((brand) => (
-              <TouchableOpacity key={brand.id} style={styles.brandCard}>
-                {brand.logo ? (
-                  <Image 
-                    source={{ uri: brand.logo }} 
-                    style={styles.brandLogo}
-                    resizeMode="contain"
-                  />
-                ) : (
-                  <View style={styles.brandLogoPlaceholder}>
-                    <MaterialIcons name="business" size={24} color="#666" />
-                  </View>
-                )}
-                <Text style={styles.brandName}>{brand.nama}</Text>
-              </TouchableOpacity>
-            ))}
+            {brands.map((brand) => {
+              console.log('Rendering brand:', brand);
+              return (
+                <TouchableOpacity key={brand.id} style={styles.brandCard}>
+                  {(brand.logo || brand.gambar || brand.image) ? (
+                    <Image 
+                      source={{ uri: brand.logo || brand.gambar || brand.image }} 
+                      style={styles.brandLogo}
+                      resizeMode="contain"
+                      onError={() => console.log('Brand image failed to load:', brand)}
+                      onLoad={() => console.log('Brand image loaded:', brand)}
+                    />
+                  ) : (
+                    <View style={styles.brandLogoPlaceholder}>
+                      <MaterialIcons name="business" size={32} color="#666" />
+                    </View>
+                  )}
+                  <Text style={styles.brandName}>
+                    {brand.nama || brand.name || brand.title || 'Unknown Brand'}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
       )}
