@@ -197,6 +197,22 @@ export const cartService = {
     }
   },
 
+  // Update item quantity in cart
+  async updateCartItemQuantity(userId, productId, newQuantity) {
+    try {
+      const cartItemRef = doc(db, 'user', userId, 'cart', productId);
+      await updateDoc(cartItemRef, {
+        quantity: newQuantity,
+        updated_at: new Date().toISOString()
+      });
+      
+      return await this.getUserCart(userId);
+    } catch (error) {
+      console.error('Error updating cart item quantity:', error);
+      throw error;
+    }
+  },
+
   // Clear cart
   async clearCart(userId) {
     try {
