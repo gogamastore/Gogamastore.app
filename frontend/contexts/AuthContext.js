@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       // Save additional user data to Firestore
-      await setDoc(doc(db, 'users', firebaseUser.uid), {
+      await setDoc(doc(db, 'user', firebaseUser.uid), {
         nama_lengkap,
         email,
         nomor_whatsapp,
