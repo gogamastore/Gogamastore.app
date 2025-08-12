@@ -75,6 +75,69 @@ export default function CartScreen() {
     }
   };
 
+  const updateQuantity = async (productId: string, newQuantity: number) => {
+    if (!user || newQuantity < 1) return;
+
+    try {
+      // Find the current item
+      const currentItem = cart?.items.find(item => item.product_id === productId);
+      if (!currentItem) return;
+
+      // Calculate quantity difference
+      const quantityDiff = newQuantity - currentItem.quantity;
+      
+      if (quantityDiff > 0) {
+        // Add more items
+        await cartService.addToCart(user.uid, {
+          id: productId,
+          nama: currentItem.nama,
+          harga: currentItem.harga,
+          gambar: currentItem.gambar,
+        }, quantityDiff);
+      } else if (quantityDiff < 0) {
+        // This would require a new service method, let's implement it differently
+        // We'll update the cart directly
+        const updatedItems = cart.items.map(item => 
+          item.product_id === productId 
+            ? { ...item, quantity: newQuantity }
+            : item
+        );
+        
+        const updatedTotal = updatedItems.reduce((total, item) => 
+          total + (item.harga * item.quantity), 0
+        );
+
+        setCart({
+          ...cart,
+          items: updatedItems,
+          total: updatedTotal
+        });
+
+        // Update in Firebase (we'll need to update the service)
+        await cartService.updateCartItemQuantity(user.uid, productId, newQuantity);
+      }
+      
+      // Refresh cart to ensure consistency
+      await fetchCart();
+      
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      Alert.alert('Error', 'Gagal mengupdate jumlah item');
+      // Refresh cart to revert any local changes
+      await fetchCart();
+    }
+  };
+
+  const incrementQuantity = (productId: string, currentQuantity: number) => {
+    updateQuantity(productId, currentQuantity + 1);
+  };
+
+  const decrementQuantity = (productId: string, currentQuantity: number) => {
+    if (currentQuantity > 1) {
+      updateQuantity(productId, currentQuantity - 1);
+    }
+  };
+
   const confirmRemoveItem = (item: CartItem) => {
     Alert.alert(
       'Konfirmasi',
