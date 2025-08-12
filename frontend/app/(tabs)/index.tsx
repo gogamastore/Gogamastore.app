@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginRight: 8,
     backgroundColor: '#f0f0f0',
-    borderRadius: 20,
+    borderRadius: 37.5, // Half of 75 for circular shape
     borderWidth: 1,
     borderColor: '#ddd',
   },
@@ -623,15 +623,15 @@ const styles = StyleSheet.create({
     borderColor: '#E5E5EA',
   },
   brandLogo: {
-    width: 40,
-    height: 40,
+    width: 75,
+    height: 75,
     marginBottom: 8,
   },
   brandLogoPlaceholder: {
-    width: 40,
-    height: 40,
+    width: 75,
+    height: 75,
     backgroundColor: '#E5E5EA',
-    borderRadius: 20,
+    borderRadius: 37.5, // Half of 75 for circular shape
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
