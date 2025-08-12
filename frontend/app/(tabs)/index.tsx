@@ -16,7 +16,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { productService, categoryService, cartService, bannerService, brandService } from '../../services/firestoreService';
+import { productService, categoryService, bannerService, brandService } from '../../services/firestoreService';
+import { useRouter } from 'expo-router';
 
 interface Product {
   id: string;
