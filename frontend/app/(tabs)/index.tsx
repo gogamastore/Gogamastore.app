@@ -184,7 +184,11 @@ export default function HomeScreen() {
   };
 
   const renderProduct = ({ item }: { item: Product }) => (
-    <View style={styles.productCard}>
+    <TouchableOpacity 
+      style={styles.productCard}
+      onPress={() => navigateToProduct(item.id)}
+      activeOpacity={0.7}
+    >
       <Image source={{ uri: item.gambar }} style={styles.productImage} />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={2}>
@@ -195,15 +199,18 @@ export default function HomeScreen() {
         </Text>
         <Text style={styles.productPrice}>{formatPrice(item.harga)}</Text>
         <Text style={styles.productStock}>Stok: {item.stok}</Text>
-        <TouchableOpacity
-          style={styles.addToCartButton}
-          onPress={() => addToCart(item)}
-        >
-          <MaterialIcons name="add-shopping-cart" size={16} color="#fff" />
-          <Text style={styles.addToCartText}>Tambah ke Keranjang</Text>
-        </TouchableOpacity>
+        
+        <View style={styles.productActions}>
+          <TouchableOpacity
+            style={styles.viewDetailButton}
+            onPress={() => navigateToProduct(item.id)}
+          >
+            <MaterialIcons name="visibility" size={16} color="#007AFF" />
+            <Text style={styles.viewDetailText}>Lihat Detail</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderCategory = ({ item }: { item: Category }) => (
