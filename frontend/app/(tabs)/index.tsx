@@ -63,6 +63,7 @@ export default function HomeScreen() {
   const bannerScrollRef = useRef<ScrollView>(null);
   const bannerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { user } = useAuth();
+  const router = useRouter();
   useEffect(() => {
     loadInitialData();
   }, []);
