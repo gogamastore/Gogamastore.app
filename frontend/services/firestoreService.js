@@ -47,7 +47,18 @@ export const productService = {
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() };
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          ...data,
+          // Map fields to match our app expectations
+          nama: data.name || data.nama || '',
+          deskripsi: data.description || data.deskripsi || '',
+          gambar: data.image || data.gambar || '',
+          kategori: data.category || data.kategori || '',
+          harga: this.parsePrice(data.price || data.harga),
+          stok: data.stock || data.stok || 99 // default stock if not specified
+        };
       } else {
         throw new Error('Product not found');
       }
