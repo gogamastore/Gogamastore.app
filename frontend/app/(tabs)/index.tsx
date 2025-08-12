@@ -226,6 +226,13 @@ export default function HomeScreen() {
         />
       </View>
 
+
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
       {/* Promotional Banners */}
       {banners.length > 0 && (
         <View style={styles.bannersSection}>
@@ -333,6 +340,7 @@ export default function HomeScreen() {
           contentContainerStyle={styles.productsContainer}
         />
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
