@@ -66,15 +66,25 @@ export const productService = {
   }
 };
 
-// Categories Service - Updated to use product_categories collection
+// Categories Service - Updated to use existing category structure 
 export const categoryService = {
-  // Get all categories
+  // Get unique categories from products
   async getAllCategories() {
     try {
-      const querySnapshot = await getDocs(collection(db, 'product_categories'));
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
+      const querySnapshot = await getDocs(collection(db, 'products'));
+      const categories = new Set();
+      
+      querySnapshot.docs.forEach(doc => {
+        const data = doc.data();
+        if (data.category) {
+          categories.add(data.category);
+        }
+      });
+      
+      // Convert to array format
+      return Array.from(categories).map(cat => ({
+        id: cat,
+        nama: cat.charAt(0).toUpperCase() + cat.slice(1) // Capitalize first letter
       }));
     } catch (error) {
       console.error('Error getting categories:', error);
