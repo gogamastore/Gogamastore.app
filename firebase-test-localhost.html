@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Test - Localhost</title>
+    <script type="module">
+        // Firebase v9+ SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword,
+            onAuthStateChanged 
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc, 
+            collection, 
+            addDoc,
+            getDocs
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        // Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCThjETkAH8HpFoclhmXtgjm2lIr1506dg",
+            authDomain: "orderflow-r7jsk.firebaseapp.com",
+            projectId: "orderflow-r7jsk",
+            storageBucket: "orderflow-r7jsk.firebasestorage.app",
+            messagingSenderId: "954515661623",
+            appId: "1:954515661623:web:19d89bf3722600e02ef0b2"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        console.log("✅ Firebase initialized successfully!");
+
+        // Test Registration Function
+        window.testRegister = async function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const nama = document.getElementById('nama').value;
+
+            if (!email || !password || !nama) {
+                alert('Mohon isi semua field');
+                return;
+            }
+
+            try {
+                console.log(`🔥 Registering user: ${email}`);
+                document.getElementById('result').innerHTML = 'Registering...';
+
+                // Create user
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                console.log('✅ User created:', user.uid);
+
+                // Save user data to Firestore
+                await setDoc(doc(db, 'users', user.uid), {
+                    nama_lengkap: nama,
+                    email: email,
+                    nomor_whatsapp: '081234567890',
+                    created_at: new Date().toISOString()
+                });
+
+                document.getElementById('result').innerHTML = `
+                    <h3 style="color: green;">✅ Registration Successful!</h3>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>User ID:</strong> ${user.uid}</p>
+                    <p><strong>Status:</strong> Logged in</p>
+                `;
+
+                console.log('✅ Registration successful');
+
+            } catch (error) {
+                console.error('❌ Registration error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3 style="color: red;">❌ Registration Failed</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>Code:</strong> ${error.code}</p>
+                `;
+            }
+        };
+
+        // Test Login Function
+        window.testLogin = async function() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                alert('Mohon isi email dan password');
+                return;
+            }
+
+            try {
+                console.log(`🔥 Logging in user: ${email}`);
+                document.getElementById('loginResult').innerHTML = 'Logging in...';
+
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                document.getElementById('loginResult').innerHTML = `
+                    <h3 style="color: green;">✅ Login Successful!</h3>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>User ID:</strong> ${user.uid}</p>
+                `;
+
+                console.log('✅ Login successful');
+
+            } catch (error) {
+                console.error('❌ Login error:', error);
+                document.getElementById('loginResult').innerHTML = `
+                    <h3 style="color: red;">❌ Login Failed</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>Code:</strong> ${error.code}</p>
+                `;
+            }
+        };
+
+        // Initialize sample data
+        window.initSampleData = async function() {
+            try {
+                document.getElementById('dataResult').innerHTML = 'Initializing sample data...';
+
+                // Categories
+                const categories = ['Elektronik', 'Fashion', 'Makanan', 'Kesehatan'];
+                for (const cat of categories) {
+                    await setDoc(doc(db, 'categories', cat), {
+                        nama: cat,
+                        created_at: new Date().toISOString()
+                    });
+                }
+
+                // Sample products
+                const products = [
+                    { nama: 'Smartphone Android', deskripsi: 'HP terbaru', harga: 2500000, kategori: 'Elektronik', stok: 50 },
+                    { nama: 'T-Shirt Cotton', deskripsi: 'Baju cotton premium', harga: 150000, kategori: 'Fashion', stok: 100 },
+                    { nama: 'Vitamin C', deskripsi: 'Suplemen kesehatan', harga: 85000, kategori: 'Kesehatan', stok: 200 },
+                    { nama: 'Snack Sehat', deskripsi: 'Camilan sehat', harga: 25000, kategori: 'Makanan', stok: 150 }
+                ];
+
+                for (const product of products) {
+                    await addDoc(collection(db, 'products'), {
+                        ...product,
+                        gambar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iNSIgeT0iMiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjIwIiByeD0iMiIgZmlsbD0iIzMzNzNkYyIvPgo8L3N2Zz4K',
+                        created_at: new Date().toISOString()
+                    });
+                }
+
+                document.getElementById('dataResult').innerHTML = `
+                    <h3 style="color: green;">✅ Sample Data Initialized!</h3>
+                    <p>Added ${categories.length} categories and ${products.length} products</p>
+                `;
+
+            } catch (error) {
+                console.error('❌ Error initializing data:', error);
+                document.getElementById('dataResult').innerHTML = `
+                    <h3 style="color: red;">❌ Failed to Initialize Data</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        };
+
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        .section { margin: 30px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        input, button { padding: 10px; margin: 5px; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #007AFF; color: white; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 15px; padding: 10px; border-radius: 5px; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firebase Test - Gogama Store</h1>
+        
+        <div class="section">
+            <h2>📝 Register New User</h2>
+            <input type="text" id="nama" placeholder="Nama Lengkap" style="width: 200px;">
+            <input type="email" id="email" placeholder="Email" style="width: 200px;">
+            <input type="password" id="password" placeholder="Password" style="width: 200px;">
+            <button onclick="testRegister()">Register</button>
+            <div id="result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>🔑 Login Existing User</h2>
+            <input type="email" id="loginEmail" placeholder="Email" style="width: 200px;">
+            <input type="password" id="loginPassword" placeholder="Password" style="width: 200px;">
+            <button onclick="testLogin()">Login</button>
+            <div id="loginResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Initialize Sample Data</h2>
+            <button onclick="initSampleData()">Add Sample Products & Categories</button>
+            <div id="dataResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>📋 Instructions:</h3>
+            <p>1. <strong>Register:</strong> Buat akun baru dengan email dan password</p>
+            <p>2. <strong>Login:</strong> Login dengan akun yang sudah dibuat</p>
+            <p>3. <strong>Sample Data:</strong> Tambah data produk dan kategori untuk testing</p>
+            <p><strong>Note:</strong> Setelah berhasil, data akan tersinkron dengan aplikasi mobile!</p>
+        </div>
+    </div>
+</body>
+</html>
