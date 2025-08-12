@@ -20,10 +20,20 @@ export const productService = {
   async getAllProducts() {
     try {
       const querySnapshot = await getDocs(collection(db, 'products'));
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      return querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Map fields to match our app expectations
+          nama: data.name || '',
+          deskripsi: data.description || '',
+          gambar: data.image || '',
+          kategori: data.category || '',
+          harga: this.parsePrice(data.price),
+          stok: data.stock || 99 // default stock if not specified
+        };
+      });
     } catch (error) {
       console.error('Error getting products:', error);
       throw error;
