@@ -134,6 +134,7 @@ export default function HomeScreen() {
   const fetchBrands = async () => {
     try {
       const data = await brandService.getAllBrands();
+      console.log('Fetched brands data:', data);
       setBrands(data);
     } catch (error) {
       console.error('Error fetching brands:', error);
@@ -144,6 +145,7 @@ export default function HomeScreen() {
   const fetchBanners = async () => {
     try {
       const data = await bannerService.getAllBanners();
+      console.log('Fetched banners data:', data);
       setBanners(data);
     } catch (error) {
       console.error('Error fetching banners:', error);
