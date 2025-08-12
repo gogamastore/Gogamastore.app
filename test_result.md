@@ -238,11 +238,14 @@ frontend:
     file: "app/(tabs)/cart.tsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created cart screen with item management and checkout placeholder"
+      - working: "NA"
+        agent: "main"
+        comment: "Enhanced cart with quantity controls: increment/decrement buttons, update quantity function, improved remove functionality. Added updateCartItemQuantity service method for Firebase sync. UI includes quantity buttons with disabled states, better visual feedback."
 
   - task: "Profile/User Account Screen"
     implemented: true
