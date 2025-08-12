@@ -344,9 +344,9 @@ export default function HomeScreen() {
               console.log('Rendering brand:', brand);
               return (
                 <TouchableOpacity key={brand.id} style={styles.brandCard}>
-                  {(brand.logo || brand.gambar || brand.image) ? (
+                  {(brand.logoUrl || brand.logo || brand.gambar || brand.image) ? (
                     <Image 
-                      source={{ uri: brand.logo || brand.gambar || brand.image }} 
+                      source={{ uri: brand.logoUrl || brand.logo || brand.gambar || brand.image }} 
                       style={styles.brandLogo}
                       resizeMode="contain"
                       onError={() => console.log('Brand image failed to load:', brand)}
