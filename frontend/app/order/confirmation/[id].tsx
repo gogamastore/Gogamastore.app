@@ -444,8 +444,8 @@ export default function OrderConfirmationScreen() {
           </View>
         </View>
 
-        {/* Payment Proof Section - Only for Bank Transfer */}
-        {order.paymentMethod === 'bank_transfer' && (
+        {/* Payment Proof Section - Show for bank transfer and not completed/delivered/cancelled */}
+        {order.paymentMethod === 'bank_transfer' && !['delivered', 'completed', 'cancelled'].includes(order.status?.toLowerCase()) && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Bukti Pembayaran</Text>
             
@@ -471,9 +471,20 @@ export default function OrderConfirmationScreen() {
                     <Text style={styles.proofStatusText}>Bukti pembayaran berhasil diunggah</Text>
                   </View>
                 ) : (
-                  <Text style={styles.paymentProofSubtitle}>
-                    Bukti pembayaran akan segera diverifikasi oleh tim kami
-                  </Text>
+                  <>
+                    <Text style={styles.paymentProofSubtitle}>
+                      Bukti pembayaran akan segera diverifikasi oleh tim kami
+                    </Text>
+                    {paymentProofImage && !uploadingProof && (
+                      <TouchableOpacity 
+                        style={styles.uploadConfirmButton}
+                        onPress={() => uploadPaymentProof(paymentProofImage)}
+                      >
+                        <MaterialIcons name="cloud-upload" size={20} color="#fff" />
+                        <Text style={styles.uploadConfirmButtonText}>Unggah Sekarang</Text>
+                      </TouchableOpacity>
+                    )}
+                  </>
                 )}
               </View>
             ) : (
@@ -487,7 +498,7 @@ export default function OrderConfirmationScreen() {
                   onPress={pickPaymentProofImage}
                   disabled={uploadingProof}
                 >
-                  <MaterialIcons name="cloud-upload" size={24} color="#007AFF" />
+                  <MaterialIcons name="photo-library" size={24} color="#007AFF" />
                   <Text style={styles.uploadButtonText}>
                     {uploadingProof ? 'Mengunggah...' : 'Pilih Gambar dari Galeri'}
                   </Text>
