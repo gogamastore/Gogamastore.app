@@ -420,6 +420,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 4,
   },
+  deleteActionButton: {
+    backgroundColor: '#FFF0F0',
+  },
+  deleteActionButtonText: {
+    color: '#FF3B30',
+  },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
