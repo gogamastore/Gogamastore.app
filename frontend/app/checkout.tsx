@@ -284,6 +284,36 @@ export default function CheckoutScreen() {
     setPaymentProofImage(null);
   };
 
+  const handleUploadPaymentProof = async () => {
+    if (!paymentProofImage) {
+      Alert.alert('Error', 'Pilih gambar terlebih dahulu');
+      return;
+    }
+
+    try {
+      setUploadingProof(true);
+      const fileName = `payment_proof_checkout_${Date.now()}.jpg`;
+      
+      console.log('📤 Uploading payment proof from checkout...');
+      
+      const result = await paymentProofService.uploadPaymentProof(
+        `temp_${Date.now()}`, // Temporary ID, will be updated when order is created
+        paymentProofImage, 
+        fileName
+      );
+      
+      if (result.success) {
+        Alert.alert('Berhasil', 'Bukti pembayaran berhasil diunggah! File akan dilampirkan ke pesanan Anda.');
+        console.log('✅ Payment proof uploaded successfully:', result.storageUrl);
+      }
+    } catch (error) {
+      console.error('❌ Error uploading payment proof:', error);
+      Alert.alert('Error', error.message || 'Gagal mengunggah bukti pembayaran. Silakan coba lagi.');
+    } finally {
+      setUploadingProof(false);
+    }
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
