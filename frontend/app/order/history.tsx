@@ -51,7 +51,6 @@ interface Order {
 }
 
 const ORDER_STATUS_FILTERS = [
-  { key: 'all', label: 'Semua', count: 0 },
   { key: 'pending', label: 'Belum Proses', count: 0 },
   { key: 'confirmed', label: 'Diproses', count: 0 },
   { key: 'shipped', label: 'Dikirim', count: 0 },
