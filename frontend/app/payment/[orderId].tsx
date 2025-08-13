@@ -80,20 +80,6 @@ const paymentMethods: PaymentMethod[] = [
   },
 ];
 
-const bankAccounts = {
-  bri_transfer: {
-    bankName: 'Bank BRI',
-    accountNumber: '1234-5678-9012-3456',
-    accountName: 'GOGAMA STORE',
-    bankCode: '002',
-  },
-  bni_transfer: {
-    bankName: 'Bank BNI',
-    accountNumber: '9876-5432-1098-7654',
-    accountName: 'GOGAMA STORE',
-    bankCode: '009',
-  },
-};
 
 export default function PaymentScreen() {
   const { orderId } = useLocalSearchParams();
