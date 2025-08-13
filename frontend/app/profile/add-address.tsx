@@ -125,9 +125,13 @@ export default function AddAddressScreen() {
   };
 
   const handleBack = () => {
+    console.log('🔙 HandleBack called');
+    
     const hasData = Object.values(form).some(value => 
       typeof value === 'string' ? value.trim() : value
     );
+    
+    console.log('📝 Form has data:', hasData);
     
     if (hasData) {
       Alert.alert(
@@ -135,10 +139,17 @@ export default function AddAddressScreen() {
         'Apakah Anda yakin ingin keluar? Data yang dimasukkan akan hilang.',
         [
           { text: 'Tetap di sini', style: 'cancel' },
-          { text: 'Keluar', onPress: () => router.back() }
+          { 
+            text: 'Keluar', 
+            onPress: () => {
+              console.log('🔙 User confirmed exit, navigating back');
+              router.back();
+            }
+          }
         ]
       );
     } else {
+      console.log('🔙 No data, navigating back directly');
       router.back();
     }
   };
