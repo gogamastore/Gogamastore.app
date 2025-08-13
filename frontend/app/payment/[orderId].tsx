@@ -380,7 +380,7 @@ export default function PaymentScreen() {
                 </View>
               </View>
               <View style={styles.methodRight}>
-                <Text style={styles.methodFee}>{formatPrice(5000)}</Text>
+                <Text style={styles.methodFee}>Gratis</Text>
                 <View style={[
                   styles.radioButton,
                   selectedMethod === 'cod' && styles.radioButtonSelected
