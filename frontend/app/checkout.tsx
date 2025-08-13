@@ -181,7 +181,7 @@ export default function CheckoutScreen() {
 
   const processOrder = async () => {
     console.log('🔵 processOrder called');
-    console.log('🔵 validateForm result:', !validateForm());
+    console.log('🔵 validateForm result:', validateForm());
     console.log('🔵 cart:', cart);
     console.log('🔵 user:', user);
     
@@ -206,17 +206,37 @@ export default function CheckoutScreen() {
       console.log('🟡 Starting order creation process...');
       setProcessing(true);
       
+      // Prepare order data according to your Firestore structure
+      const selectedShippingOption = getSelectedShippingOption();
+      const subtotal = calculateSubtotal();
+      const shippingCost = calculateShippingCost();
+      const total = subtotal + shippingCost;
+      
       const orderData = {
-        userId: user.uid,
-        items: cart.items,
-        subtotal: calculateSubtotal(),
-        shippingCost: calculateShippingCost(),
-        tax: calculateTax(),
-        grandTotal: calculateGrandTotal(),
-        deliveryInfo,
-        shippingOption: getSelectedShippingOption(),
-        status: 'pending',
-        paymentStatus: 'pending'
+        customer: deliveryInfo.recipientName,
+        customerDetails: {
+          name: deliveryInfo.recipientName,
+          address: deliveryInfo.address + ', ' + deliveryInfo.city + ', ' + deliveryInfo.postalCode,
+          whatsapp: deliveryInfo.phoneNumber
+        },
+        customerId: user.uid,
+        date: new Date(),
+        paymentMethod: "", // Will be set in payment screen
+        paymentProofUrl: "",
+        paymentStatus: "Pending",
+        productIds: cart.items.map(item => item.product_id || item.id),
+        products: cart.items.map(item => ({
+          productId: item.product_id || item.id,
+          name: item.nama,
+          price: item.harga,
+          quantity: item.quantity,
+          image: item.gambar
+        })),
+        shippingFee: shippingCost,
+        shippingMethod: selectedShippingOption?.id === 'pickup' ? 'pickup' : 'courier',
+        status: "Pending",
+        subtotal: subtotal,
+        total: `Rp ${total.toLocaleString('id-ID')}`
       };
       
       console.log('🔵 Order data prepared:', orderData);
@@ -235,6 +255,8 @@ export default function CheckoutScreen() {
       
     } catch (error) {
       console.error('❌ Error processing order:', error);
+      console.error('❌ Error details:', error.message);
+      console.error('❌ Error stack:', error.stack);
       Alert.alert('Error', `Gagal memproses pesanan: ${error.message}`);
     } finally {
       console.log('🔵 Setting processing to false');
