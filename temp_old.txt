@@ -1,5 +1,0 @@
-  useEffect(() => {
-    if (user) {
-      fetchUserProfile();
-    }
-  }, [user]);
