@@ -217,7 +217,6 @@ export default function CheckoutScreen() {
       };
       
       const orderId = await orderService.createOrder(orderData);
-      await cartService.clearCart(user.uid);
       router.replace(`/payment/${orderId}`);
       
     } catch (error) {
