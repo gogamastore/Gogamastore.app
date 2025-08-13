@@ -114,10 +114,21 @@ export default function PaymentScreen() {
 
   const fetchOrderData = async () => {
     try {
-      const data = await orderService.getOrderById(orderId as string);
-      setOrderData(data);
+      const [orderData, bankAccountsData] = await Promise.all([
+        orderService.getOrderById(orderId as string),
+        bankAccountService.getActiveBankAccounts()
+      ]);
+      
+      setOrderData(orderData);
+      setBankAccounts(bankAccountsData);
+      
+      if (orderData.items.length === 0) {
+        Alert.alert('Keranjang Kosong', 'Tidak ada produk di keranjang Anda', [
+          { text: 'OK', onPress: () => router.back() }
+        ]);
+      }
     } catch (error) {
-      console.error('Error fetching order:', error);
+      console.error('Error fetching order data:', error);
       Alert.alert('Error', 'Gagal memuat data pesanan');
     } finally {
       setLoading(false);
