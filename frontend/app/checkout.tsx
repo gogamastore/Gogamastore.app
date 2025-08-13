@@ -208,7 +208,7 @@ export default function CheckoutScreen() {
       const orderData = {
         userId: user.uid,
         items: cart.items,
-        subtotal: cart.total || 0,
+        subtotal: calculateSubtotal(),
         shippingCost: calculateShippingCost(),
         tax: calculateTax(),
         grandTotal: calculateGrandTotal(),
@@ -221,6 +221,9 @@ export default function CheckoutScreen() {
       console.log('Creating order with data:', orderData);
       const orderId = await orderService.createOrder(orderData);
       console.log('Order created with ID:', orderId);
+      
+      // Clear cart after successful order creation
+      await cartService.clearCart(user.uid);
       
       // Navigate to payment selection
       router.replace(`/payment/${orderId}`);
