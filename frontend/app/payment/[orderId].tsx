@@ -105,6 +105,9 @@ export default function PaymentScreen() {
         bankAccountService.getActiveBankAccounts()
       ]);
       
+      console.log('Order data:', orderData);
+      console.log('Bank accounts data:', bankAccountsData);
+      
       setOrderData(orderData);
       setBankAccounts(bankAccountsData);
       
