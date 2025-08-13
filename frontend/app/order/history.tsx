@@ -282,6 +282,39 @@ export default function OrderHistoryScreen() {
     </TouchableOpacity>
   );
 
+  const renderStatusFilter = () => (
+    <ScrollView 
+      horizontal 
+      showsHorizontalScrollIndicator={false}
+      style={styles.filtersContainer}
+      contentContainerStyle={styles.filtersContent}
+    >
+      {statusCounts.map((filter) => (
+        <TouchableOpacity
+          key={filter.key}
+          style={[
+            styles.filterTab,
+            selectedFilter === filter.key && styles.filterTabActive
+          ]}
+          onPress={() => handleFilterChange(filter.key)}
+        >
+          <Text style={[
+            styles.filterLabel,
+            selectedFilter === filter.key && styles.filterLabelActive
+          ]}>
+            {filter.label}
+          </Text>
+          <Text style={[
+            styles.filterCount,
+            selectedFilter === filter.key && styles.filterCountActive
+          ]}>
+            {filter.count}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <MaterialIcons name="shopping-bag" size={64} color="#C7C7CC" />
