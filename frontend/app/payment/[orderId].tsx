@@ -244,11 +244,11 @@ export default function PaymentScreen() {
             <Text style={styles.summaryLabel}>Total Pesanan</Text>
             <Text style={styles.summaryValue}>{formatPrice(orderData.grandTotal)}</Text>
           </View>
-          {selectedMethod && paymentMethods.find(m => m.id === selectedMethod)?.fee > 0 && (
+          {selectedMethod && getSelectedMethodFee() > 0 && (
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Biaya Admin</Text>
               <Text style={styles.summaryValue}>
-                {formatPrice(paymentMethods.find(m => m.id === selectedMethod)?.fee || 0)}
+                {formatPrice(getSelectedMethodFee())}
               </Text>
             </View>
           )}
