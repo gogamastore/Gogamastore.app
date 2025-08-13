@@ -46,7 +46,8 @@ export default function ProfileScreen() {
         nama_lengkap: profile.nama_lengkap || user.displayName || '',
         email: profile.email || user.email || '',
         nomor_whatsapp: profile.nomor_whatsapp || '',
-        created_at: profile.created_at || new Date().toISOString()
+        created_at: profile.created_at || new Date().toISOString(),
+        photoURL: profile.photoURL || user.photoURL
       });
     } catch (error) {
       console.error('Error fetching profile:', error);
