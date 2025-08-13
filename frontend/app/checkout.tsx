@@ -130,11 +130,6 @@ export default function CheckoutScreen() {
     return shipping?.price || 0;
   };
 
-  const calculateTax = () => {
-    // No tax in your system
-    return 0;
-  };
-
   const calculateGrandTotal = () => {
     return calculateSubtotal() + calculateShippingCost();
   };
