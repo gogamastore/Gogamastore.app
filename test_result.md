@@ -331,6 +331,18 @@ frontend:
         agent: "main"
         comment: "Revised payment system with dynamic bank accounts from Firestore /bank_accounts collection, improved COD flow with 'belum bayar' status, and comprehensive payment proof upload functionality. Added bankAccountService and paymentProofService for Firebase Storage integration (/payment_proofs/{fileName}). Includes camera/gallery image picker, upload validation, and payment verification workflow."
 
+  - task: "Checkout Button Responsiveness Fix"
+    implemented: true
+    working: "NA"
+    file: "app/checkout.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed unresponsive 'Lanjut ke Pembayaran' button by: (1) Removed tax calculation from UI checkout summary, (2) Updated shipping options to user requirements (Pengiriman oleh Kurir starting Rp 15,000/koli & Ambil di Toko free), (3) Aligned order data structure with Firestore requirements, (4) Cleaned up excessive debugging logs, (5) Simplified processOrder function for better reliability. Ready for testing."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
