@@ -19,7 +19,7 @@ def get_backend_url():
                     return line.split('=')[1].strip()
     except:
         pass
-    return "https://gogama-mobile.preview.emergentagent.com"
+    return "https://react-native-shop.preview.emergentagent.com"
 
 BASE_URL = get_backend_url() + "/api"
 print(f"Testing backend at: {BASE_URL}")
