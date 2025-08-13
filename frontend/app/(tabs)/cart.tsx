@@ -67,12 +67,18 @@ export default function CartScreen() {
   const removeFromCart = async (productId: string) => {
     if (!user) return;
 
+    console.log('🔴 removeFromCart called with productId:', productId);
+    console.log('🔴 user:', user.uid);
+
     try {
+      console.log('🔴 Calling cartService.removeFromCart...');
       const updatedCart = await cartService.removeFromCart(user.uid, productId);
+      console.log('🔴 Updated cart received:', updatedCart);
+      
       setCart(updatedCart);
       Alert.alert('Berhasil', 'Item dihapus dari keranjang');
     } catch (error) {
-      console.error('Error removing from cart:', error);
+      console.error('🔴 Error removing from cart:', error);
       Alert.alert('Error', 'Gagal menghapus item');
     }
   };
@@ -141,12 +147,16 @@ export default function CartScreen() {
   };
 
   const confirmRemoveItem = (item: CartItem) => {
+    console.log('🔴 confirmRemoveItem called for:', item.nama);
     Alert.alert(
       'Konfirmasi',
       `Hapus ${item.nama} dari keranjang?`,
       [
         { text: 'Batal', style: 'cancel' },
-        { text: 'Hapus', style: 'destructive', onPress: () => removeFromCart(item.product_id) },
+        { text: 'Hapus', style: 'destructive', onPress: () => {
+          console.log('🔴 User confirmed deletion');
+          removeFromCart(item.product_id);
+        }},
       ]
     );
   };
