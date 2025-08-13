@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { userService, initializeSampleData } from '../../services/firestoreService';
+import { userService } from '../../services/firestoreService';
 import { useRouter } from 'expo-router';
 
 interface UserProfile {
