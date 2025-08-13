@@ -276,9 +276,38 @@ export default function OrderHistoryScreen() {
     }
   };
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await fetchOrders();
+  const handleCancelOrder = (order: Order) => {
+    if (order.status !== 'pending') {
+      Alert.alert('Error', 'Hanya pesanan dengan status "Belum Proses" yang dapat dibatalkan');
+      return;
+    }
+
+    Alert.alert(
+      'Batalkan Pesanan',
+      `Apakah Anda yakin ingin membatalkan pesanan #${order.id.slice(-8).toUpperCase()}? Tindakan ini tidak dapat dibatalkan.`,
+      [
+        {
+          text: 'Batal',
+          style: 'cancel',
+        },
+        {
+          text: 'Ya, Batalkan',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              console.log('🚫 Cancelling order from history:', order.id);
+              await orderService.updateOrderStatus(order.id, 'cancelled');
+              Alert.alert('Pesanan Dibatalkan', 'Pesanan Anda telah berhasil dibatalkan');
+              // Refresh orders after cancellation
+              await fetchOrders();
+            } catch (error) {
+              console.error('Error cancelling order:', error);
+              Alert.alert('Error', 'Gagal membatalkan pesanan. Silakan coba lagi.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const getStatusIcon = (status: string) => {
