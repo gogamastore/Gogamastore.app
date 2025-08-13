@@ -42,6 +42,7 @@ export default function ProfileSettingsScreen() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
