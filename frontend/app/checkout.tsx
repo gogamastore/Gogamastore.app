@@ -831,6 +831,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: '#E5E5EA',
+    width: '100%',
   },
   bankAccountsTitle: {
     fontSize: 14,
@@ -842,9 +843,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F8F9FA',
-    padding: 12,
+    padding: 16,
     borderRadius: 8,
-    marginBottom: 8,
+    marginBottom: 12,
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
   },
   bankAccountInfo: {
     marginLeft: 12,
