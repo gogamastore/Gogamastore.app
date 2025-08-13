@@ -232,14 +232,7 @@ export default function PaymentScreen() {
             <Text style={styles.summaryLabel}>Total Pesanan</Text>
             <Text style={styles.summaryValue}>{formatPrice(orderData.total || 0)}</Text>
           </View>
-          {selectedMethod && getSelectedMethodFee() > 0 && (
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Biaya Admin</Text>
-              <Text style={styles.summaryValue}>
-                {formatPrice(getSelectedMethodFee())}
-              </Text>
-            </View>
-          )}
+          
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Pembayaran</Text>
             <Text style={styles.totalValue}>{formatPrice(calculateTotalWithFee())}</Text>
