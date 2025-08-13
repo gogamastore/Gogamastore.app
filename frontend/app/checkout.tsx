@@ -461,11 +461,6 @@ export default function CheckoutScreen() {
             <Text style={styles.summaryValue}>{formatPrice(calculateShippingCost())}</Text>
           </View>
           
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Pajak (PPN 11%)</Text>
-            <Text style={styles.summaryValue}>{formatPrice(calculateTax())}</Text>
-          </View>
-          
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Pembayaran</Text>
             <Text style={styles.totalValue}>{formatPrice(calculateGrandTotal())}</Text>
