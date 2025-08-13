@@ -300,7 +300,7 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Gogama Store</Text>
-        <MaterialIcons name="notifications" size={24} color="#1a1a1a" />
+        <TouchableOpacity onPress={() => { console.log("🟦 GLOBAL TEST BUTTON PRESSED!!!"); Alert.alert("Global Test", "Event handling is working!"); }}><Text style={{color: "red", fontWeight: "bold"}}>TEST</Text></TouchableOpacity>
       </View>
 
       {/* Search Bar */}
