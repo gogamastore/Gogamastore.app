@@ -160,19 +160,26 @@ export default function PaymentScreen() {
     setProcessing(true);
     
     try {
+      const selectedBankAccount = bankAccounts.find(account => account.id === selectedMethod);
+      
       // Update payment method in order
       await orderService.updatePaymentMethod(orderId as string, {
         method: selectedMethod,
+        bankAccount: selectedBankAccount || null,
         status: selectedMethod === 'cod' ? 'pending_cod' : 'pending_transfer',
-        fee: paymentMethods.find(m => m.id === selectedMethod)?.fee || 0,
+        fee: selectedMethod === 'cod' ? 5000 : (selectedMethod.includes('dana') || selectedMethod.includes('gopay') ? 2500 : 0),
       });
       
       if (selectedMethod === 'cod') {
-        // For COD, mark as confirmed and proceed
+        // For COD, confirm order but keep payment status as "belum bayar"
         await orderService.updateOrderStatus(orderId as string, 'confirmed');
-        router.replace(`/payment/success/${orderId}`);
-      } else {
+        await orderService.updatePaymentStatus(orderId as string, 'unpaid'); // Status "belum bayar"
+        router.replace(`/payment/success/${orderId}?method=cod`);
+      } else if (selectedBankAccount) {
         // For bank transfers, show payment instructions
+        router.push(`/payment/instructions/${orderId}?method=${selectedMethod}`);
+      } else if (selectedMethod.includes('dana') || selectedMethod.includes('gopay')) {
+        // For digital wallets, show payment instructions
         router.push(`/payment/instructions/${orderId}?method=${selectedMethod}`);
       }
       
