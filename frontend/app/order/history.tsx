@@ -71,34 +71,57 @@ export default function OrderHistoryScreen() {
   const [statusCounts, setStatusCounts] = useState(ORDER_STATUS_FILTERS);
 
   useEffect(() => {
+    console.log('🔄 Order History useEffect triggered');
+    console.log('👤 User state:', user ? 'authenticated' : 'not authenticated');
+    
     if (user) {
+      console.log('✅ User authenticated, fetching orders...');
       fetchOrders();
+    } else {
+      console.log('❌ No authenticated user, skipping fetch');
+      setLoading(false);
     }
   }, [user]);
 
   const fetchOrders = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('❌ No user in fetchOrders, returning');
+      return;
+    }
+    
+    console.log('🔍 Starting fetchOrders...');
+    console.log('👤 User UID:', user.uid);
+    console.log('📧 User Email:', user.email);
     
     try {
+      setLoading(true);
       console.log('🔍 Fetching orders for user:', user.uid);
       console.log('📱 User auth object:', user);
       
       const data = await orderService.getUserOrders(user.uid);
-      console.log('📋 Orders fetched:', data);
+      console.log('📋 Orders fetched successfully');
       console.log('📦 Number of orders:', data.length);
+      console.log('📄 Orders data:', JSON.stringify(data, null, 2));
       
       setOrders(data);
       filterOrders(data, selectedFilter);
       updateStatusCounts(data);
       
       if (data.length === 0) {
-        console.log('❌ No orders found for user');
+        console.log('❌ No orders found for user:', user.uid);
+        console.log('💡 Check Firestore rules and order documents structure');
       } else {
         console.log('✅ Orders loaded successfully');
       }
     } catch (error) {
       console.error('❌ Error fetching orders:', error);
-      Alert.alert('Error', 'Gagal memuat riwayat pesanan: ' + error.message);
+      console.error('❌ Error details:', error.message);
+      console.error('❌ Error stack:', error.stack);
+      
+      Alert.alert(
+        'Error', 
+        'Gagal memuat riwayat pesanan. Silakan coba lagi.\n\nDetail: ' + error.message
+      );
     } finally {
       setLoading(false);
       setRefreshing(false);
