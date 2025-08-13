@@ -248,6 +248,17 @@ export default function CartScreen() {
       >
         <MaterialIcons name="delete" size={24} color="#fff" />
       </TouchableOpacity>
+      
+      {/* Test Button - Simple Text Button */}
+      <TouchableOpacity
+        style={styles.testButton}
+        onPress={() => {
+          console.log('🟦 TEST BUTTON PRESSED!!! for item:', item.nama);
+          Alert.alert('Test', `Test button pressed for ${item.nama}`);
+        }}
+      >
+        <Text style={styles.testButtonText}>TEST</Text>
+      </TouchableOpacity>
     </View>
   );
 
