@@ -131,12 +131,12 @@ export default function CheckoutScreen() {
   };
 
   const calculateTax = () => {
-    const subtotal = calculateSubtotal();
-    return Math.round(subtotal * 0.11); // 11% PPN
+    // No tax in your system
+    return 0;
   };
 
   const calculateGrandTotal = () => {
-    return calculateSubtotal() + calculateShippingCost() + calculateTax();
+    return calculateSubtotal() + calculateShippingCost();
   };
 
   const validateForm = () => {
