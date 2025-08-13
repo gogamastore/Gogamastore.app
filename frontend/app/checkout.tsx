@@ -228,10 +228,10 @@ export default function CheckoutScreen() {
           image: item.gambar
         })),
         shippingFee: shippingCost,
-        shippingMethod: selectedShippingOption?.id === 'pickup' ? 'pickup' : 'courier',
+        shippingMethod: selectedShippingOption?.name || 'Pengiriman oleh Kurir',
         status: "Pending",
         subtotal: subtotal,
-        total: `Rp ${total.toLocaleString('id-ID')}`
+        total: total
       };
       
       console.log('🔵 Order data prepared:', orderData);
