@@ -402,7 +402,7 @@ export default function HomeScreen() {
                       <MaterialIcons name="business" size={20} color="#666" />
                     </View>
                   )}
-                  <Text style={styles.brandName}>
+                  <Text style={styles.brandName} numberOfLines={1}>
                     {brand.nama || brand.name || brand.title || 'Unknown Brand'}
                   </Text>
                 </TouchableOpacity>
