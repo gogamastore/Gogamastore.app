@@ -276,6 +276,11 @@ export default function OrderHistoryScreen() {
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchOrders();
+  };
+
   const handleCancelOrder = (order: Order) => {
     if (order.status !== 'pending') {
       Alert.alert('Error', 'Hanya pesanan dengan status "Belum Proses" yang dapat dibatalkan');
