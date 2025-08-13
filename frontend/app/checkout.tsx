@@ -74,6 +74,8 @@ export default function CheckoutScreen() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [selectedShipping, setSelectedShipping] = useState<string>('courier');
+  const [selectedPayment, setSelectedPayment] = useState<string>('bank_transfer');
+  const [bankAccounts, setBankAccounts] = useState<any[]>([]);
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
     recipientName: '',
     phoneNumber: '',
