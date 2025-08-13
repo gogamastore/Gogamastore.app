@@ -147,33 +147,42 @@ export default function CheckoutScreen() {
   };
 
   const validateForm = () => {
+    console.log('🔵 validateForm called');
+    console.log('🔵 deliveryInfo:', deliveryInfo);
+    
     const { recipientName, phoneNumber, address, city, postalCode } = deliveryInfo;
     
     if (!recipientName.trim()) {
+      console.log('❌ Validation failed: recipientName empty');
       Alert.alert('Error', 'Nama penerima wajib diisi');
       return false;
     }
     
     if (!phoneNumber.trim()) {
+      console.log('❌ Validation failed: phoneNumber empty');
       Alert.alert('Error', 'Nomor telepon wajib diisi');
       return false;
     }
     
     if (!address.trim()) {
+      console.log('❌ Validation failed: address empty');
       Alert.alert('Error', 'Alamat pengiriman wajib diisi');
       return false;
     }
     
     if (!city.trim()) {
+      console.log('❌ Validation failed: city empty');
       Alert.alert('Error', 'Kota wajib diisi');
       return false;
     }
     
     if (!postalCode.trim()) {
+      console.log('❌ Validation failed: postalCode empty');
       Alert.alert('Error', 'Kode pos wajib diisi');
       return false;
     }
     
+    console.log('✅ Form validation passed');
     return true;
   };
 
