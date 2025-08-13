@@ -197,11 +197,15 @@ export const cartService = {
   // Remove item from cart
   async removeFromCart(userId, productId) {
     try {
+      console.log('Removing from cart:', { userId, productId });
       const cartItemRef = doc(db, 'user', userId, 'cart', productId);
       await deleteDoc(cartItemRef);
+      console.log('Successfully removed from cart');
       
       // Return updated cart
-      return await this.getUserCart(userId);
+      const updatedCart = await this.getUserCart(userId);
+      console.log('Updated cart after removal:', updatedCart);
+      return updatedCart;
     } catch (error) {
       console.error('Error removing from cart:', error);
       throw error;
