@@ -131,8 +131,6 @@ export default function OrderHistoryScreen() {
     const counts = { ...ORDER_STATUS_FILTERS.reduce((acc, item) => ({ ...acc, [item.key]: 0 }), {}) };
     
     orders.forEach(order => {
-      counts.all = (counts.all || 0) + 1;
-      
       // Normalize status to lowercase for consistent comparison
       const normalizedStatus = order.status ? order.status.toLowerCase() : '';
       
