@@ -21,27 +21,33 @@ interface OrderItem {
   name: string;
   price: number;
   quantity: number;
-  image?: string;
+  image: string;
+}
+
+interface CustomerDetails {
+  name: string;
+  address: string;
+  whatsapp: string;
 }
 
 interface Order {
   id: string;
   customerId: string;
   customer: string;
+  customerDetails: CustomerDetails;
   products: OrderItem[];
-  total: number;
+  productIds: string[];
+  total: string; // Format: "Rp 930.000"
+  subtotal: number;
+  shippingFee: number;
+  shippingMethod: string;
   status: string;
   paymentStatus: string;
   paymentMethod: string;
+  paymentProofUrl: string;
   date: any;
-  customerDetails: {
-    name: string;
-    address: string;
-    whatsapp: string;
-  };
-  shippingMethod: string;
-  shippingFee: number;
-  subtotal: number;
+  created_at: string;
+  updated_at: string;
 }
 
 const ORDER_STATUS_FILTERS = [
