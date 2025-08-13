@@ -772,4 +772,92 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 8,
   },
+  // Payment Method Styles
+  optionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  radioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#E5E5EA',
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioButtonSelected: {
+    borderColor: '#007AFF',
+  },
+  radioButtonDisabled: {
+    borderColor: '#C7C7CC',
+  },
+  radioButtonInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#007AFF',
+  },
+  optionIcon: {
+    marginRight: 12,
+  },
+  optionDetails: {
+    flex: 1,
+  },
+  optionName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  optionNameDisabled: {
+    color: '#C7C7CC',
+  },
+  optionDescription: {
+    fontSize: 12,
+    color: '#666',
+  },
+  optionDescriptionDisabled: {
+    color: '#C7C7CC',
+  },
+  shippingOptionDisabled: {
+    backgroundColor: '#F8F8F8',
+    borderColor: '#E5E5EA',
+  },
+  bankAccountsContainer: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E5EA',
+  },
+  bankAccountsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 12,
+  },
+  bankAccountCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8F9FA',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  bankAccountInfo: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  bankName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 2,
+  },
+  accountDetails: {
+    fontSize: 12,
+    color: '#666',
+  },
 });
