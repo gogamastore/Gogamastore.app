@@ -300,6 +300,11 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#E3F2FD',
   },
+  profileImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
   statusBadge: {
     position: 'absolute',
     bottom: -2,
