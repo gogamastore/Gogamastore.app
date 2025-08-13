@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 8,
   },
-  brandsGrid: {
+  brandsScrollView: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     paddingHorizontal: 16,
