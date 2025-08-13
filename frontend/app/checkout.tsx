@@ -88,6 +88,7 @@ export default function CheckoutScreen() {
   useEffect(() => {
     if (user) {
       fetchCart();
+      fetchBankAccounts();
     }
   }, [user]);
 
@@ -108,6 +109,15 @@ export default function CheckoutScreen() {
       Alert.alert('Error', 'Gagal memuat keranjang belanja');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBankAccounts = async () => {
+    try {
+      const accounts = await bankAccountService.getActiveBankAccounts();
+      setBankAccounts(accounts);
+    } catch (error) {
+      console.error('Error fetching bank accounts:', error);
     }
   };
 
