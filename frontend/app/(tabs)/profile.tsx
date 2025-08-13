@@ -90,7 +90,7 @@ export default function ProfileScreen() {
       icon: 'person',
       iconColor: '#007AFF',
       backgroundColor: '#F0F8FF',
-      onPress: () => Alert.alert('Info', 'Fitur edit profil akan segera tersedia'),
+      onPress: () => router.push('/profile/settings'),
     },
     {
       title: 'Riwayat Pesanan',
@@ -106,7 +106,7 @@ export default function ProfileScreen() {
       icon: 'location-on',
       iconColor: '#32D74B',
       backgroundColor: '#F0FFF4',
-      onPress: () => Alert.alert('Info', 'Fitur pengaturan alamat akan segera tersedia'),
+      onPress: () => router.push('/profile/address'),
     },
     {
       title: 'Pusat Bantuan',
