@@ -313,26 +313,8 @@ export const bannerService = {
   }
 };
 
-// Orders Service - New service based on your rules
+// Order Service - New service for order management
 export const orderService = {
-  // Get user orders
-  async getUserOrders(userId) {
-    try {
-      const q = query(
-        collection(db, 'orders'),
-        where('customerId', '==', userId)
-      );
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-    } catch (error) {
-      console.error('Error getting orders:', error);
-      throw error;
-    }
-  },
-
   // Create new order
   async createOrder(orderData) {
     try {
@@ -341,9 +323,70 @@ export const orderService = {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       });
+      
       return orderRef.id;
     } catch (error) {
       console.error('Error creating order:', error);
+      throw error;
+    }
+  },
+
+  // Get order by ID
+  async getOrderById(orderId) {
+    try {
+      const docRef = doc(db, 'orders', orderId);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      } else {
+        throw new Error('Order not found');
+      }
+    } catch (error) {
+      console.error('Error getting order:', error);
+      throw error;
+    }
+  },
+
+  // Get user orders
+  async getUserOrders(userId) {
+    try {
+      const q = query(
+        collection(db, 'orders'), 
+        where('userId', '==', userId)
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Error getting user orders:', error);
+      throw error;
+    }
+  },
+
+  // Update order status
+  async updateOrderStatus(orderId, status) {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, {
+        status,
+        updated_at: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
+    }
+  },
+
+  // Update payment status
+  async updatePaymentStatus(orderId, paymentStatus) {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, {
+        paymentStatus,
+        updated_at: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error updating payment status:', error);
       throw error;
     }
   }
