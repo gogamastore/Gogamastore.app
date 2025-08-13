@@ -57,7 +57,8 @@ export default function ProfileScreen() {
         nama_lengkap: user.displayName || '',
         email: user.email || '',
         nomor_whatsapp: '',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        photoURL: user.photoURL
       });
     } finally {
       setLoading(false);
