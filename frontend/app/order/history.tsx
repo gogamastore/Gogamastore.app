@@ -357,29 +357,42 @@ export default function OrderHistoryScreen() {
         contentContainerStyle={styles.filtersContent}
         style={styles.filtersScrollView}
       >
-        {statusCounts.map((filter) => (
-          <TouchableOpacity
-            key={filter.key}
-            style={[
-              styles.filterTab,
-              selectedFilter === filter.key && styles.filterTabActive,
-            ]}
-            onPress={() => handleFilterChange(filter.key)}
-          >
-            <Text style={[
-              styles.filterLabel,
-              selectedFilter === filter.key && styles.filterLabelActive,
-            ]}>
-              {filter.label}
-            </Text>
-            <Text style={[
-              styles.filterCount,
-              selectedFilter === filter.key && styles.filterCountActive,
-            ]}>
-              {filter.count}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {statusCounts.map((filter) => {
+          // Set different widths for different tabs
+          let tabWidth = 75; // default width
+          if (filter.key === 'pending') {
+            tabWidth = 90; // wider for "Belum Proses"
+          } else if (filter.key === 'cancelled') {
+            tabWidth = 82; // wider for "Dibatalkan"
+          } else {
+            tabWidth = 68; // smaller for others: "Diproses", "Dikirim", "Selesai"
+          }
+          
+          return (
+            <TouchableOpacity
+              key={filter.key}
+              style={[
+                styles.filterTab,
+                { width: tabWidth },
+                selectedFilter === filter.key && styles.filterTabActive,
+              ]}
+              onPress={() => handleFilterChange(filter.key)}
+            >
+              <Text style={[
+                styles.filterLabel,
+                selectedFilter === filter.key && styles.filterLabelActive,
+              ]}>
+                {filter.label}
+              </Text>
+              <Text style={[
+                styles.filterCount,
+                selectedFilter === filter.key && styles.filterCountActive,
+              ]}>
+                {filter.count}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
     </View>
   );
