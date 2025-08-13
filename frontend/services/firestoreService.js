@@ -288,7 +288,7 @@ export const userService = {
   async getUserAddresses(userId) {
     try {
       console.log('🏠 Fetching addresses for userId:', userId);
-      const userDocRef = doc(db, 'users', userId);
+      const userDocRef = doc(db, 'user', userId);
       const userDoc = await getDoc(userDocRef);
       
       if (userDoc.exists()) {
@@ -309,7 +309,7 @@ export const userService = {
   async addUserAddress(userId, addressData) {
     try {
       console.log('➕ Adding address for userId:', userId);
-      const userDocRef = doc(db, 'users', userId);
+      const userDocRef = doc(db, 'user', userId);
       
       // Get current addresses
       const userDoc = await getDoc(userDocRef);
