@@ -302,79 +302,97 @@ export default function PaymentScreen() {
           {/* Digital Wallets */}
           <View style={styles.methodCategory}>
             <Text style={styles.categoryTitle}>Dompet Digital</Text>
-            {paymentMethods
-              .filter(method => method.type === 'digital_wallet')
-              .map((method) => (
-                <TouchableOpacity
-                  key={method.id}
-                  style={[
-                    styles.methodCard,
-                    selectedMethod === method.id && styles.methodCardSelected
-                  ]}
-                  onPress={() => setSelectedMethod(method.id)}
-                >
-                  <View style={styles.methodInfo}>
-                    <Text style={styles.methodIcon}>{method.icon}</Text>
-                    <View style={styles.methodDetails}>
-                      <Text style={styles.methodName}>{method.name}</Text>
-                      <Text style={styles.methodDescription}>{method.description}</Text>
-                      <Text style={styles.methodTime}>{method.processingTime}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.methodRight}>
-                    <Text style={styles.methodFee}>
-                      {method.fee === 0 ? 'Gratis' : formatPrice(method.fee)}
-                    </Text>
-                    <View style={[
-                      styles.radioButton,
-                      selectedMethod === method.id && styles.radioButtonSelected
-                    ]}>
-                      {selectedMethod === method.id && (
-                        <View style={styles.radioButtonInner} />
-                      )}
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
+            
+            {/* DANA */}
+            <TouchableOpacity
+              style={[
+                styles.methodCard,
+                selectedMethod === 'dana' && styles.methodCardSelected
+              ]}
+              onPress={() => setSelectedMethod('dana')}
+            >
+              <View style={styles.methodInfo}>
+                <Text style={styles.methodIcon}>📱</Text>
+                <View style={styles.methodDetails}>
+                  <Text style={styles.methodName}>DANA</Text>
+                  <Text style={styles.methodDescription}>Transfer via DANA</Text>
+                  <Text style={styles.methodTime}>Instan</Text>
+                </View>
+              </View>
+              <View style={styles.methodRight}>
+                <Text style={styles.methodFee}>{formatPrice(2500)}</Text>
+                <View style={[
+                  styles.radioButton,
+                  selectedMethod === 'dana' && styles.radioButtonSelected
+                ]}>
+                  {selectedMethod === 'dana' && (
+                    <View style={styles.radioButtonInner} />
+                  )}
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            {/* GoPay */}
+            <TouchableOpacity
+              style={[
+                styles.methodCard,
+                selectedMethod === 'gopay' && styles.methodCardSelected
+              ]}
+              onPress={() => setSelectedMethod('gopay')}
+            >
+              <View style={styles.methodInfo}>
+                <Text style={styles.methodIcon}>🟢</Text>
+                <View style={styles.methodDetails}>
+                  <Text style={styles.methodName}>GoPay</Text>
+                  <Text style={styles.methodDescription}>Transfer via GoPay</Text>
+                  <Text style={styles.methodTime}>Instan</Text>
+                </View>
+              </View>
+              <View style={styles.methodRight}>
+                <Text style={styles.methodFee}>{formatPrice(2500)}</Text>
+                <View style={[
+                  styles.radioButton,
+                  selectedMethod === 'gopay' && styles.radioButtonSelected
+                ]}>
+                  {selectedMethod === 'gopay' && (
+                    <View style={styles.radioButtonInner} />
+                  )}
+                </View>
+              </View>
+            </TouchableOpacity>
           </View>
 
           {/* COD */}
           <View style={styles.methodCategory}>
             <Text style={styles.categoryTitle}>Bayar di Tempat</Text>
-            {paymentMethods
-              .filter(method => method.type === 'cod')
-              .map((method) => (
-                <TouchableOpacity
-                  key={method.id}
-                  style={[
-                    styles.methodCard,
-                    selectedMethod === method.id && styles.methodCardSelected
-                  ]}
-                  onPress={() => setSelectedMethod(method.id)}
-                >
-                  <View style={styles.methodInfo}>
-                    <Text style={styles.methodIcon}>{method.icon}</Text>
-                    <View style={styles.methodDetails}>
-                      <Text style={styles.methodName}>{method.name}</Text>
-                      <Text style={styles.methodDescription}>{method.description}</Text>
-                      <Text style={styles.methodTime}>{method.processingTime}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.methodRight}>
-                    <Text style={styles.methodFee}>
-                      {method.fee === 0 ? 'Gratis' : formatPrice(method.fee)}
-                    </Text>
-                    <View style={[
-                      styles.radioButton,
-                      selectedMethod === method.id && styles.radioButtonSelected
-                    ]}>
-                      {selectedMethod === method.id && (
-                        <View style={styles.radioButtonInner} />
-                      )}
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
+            
+            <TouchableOpacity
+              style={[
+                styles.methodCard,
+                selectedMethod === 'cod' && styles.methodCardSelected
+              ]}
+              onPress={() => setSelectedMethod('cod')}
+            >
+              <View style={styles.methodInfo}>
+                <Text style={styles.methodIcon}>💵</Text>
+                <View style={styles.methodDetails}>
+                  <Text style={styles.methodName}>COD (Bayar di Tempat)</Text>
+                  <Text style={styles.methodDescription}>Bayar tunai saat barang diterima</Text>
+                  <Text style={styles.methodTime}>Langsung diproses</Text>
+                </View>
+              </View>
+              <View style={styles.methodRight}>
+                <Text style={styles.methodFee}>{formatPrice(5000)}</Text>
+                <View style={[
+                  styles.radioButton,
+                  selectedMethod === 'cod' && styles.radioButtonSelected
+                ]}>
+                  {selectedMethod === 'cod' && (
+                    <View style={styles.radioButtonInner} />
+                  )}
+                </View>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
