@@ -87,18 +87,18 @@ export default function AddressManagementScreen() {
 
   const deleteAddress = async (addressId: string) => {
     try {
-      // Implementation would delete from Firebase
+      await userService.deleteUserAddress(user!.uid, addressId);
       setAddresses(prev => prev.filter(addr => addr.id !== addressId));
       Alert.alert('Berhasil', 'Alamat berhasil dihapus');
     } catch (error) {
       console.error('Error deleting address:', error);
-      Alert.alert('Error', 'Gagal menghapus alamat');
+      Alert.alert('Error', 'Gagal menghapus alamat: ' + error.message);
     }
   };
 
   const handleSetDefault = async (addressId: string) => {
     try {
-      // Implementation would update Firebase
+      await userService.setDefaultAddress(user!.uid, addressId);
       setAddresses(prev => prev.map(addr => ({
         ...addr,
         isDefault: addr.id === addressId
@@ -106,7 +106,7 @@ export default function AddressManagementScreen() {
       Alert.alert('Berhasil', 'Alamat utama berhasil diperbarui');
     } catch (error) {
       console.error('Error setting default address:', error);
-      Alert.alert('Error', 'Gagal mengatur alamat utama');
+      Alert.alert('Error', 'Gagal mengatur alamat utama: ' + error.message);
     }
   };
 
