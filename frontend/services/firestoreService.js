@@ -57,7 +57,7 @@ export const productService = {
           gambar: data.image || data.gambar || '',
           kategori: data.category || data.kategori || '',
           harga: this.parsePrice(data.price || data.harga),
-          stok: data.stock || data.stok || 99 // default stock if not specified
+          stok: typeof (data.stock || data.stok) !== 'undefined' ? (data.stock || data.stok) : 0 // Use actual stock value, default to 0
         };
       } else {
         throw new Error('Product not found');
