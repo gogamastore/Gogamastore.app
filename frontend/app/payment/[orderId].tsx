@@ -159,39 +159,35 @@ export default function PaymentScreen() {
     try {
       const selectedBankAccount = bankAccounts.find(account => account.id === selectedMethod);
       
-      // Update payment method in order
+      // Update payment method in order (no duplicate order creation)
       await orderService.updatePaymentMethod(orderId as string, {
         method: selectedMethod,
         bankAccount: selectedBankAccount || null,
         status: selectedMethod === 'cod' ? 'pending_cod' : 'pending_transfer',
-        fee: selectedMethod.includes('dana') || selectedMethod.includes('gopay') ? 1500 : 0,
+        fee: 0, // All methods are now free
       });
       
-      // Clear cart after payment method is selected and order is confirmed
+      // Update order status to confirmed
+      await orderService.updateOrderStatus(orderId as string, 'confirmed');
+      
+      // Set payment status based on method
+      if (selectedMethod === 'cod') {
+        await orderService.updatePaymentStatus(orderId as string, 'unpaid'); // Status "belum bayar"
+      } else {
+        await orderService.updatePaymentStatus(orderId as string, 'pending'); // Status "menunggu pembayaran"
+      }
+      
+      // Clear cart after order is confirmed
       if (user) {
         await cartService.clearCart(user.uid);
       }
       
-      if (selectedMethod === 'cod') {
-        // For COD, confirm order but keep payment status as "belum bayar"
-        await orderService.updateOrderStatus(orderId as string, 'confirmed');
-        await orderService.updatePaymentStatus(orderId as string, 'unpaid'); // Status "belum bayar"
-        router.replace(`/payment/success/${orderId}?method=cod`);
-      } else if (selectedBankAccount || bankAccounts.some(account => account.id === selectedMethod)) {
-        // For bank transfers, show payment instructions
-        router.push(`/payment/instructions/${orderId}?method=${selectedMethod}`);
-      } else if (selectedMethod.includes('dana') || selectedMethod.includes('gopay')) {
-        // For digital wallets, show payment instructions
-        router.push(`/payment/instructions/${orderId}?method=${selectedMethod}`);
-      } else {
-        console.log('No matching navigation condition found for method:', selectedMethod);
-        console.log('Available bank accounts:', bankAccounts);
-        Alert.alert('Error', 'Metode pembayaran tidak valid. Silakan pilih metode lain.');
-      }
+      // Navigate to order history instead of payment instructions
+      router.replace('/order/history');
       
     } catch (error) {
-      console.error('Error processing payment:', error);
-      Alert.alert('Error', 'Gagal memproses pembayaran. Silakan coba lagi.');
+      console.error('Error processing order:', error);
+      Alert.alert('Error', 'Gagal membuat pesanan. Silakan coba lagi.');
     } finally {
       setProcessing(false);
     }
