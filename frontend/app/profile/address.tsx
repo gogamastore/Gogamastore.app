@@ -73,7 +73,7 @@ export default function AddressManagementScreen() {
   };
 
   const handleEditAddress = (addressId: string) => {
-    router.push(`/profile/edit-address-${addressId}`);
+    router.push(`/profile/${addressId}`);
   };
 
   const handleDeleteAddress = (address: Address) => {
