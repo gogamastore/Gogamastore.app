@@ -23,6 +23,7 @@ interface UserProfile {
 }
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const { user, logout } = useAuth();
