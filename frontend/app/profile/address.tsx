@@ -165,6 +165,13 @@ export default function AddressManagementScreen() {
           <MaterialIcons name="edit" size={16} color="#007AFF" />
           <Text style={styles.actionButtonText}>Edit</Text>
         </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.actionButton, styles.deleteActionButton]}
+          onPress={() => handleDeleteAddress(item)}
+        >
+          <MaterialIcons name="delete" size={16} color="#FF3B30" />
+          <Text style={[styles.actionButtonText, styles.deleteActionButtonText]}>Hapus</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
