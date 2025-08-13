@@ -265,40 +265,38 @@ export default function PaymentScreen() {
           {/* Bank Transfer */}
           <View style={styles.methodCategory}>
             <Text style={styles.categoryTitle}>Transfer Bank</Text>
-            {paymentMethods
-              .filter(method => method.type === 'bank_transfer')
-              .map((method) => (
-                <TouchableOpacity
-                  key={method.id}
-                  style={[
-                    styles.methodCard,
-                    selectedMethod === method.id && styles.methodCardSelected
-                  ]}
-                  onPress={() => setSelectedMethod(method.id)}
-                >
-                  <View style={styles.methodInfo}>
-                    <Text style={styles.methodIcon}>{method.icon}</Text>
-                    <View style={styles.methodDetails}>
-                      <Text style={styles.methodName}>{method.name}</Text>
-                      <Text style={styles.methodDescription}>{method.description}</Text>
-                      <Text style={styles.methodTime}>{method.processingTime}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.methodRight}>
-                    <Text style={styles.methodFee}>
-                      {method.fee === 0 ? 'Gratis' : formatPrice(method.fee)}
+            {bankAccounts.map((account) => (
+              <TouchableOpacity
+                key={account.id}
+                style={[
+                  styles.methodCard,
+                  selectedMethod === account.id && styles.methodCardSelected
+                ]}
+                onPress={() => setSelectedMethod(account.id)}
+              >
+                <View style={styles.methodInfo}>
+                  <Text style={styles.methodIcon}>🏦</Text>
+                  <View style={styles.methodDetails}>
+                    <Text style={styles.methodName}>{account.bankName}</Text>
+                    <Text style={styles.methodDescription}>
+                      Transfer ke rekening {account.bankName}
                     </Text>
-                    <View style={[
-                      styles.radioButton,
-                      selectedMethod === method.id && styles.radioButtonSelected
-                    ]}>
-                      {selectedMethod === method.id && (
-                        <View style={styles.radioButtonInner} />
-                      )}
-                    </View>
+                    <Text style={styles.methodTime}>1-24 jam</Text>
                   </View>
-                </TouchableOpacity>
-              ))}
+                </View>
+                <View style={styles.methodRight}>
+                  <Text style={styles.methodFee}>Gratis</Text>
+                  <View style={[
+                    styles.radioButton,
+                    selectedMethod === account.id && styles.radioButtonSelected
+                  ]}>
+                    {selectedMethod === account.id && (
+                      <View style={styles.radioButtonInner} />
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
 
           {/* Digital Wallets */}
