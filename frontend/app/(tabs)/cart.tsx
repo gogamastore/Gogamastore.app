@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { cartService } from '../../services/firestoreService';
 
@@ -35,6 +36,7 @@ export default function CartScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {
@@ -163,11 +165,7 @@ export default function CartScreen() {
       return;
     }
 
-    Alert.alert(
-      'Checkout',
-      `Total pembayaran: ${formatPrice(cart.total)}\n\nFitur checkout akan segera tersedia.`,
-      [{ text: 'OK' }]
-    );
+    router.push('/checkout');
   };
 
   const renderCartItem = ({ item }: { item: CartItem }) => (
