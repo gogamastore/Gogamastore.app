@@ -236,7 +236,12 @@ export default function CartScreen() {
       
       <TouchableOpacity
         style={styles.removeButton}
-        onPress={() => confirmRemoveItem(item)}
+        onPress={() => {
+          console.log('🔴 Delete TouchableOpacity pressed for item:', item.nama);
+          confirmRemoveItem(item);
+        }}
+        activeOpacity={0.6}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
         <MaterialIcons name="delete" size={24} color="#FF3B30" />
       </TouchableOpacity>
