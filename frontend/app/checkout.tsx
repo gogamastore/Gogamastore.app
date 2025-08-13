@@ -498,6 +498,22 @@ export default function CheckoutScreen() {
                         >
                           <MaterialIcons name="close" size={16} color="#FF3B30" />
                         </TouchableOpacity>
+                        
+                        {/* Upload Button - Only show if image is selected but not uploaded yet */}
+                        <TouchableOpacity 
+                          style={styles.uploadConfirmButton}
+                          onPress={handleUploadPaymentProof}
+                          disabled={uploadingProof}
+                        >
+                          {uploadingProof ? (
+                            <ActivityIndicator size="small" color="#007AFF" />
+                          ) : (
+                            <>
+                              <MaterialIcons name="cloud-upload" size={20} color="#007AFF" />
+                              <Text style={styles.uploadConfirmButtonText}>Unggah Sekarang</Text>
+                            </>
+                          )}
+                        </TouchableOpacity>
                       </View>
                     ) : (
                       <TouchableOpacity 
@@ -505,9 +521,9 @@ export default function CheckoutScreen() {
                         onPress={pickPaymentProofImage}
                         disabled={uploadingProof}
                       >
-                        <MaterialIcons name="cloud-upload" size={24} color="#007AFF" />
+                        <MaterialIcons name="photo-library" size={24} color="#007AFF" />
                         <Text style={styles.uploadButtonText}>
-                          {uploadingProof ? 'Mengunggah...' : 'Pilih Gambar dari Galeri'}
+                          Pilih Gambar dari Galeri
                         </Text>
                       </TouchableOpacity>
                     )}
