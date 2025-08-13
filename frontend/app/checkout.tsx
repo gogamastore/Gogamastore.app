@@ -435,17 +435,19 @@ export default function CheckoutScreen() {
               {selectedPayment === 'bank_transfer' && (
                 <View style={styles.bankAccountsContainer}>
                   <Text style={styles.bankAccountsTitle}>Silakan transfer ke rekening berikut:</Text>
-                  {bankAccounts.map((account) => (
-                    <View key={account.id} style={styles.bankAccountCard}>
-                      <MaterialIcons name="account-balance" size={20} color="#007AFF" />
-                      <View style={styles.bankAccountInfo}>
-                        <Text style={styles.bankName}>{account.bankName}</Text>
-                        <Text style={styles.accountDetails}>
-                          {account.accountNumber} a/n {account.accountHolder}
-                        </Text>
+                  <View style={styles.bankAccountsList}>
+                    {bankAccounts.map((account) => (
+                      <View key={account.id} style={styles.bankAccountCard}>
+                        <MaterialIcons name="account-balance" size={20} color="#007AFF" />
+                        <View style={styles.bankAccountInfo}>
+                          <Text style={styles.bankName}>{account.bankName}</Text>
+                          <Text style={styles.accountDetails}>
+                            {account.accountNumber} a/n {account.accountHolder}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                  ))}
+                    ))}
+                  </View>
                 </View>
               )}
             </TouchableOpacity>
