@@ -351,9 +351,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "User Authentication System (Register/Login)"
-    - "Products Management APIs"
-    - "Cart Management APIs"
+    - "Checkout Button Responsiveness Fix"
+    - "Complete Checkout Flow"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
