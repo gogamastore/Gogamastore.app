@@ -110,6 +110,111 @@ export default function ProfileSettingsScreen() {
     }
   };
 
+  const handlePhotoUpload = async () => {
+    try {
+      // Request permissions
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        Alert.alert('Permission Required', 'Please allow access to your photo library to upload a profile picture.');
+        return;
+      }
+
+      // Show image picker options
+      Alert.alert(
+        'Pilih Foto Profil',
+        'Pilih sumber foto:',
+        [
+          { text: 'Batal', style: 'cancel' },
+          { text: 'Galeri', onPress: () => pickFromGallery() },
+          { text: 'Kamera', onPress: () => pickFromCamera() }
+        ]
+      );
+    } catch (error) {
+      console.error('Error in photo upload:', error);
+      Alert.alert('Error', 'Gagal mengakses galeri foto');
+    }
+  };
+
+  const pickFromGallery = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        await uploadImageToFirebase(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error picking from gallery:', error);
+      Alert.alert('Error', 'Gagal memilih foto dari galeri');
+    }
+  };
+
+  const pickFromCamera = async () => {
+    try {
+      const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+      if (!cameraPermission.granted) {
+        Alert.alert('Permission Required', 'Please allow access to your camera.');
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        await uploadImageToFirebase(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error picking from camera:', error);
+      Alert.alert('Error', 'Gagal mengambil foto dari kamera');
+    }
+  };
+
+  const uploadImageToFirebase = async (imageUri: string) => {
+    if (!user) return;
+
+    setUploadingPhoto(true);
+    try {
+      console.log('📸 Starting photo upload for user:', user.uid);
+      
+      // Convert image to blob
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+
+      // Create storage reference with the correct path structure
+      const timestamp = Date.now();
+      const fileName = `profile_${timestamp}.jpg`;
+      const storageRef = ref(storage, `profile_pictures/${user.uid}/${fileName}`);
+      
+      console.log('☁️ Uploading to Firebase Storage:', storageRef.fullPath);
+
+      // Upload file
+      const snapshot = await uploadBytes(storageRef, blob);
+      console.log('✅ Photo uploaded successfully');
+
+      // Get download URL
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log('🔗 Download URL generated:', downloadURL);
+
+      // Update profile with new photo URL
+      setProfile(prev => ({ ...prev, photoURL: downloadURL }));
+      setIsDirty(true);
+
+      Alert.alert('Berhasil', 'Foto profil berhasil diupload. Jangan lupa simpan perubahan.');
+    } catch (error) {
+      console.error('❌ Error uploading photo:', error);
+      Alert.alert('Error', 'Gagal mengupload foto. Silakan coba lagi.');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   const handleBack = () => {
     if (isDirty) {
       Alert.alert(
