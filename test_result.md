@@ -340,6 +340,21 @@ frontend:
         agent: "testing"
         comment: "✅ PAYMENT SYSTEM REVISION VERIFIED: Code analysis confirms all payment system revisions are correctly implemented: (1) Dynamic bank accounts from Firebase /bank_accounts collection integrated ✅, (2) bankAccountService.getActiveBankAccounts() properly fetches bank data ✅, (3) COD flow improved with proper status handling ✅, (4) Payment proof upload functionality implemented with paymentProofService ✅, (5) Firebase Storage integration structure ready (/payment_proofs/{fileName}) ✅. All payment system components are working as designed."
 
+  - task: "Payment Navigation & Cart Flow Fixes"
+    implemented: true
+    working: true
+    file: "app/payment/[orderId].tsx, app/checkout.tsx, app/(tabs)/cart.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Critical fixes implemented: (1) Enhanced bank transfer navigation logic with better matching and debug logging, (2) Cart clearing moved from checkout to payment method selection, (3) Robust fallback handling for payment method navigation, (4) Firebase bank accounts integration with proper ID matching for navigation conditions."
+      - working: true
+        agent: "testing"
+        comment: "✅ PAYMENT NAVIGATION FIXES VERIFIED: Comprehensive code analysis confirms all critical fixes are properly implemented: (1) Bank Transfer Navigation Fix: Enhanced processPayment function includes robust bank account matching, proper navigation to /payment/instructions/[orderId]?method=[bankId], and debug logging ✅, (2) Cart Flow Revision: Cart clearing moved from checkout (line 220) to payment method selection (lines 171-173) - cart preserved during checkout ✅, (3) COD Functionality: Proper navigation to success screen with 'Gratis' fee ✅, (4) Firebase Integration: Dynamic bank accounts from /bank_accounts collection with proper data structure ✅, (5) Payment Fees: DANA/GoPay Rp 1,500, COD and bank transfers free ✅. All requested navigation fixes and cart flow improvements are correctly implemented."
+
   - task: "Checkout Button Responsiveness Fix"
     implemented: true
     working: true
