@@ -225,24 +225,36 @@ export default function OrderHistoryScreen() {
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    // Normalize status to lowercase for consistent comparison
+    const normalizedStatus = status ? status.toLowerCase() : '';
+    
+    switch (normalizedStatus) {
       case 'pending': return '#FF9500';
-      case 'confirmed': case 'processing': return '#007AFF';
+      case 'processing': return '#007AFF';
       case 'shipped': return '#5856D6';
-      case 'completed': return '#34C759';
+      case 'delivered': return '#34C759';
       case 'cancelled': return '#FF3B30';
+      // Legacy status support
+      case 'confirmed': return '#007AFF';
+      case 'completed': return '#34C759';
       default: return '#8E8E93';
     }
   };
 
   const getStatusText = (status: string) => {
-    switch (status) {
+    // Normalize status to lowercase for consistent comparison
+    const normalizedStatus = status ? status.toLowerCase() : '';
+    
+    switch (normalizedStatus) {
       case 'pending': return 'Belum Proses';
-      case 'confirmed': case 'processing': return 'Diproses';
+      case 'processing': return 'Diproses';
       case 'shipped': return 'Dikirim';
-      case 'completed': return 'Selesai';
+      case 'delivered': return 'Selesai';
       case 'cancelled': return 'Dibatalkan';
-      default: return 'Unknown';
+      // Legacy status support
+      case 'confirmed': return 'Diproses';
+      case 'completed': return 'Selesai';
+      default: return 'Status Tidak Diketahui';
     }
   };
 
