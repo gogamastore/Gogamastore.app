@@ -73,7 +73,7 @@ export default function CheckoutScreen() {
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
-  const [selectedShipping, setSelectedShipping] = useState<string>('regular');
+  const [selectedShipping, setSelectedShipping] = useState<string>('courier');
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
     recipientName: '',
     phoneNumber: '',
