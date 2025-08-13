@@ -321,10 +321,6 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-      {/* Debug Info */}
-      <View style={{ padding: 16, backgroundColor: '#f0f0f0' }}>
-      </View>
-      
       {/* Promotional Banners */}
       {banners.length > 0 && (
         <View style={styles.bannersSection}>
