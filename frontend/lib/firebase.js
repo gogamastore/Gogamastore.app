@@ -5,7 +5,7 @@ import { getStorage } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCThjETkAH8HpFoclhmXtgjm2lIr1506dg",
+  apiKey: "AIzaSyAUU71TYtfCIqTKwj1SHlbVhqqgbfEHx6U",
   authDomain: "orderflow-r7jsk.firebaseapp.com",
   projectId: "orderflow-r7jsk",
   storageBucket: "orderflow-r7jsk.firebasestorage.app",
