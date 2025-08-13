@@ -323,7 +323,7 @@ export default function OrderConfirmationScreen() {
           </View>
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Pembayaran</Text>
-            <Text style={styles.totalValue}>{order.total}</Text>
+            <Text style={styles.totalValue}>{formatPrice(order.total)}</Text>
           </View>
         </View>
 
