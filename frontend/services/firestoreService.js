@@ -349,7 +349,7 @@ export const userService = {
   async updateUserAddress(userId, addressId, addressData) {
     try {
       console.log('📝 Updating address:', addressId, 'for userId:', userId);
-      const userDocRef = doc(db, 'users', userId);
+      const userDocRef = doc(db, 'user', userId);
       const userDoc = await getDoc(userDocRef);
       
       if (userDoc.exists()) {
@@ -388,7 +388,7 @@ export const userService = {
   async deleteUserAddress(userId, addressId) {
     try {
       console.log('🗑️ Deleting address:', addressId, 'for userId:', userId);
-      const userDocRef = doc(db, 'users', userId);
+      const userDocRef = doc(db, 'user', userId);
       const userDoc = await getDoc(userDocRef);
       
       if (userDoc.exists()) {
@@ -411,7 +411,7 @@ export const userService = {
   async setDefaultAddress(userId, addressId) {
     try {
       console.log('⭐ Setting default address:', addressId, 'for userId:', userId);
-      const userDocRef = doc(db, 'users', userId);
+      const userDocRef = doc(db, 'user', userId);
       const userDoc = await getDoc(userDocRef);
       
       if (userDoc.exists()) {
