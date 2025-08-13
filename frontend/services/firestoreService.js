@@ -504,6 +504,49 @@ export const orderService = {
     }
   },
 
+  // Create sample order for development (helper method)
+  async createSampleOrderIfNeeded(userId) {
+    try {
+      console.log('🔧 Creating sample order for development');
+      
+      const sampleOrder = {
+        id: `sample-${Date.now()}`,
+        userId: userId,
+        customerId: userId,
+        customer: 'Sample Customer',
+        customerDetails: {
+          name: 'Sample Customer',
+          address: 'Sample Address',
+          whatsapp: '+6281234567890'
+        },
+        products: [
+          {
+            productId: 'sample-product-1',
+            name: 'Sample Product',
+            price: 100000,
+            quantity: 1,
+            image: ''
+          }
+        ],
+        total: 'Rp 100.000',
+        subtotal: 100000,
+        shippingFee: 0,
+        shippingMethod: 'Ambil di Toko',
+        status: 'pending',
+        paymentStatus: 'unpaid',
+        paymentMethod: 'cod',
+        date: new Date(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      return [sampleOrder];
+    } catch (error) {
+      console.error('❌ Error creating sample order:', error);
+      return [];
+    }
+  },
+
   // Get user orders with improved error handling
   async getUserOrders(userId) {
     try {
