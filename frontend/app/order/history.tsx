@@ -340,18 +340,25 @@ export default function OrderHistoryScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
-      <MaterialIcons name="shopping-bag" size={64} color="#C7C7CC" />
-      <Text style={styles.emptyTitle}>Belum Ada Pesanan</Text>
-      <Text style={styles.emptySubtitle}>
-        Pesanan yang Anda buat akan tampil di sini
+      <MaterialIcons name="receipt-long" size={64} color="#C7C7CC" />
+      <Text style={styles.emptyTitle}>
+        {selectedFilter === 'all' ? 'Belum Ada Pesanan' : 'Tidak ada pesanan di kategori ini'}
       </Text>
-      <TouchableOpacity 
-        style={styles.shopButton}
-        onPress={() => router.replace('/(tabs)/')}
-      >
-        <MaterialIcons name="shopping-cart" size={20} color="#fff" />
-        <Text style={styles.shopButtonText}>Mulai Belanja</Text>
-      </TouchableOpacity>
+      <Text style={styles.emptyDescription}>
+        {selectedFilter === 'all' ? 
+          'Pesanan yang Anda buat akan muncul di sini. Mulai berbelanja sekarang!' : 
+          'Pesanan yang Anda buat akan muncul di sini'
+        }
+      </Text>
+      {selectedFilter === 'all' && (
+        <TouchableOpacity 
+          style={styles.shopButton}
+          onPress={() => router.replace('/(tabs)/')}
+        >
+          <MaterialIcons name="shopping-cart" size={20} color="#fff" />
+          <Text style={styles.shopButtonText}>Mulai Belanja</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 
