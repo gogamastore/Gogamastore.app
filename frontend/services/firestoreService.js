@@ -415,3 +415,85 @@ export const initializeSampleData = async () => {
   // Categories should be managed from /product_categories/{categoryId} collection
   console.log('Sample data initialization disabled - using existing Firebase data');
 };
+
+// Bank Account Service - New service for dynamic bank account management
+export const bankAccountService = {
+  // Get all active bank accounts
+  async getActiveBankAccounts() {
+    try {
+      const q = query(collection(db, 'bank_accounts'), where('isActive', '==', true));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Error getting bank accounts:', error);
+      throw error;
+    }
+  },
+
+  // Get bank account by ID
+  async getBankAccountById(accountId) {
+    try {
+      const docRef = doc(db, 'bank_accounts', accountId);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      } else {
+        throw new Error('Bank account not found');
+      }
+    } catch (error) {
+      console.error('Error getting bank account:', error);
+      throw error;
+    }
+  }
+};
+
+// Payment Proof Service - New service for payment proof uploads
+export const paymentProofService = {
+  // Upload payment proof to Firebase Storage
+  async uploadPaymentProof(orderId, imageUri, fileName) {
+    try {
+      // This would typically use Firebase Storage SDK
+      // For now, we'll structure it for future implementation
+      const uploadData = {
+        orderId: orderId,
+        fileName: fileName,
+        uploadPath: `/payment_proofs/${fileName}`,
+        uploadedAt: new Date().toISOString(),
+        status: 'uploaded'
+      };
+
+      // Save upload record to Firestore
+      const proofRef = await addDoc(collection(db, 'payment_proofs'), uploadData);
+      
+      // Update order with payment proof reference
+      await updateDoc(doc(db, 'orders', orderId), {
+        paymentProofId: proofRef.id,
+        paymentProofUploaded: true,
+        updated_at: new Date().toISOString()
+      });
+
+      return proofRef.id;
+    } catch (error) {
+      console.error('Error uploading payment proof:', error);
+      throw error;
+    }
+  },
+
+  // Get payment proof by order ID
+  async getPaymentProofByOrderId(orderId) {
+    try {
+      const q = query(collection(db, 'payment_proofs'), where('orderId', '==', orderId));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        return { id: doc.id, ...doc.data() };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting payment proof:', error);
+      throw error;
+    }
+  }
+};
