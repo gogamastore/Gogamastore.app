@@ -21,6 +21,7 @@ interface UserProfile {
   email: string;
   nomor_whatsapp: string;
   created_at: string;
+  photoURL?: string;
 }
 
 export default function ProfileScreen() {
