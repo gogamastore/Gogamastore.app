@@ -263,26 +263,6 @@ export default function ProductDetailScreen() {
               🛒 Tambah ke Keranjang - {formatPrice(product.harga * quantity)}
             </span>
           </div>
-          
-          <TouchableOpacity
-            style={[
-              styles.addToCartButton,
-              addingToCart && styles.addToCartButtonDisabled
-            ]}
-            onPress={addToCart}
-            disabled={addingToCart}
-          >
-            {addingToCart ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <>
-                <MaterialIcons name="add-shopping-cart" size={20} color="#fff" />
-                <Text style={styles.addToCartText}>
-                  Tambah ke Keranjang - {formatPrice(product.harga * quantity)}
-                </Text>
-              </>
-            )}
-          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
