@@ -77,9 +77,22 @@ export default function AddAddressScreen() {
   };
 
   const handleSave = async () => {
-    if (!validateForm() || !user) return;
+    console.log('🔄 HandleSave called');
+    
+    if (!validateForm()) {
+      console.log('❌ Form validation failed');
+      return;
+    }
+    
+    if (!user) {
+      console.log('❌ No user found');
+      Alert.alert('Error', 'User tidak ditemukan. Silakan login ulang.');
+      return;
+    }
 
+    console.log('✅ Starting save process for user:', user.uid);
     setSaving(true);
+    
     try {
       const addressData = {
         name: form.name.trim(),
@@ -91,13 +104,21 @@ export default function AddAddressScreen() {
         isDefault: form.isDefault
       };
 
-      await userService.addUserAddress(user.uid, addressData);
+      console.log('📝 Saving address data:', addressData);
+      
+      const result = await userService.addUserAddress(user.uid, addressData);
+      console.log('✅ Address saved successfully, ID:', result);
+      
       Alert.alert('Berhasil', 'Alamat berhasil ditambahkan', [
-        { text: 'OK', onPress: () => router.back() }
+        { text: 'OK', onPress: () => {
+          console.log('🔙 Navigating back after success');
+          router.back();
+        }}
       ]);
     } catch (error) {
-      console.error('Error saving address:', error);
-      Alert.alert('Error', 'Gagal menambahkan alamat: ' + error.message);
+      console.error('❌ Error saving address:', error);
+      console.error('❌ Error stack:', error.stack);
+      Alert.alert('Error', 'Gagal menambahkan alamat.\n\nDetail: ' + error.message);
     } finally {
       setSaving(false);
     }
