@@ -160,15 +160,15 @@ export default function AddAddressScreen() {
           { 
             text: 'Keluar', 
             onPress: () => {
-              console.log('🔙 User confirmed exit, navigating back');
-              router.back();
+              console.log('🔙 User confirmed exit, navigating back to address list');
+              router.replace('/profile/address');
             }
           }
         ]
       );
     } else {
-      console.log('🔙 No data, navigating back directly');
-      router.back();
+      console.log('🔙 No data, navigating back directly to address list');
+      router.replace('/profile/address');
     }
   };
 
