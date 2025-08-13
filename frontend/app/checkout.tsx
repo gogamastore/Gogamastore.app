@@ -441,23 +441,6 @@ export default function CheckoutScreen() {
               {processing ? '⏳ Memproses...' : '🛒 Buat Pesanan'}
             </span>
           </div>
-
-          <TouchableOpacity
-            style={[styles.checkoutButton, processing && styles.checkoutButtonDisabled]}
-            onPress={processOrder}
-            disabled={processing}
-          >
-            {processing ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <>
-                <MaterialIcons name="payment" size={20} color="#fff" />
-                <Text style={styles.checkoutButtonText}>
-                  Lanjut ke Pembayaran
-                </Text>
-              </>
-            )}
-          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
