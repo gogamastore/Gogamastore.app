@@ -225,11 +225,6 @@ export default function ProfileScreen() {
           <Text style={styles.devSectionTitle}>Developer Tools</Text>
           <TouchableOpacity
             style={styles.devMenuItem}
-            onPress={handleInitializeSampleData}
-          >
-            <MaterialIcons name="data-usage" size={20} color="#FF6B35" />
-            <Text style={styles.devMenuTitle}>Initialize Sample Data</Text>
-          </TouchableOpacity>
           <TouchableOpacity
             style={[styles.devMenuItem, { marginTop: 8 }]}
             onPress={handleCreateSampleOrders}
