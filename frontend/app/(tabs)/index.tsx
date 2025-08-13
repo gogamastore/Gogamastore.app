@@ -799,10 +799,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   brandsScrollView: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    
+    
     paddingHorizontal: 16,
-    justifyContent: 'space-between',
+    
   },
   brandCard: {
     width: '48%',
