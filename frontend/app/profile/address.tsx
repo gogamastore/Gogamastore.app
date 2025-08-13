@@ -44,22 +44,14 @@ export default function AddressManagementScreen() {
     if (!user) return;
 
     try {
-      // For now, we'll use sample data since the address service isn't implemented yet
-      // In real implementation, this would fetch from Firebase: /user/{userId}/addresses
-      const userData = await userService.getUserProfile(user.uid);
-      
-      // Check if user has addresses stored
-      const userAddresses = userData.addresses || [];
-      
-      // If no addresses, create sample structure
-      if (userAddresses.length === 0) {
-        setAddresses([]);
-      } else {
-        setAddresses(userAddresses);
-      }
+      console.log('🏠 Loading addresses for user:', user.uid);
+      const userAddresses = await userService.getUserAddresses(user.uid);
+      console.log('📍 Loaded addresses:', userAddresses);
+      setAddresses(userAddresses);
     } catch (error) {
       console.error('Error loading addresses:', error);
       setAddresses([]);
+      Alert.alert('Error', 'Gagal memuat alamat: ' + error.message);
     } finally {
       setLoading(false);
     }
