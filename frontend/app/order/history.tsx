@@ -706,7 +706,25 @@ const styles = StyleSheet.create({
     color: '#8E8E93',
   },
   orderFooter: {
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  cancelOrderButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    backgroundColor: '#FFF5F5',
+    borderWidth: 1,
+    borderColor: '#FF3B30',
+  },
+  cancelOrderText: {
+    fontSize: 12,
+    color: '#FF3B30',
+    fontWeight: '600',
+    marginLeft: 4,
   },
   emptyContainer: {
     flex: 1,
