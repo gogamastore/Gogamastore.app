@@ -146,6 +146,28 @@ export default function CheckoutScreen() {
     return calculateSubtotal() + calculateShippingCost() + calculateTax();
   };
 
+  const getSelectedShippingOption = () => {
+    return shippingOptions.find(option => option.id === selectedShipping);
+  };
+
+  const calculateSubtotal = () => {
+    return cart?.total || 0;
+  };
+
+  const calculateShippingCost = () => {
+    const shipping = getSelectedShippingOption();
+    return shipping?.price || 0;
+  };
+
+  const calculateTax = () => {
+    const subtotal = calculateSubtotal();
+    return Math.round(subtotal * 0.11); // 11% PPN
+  };
+
+  const calculateGrandTotal = () => {
+    return calculateSubtotal() + calculateShippingCost() + calculateTax();
+  };
+
   const validateForm = () => {
     const { recipientName, phoneNumber, address, city, postalCode } = deliveryInfo;
     
