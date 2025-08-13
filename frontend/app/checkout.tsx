@@ -403,6 +403,107 @@ export default function CheckoutScreen() {
               />
             </View>
           </View>
+
+          {/* 3. Payment Method Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>3. Metode Pembayaran</Text>
+            
+            {/* Transfer Bank Option */}
+            <TouchableOpacity
+              style={[
+                styles.shippingOption,
+                selectedPayment === 'bank_transfer' && styles.shippingOptionSelected
+              ]}
+              onPress={() => setSelectedPayment('bank_transfer')}
+            >
+              <View style={styles.optionHeader}>
+                <View style={[
+                  styles.radioButton,
+                  selectedPayment === 'bank_transfer' && styles.radioButtonSelected
+                ]}>
+                  {selectedPayment === 'bank_transfer' && (
+                    <View style={styles.radioButtonInner} />
+                  )}
+                </View>
+                <MaterialIcons name="account-balance" size={24} color="#007AFF" style={styles.optionIcon} />
+                <View style={styles.optionDetails}>
+                  <Text style={styles.optionName}>Transfer Bank</Text>
+                  <Text style={styles.optionDescription}>Transfer ke salah satu rekening kami</Text>
+                </View>
+              </View>
+              
+              {selectedPayment === 'bank_transfer' && (
+                <View style={styles.bankAccountsContainer}>
+                  <Text style={styles.bankAccountsTitle}>Silakan transfer ke rekening berikut:</Text>
+                  {bankAccounts.map((account) => (
+                    <View key={account.id} style={styles.bankAccountCard}>
+                      <MaterialIcons name="account-balance" size={20} color="#007AFF" />
+                      <View style={styles.bankAccountInfo}>
+                        <Text style={styles.bankName}>{account.bankName}</Text>
+                        <Text style={styles.accountDetails}>
+                          {account.accountNumber} a/n {account.accountHolder}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </TouchableOpacity>
+
+            {/* COD Option */}
+            <TouchableOpacity
+              style={[
+                styles.shippingOption,
+                selectedPayment === 'cod' && styles.shippingOptionSelected,
+                selectedShipping === 'courier' && styles.shippingOptionDisabled
+              ]}
+              onPress={() => {
+                if (selectedShipping !== 'courier') {
+                  setSelectedPayment('cod');
+                }
+              }}
+              disabled={selectedShipping === 'courier'}
+            >
+              <View style={styles.optionHeader}>
+                <View style={[
+                  styles.radioButton,
+                  selectedPayment === 'cod' && styles.radioButtonSelected,
+                  selectedShipping === 'courier' && styles.radioButtonDisabled
+                ]}>
+                  {selectedPayment === 'cod' && selectedShipping !== 'courier' && (
+                    <View style={styles.radioButtonInner} />
+                  )}
+                </View>
+                <MaterialIcons 
+                  name="money" 
+                  size={24} 
+                  color={selectedShipping === 'courier' ? "#C7C7CC" : "#007AFF"} 
+                  style={styles.optionIcon} 
+                />
+                <View style={styles.optionDetails}>
+                  <Text style={[
+                    styles.optionName,
+                    selectedShipping === 'courier' && styles.optionNameDisabled
+                  ]}>COD (Bayar di Tempat)</Text>
+                  <Text style={[
+                    styles.optionDescription,
+                    selectedShipping === 'courier' && styles.optionDescriptionDisabled
+                  ]}>
+                    Siapkan uang pas saat pengambilan
+                    {selectedShipping === 'courier' && '\n(Tidak tersedia untuk pengiriman kurir)'}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            {/* Auto-adjust payment when shipping changes */}
+            {selectedShipping === 'courier' && selectedPayment === 'cod' && (
+              (() => {
+                setSelectedPayment('bank_transfer');
+                return null;
+              })()
+            )}
+          </View>
         </ScrollView>
 
         {/* Checkout Summary */}
