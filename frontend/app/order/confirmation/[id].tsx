@@ -15,35 +15,38 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { orderService } from '../../../services/firestoreService';
 
 interface OrderItem {
-  product_id: string;
-  nama: string;
-  harga: number;
+  productId: string;
+  name: string;
+  price: number;
   quantity: number;
+  image?: string;
+}
+
+interface CustomerDetails {
+  name: string;
+  address: string;
+  whatsapp: string;
 }
 
 interface Order {
   id: string;
   userId: string;
-  items: OrderItem[];
+  customerId: string;
+  customer: string;
+  customerDetails: CustomerDetails;
+  products: OrderItem[];
+  productIds: string[];
+  total: string; // Format: "Rp 930.000"
   subtotal: number;
-  shippingCost: number;
-  tax: number;
-  grandTotal: number;
-  deliveryInfo: {
-    recipientName: string;
-    phoneNumber: string;
-    address: string;
-    city: string;
-    postalCode: string;
-    specialInstructions: string;
-  };
-  shippingOption: {
-    name: string;
-    estimatedDays: string;
-  };
+  shippingFee: number;
+  shippingMethod: string;
   status: string;
   paymentStatus: string;
+  paymentMethod: string;
+  paymentProofUrl?: string;
+  date: any;
   created_at: string;
+  updated_at: string;
 }
 
 export default function OrderConfirmationScreen() {
