@@ -75,13 +75,128 @@ export default function OrderHistoryScreen() {
     
     try {
       const data = await orderService.getUserOrders(user.uid);
-      setOrders(data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+      setOrders(data);
+      filterOrders(data, selectedFilter);
+      updateStatusCounts(data);
     } catch (error) {
       console.error('Error fetching orders:', error);
       Alert.alert('Error', 'Gagal memuat riwayat pesanan');
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  const updateStatusCounts = (orders: Order[]) => {
+    const counts = { ...ORDER_STATUS_FILTERS.reduce((acc, item) => ({ ...acc, [item.key]: 0 }), {}) };
+    
+    orders.forEach(order => {
+      counts.all = (counts.all || 0) + 1;
+      switch (order.status) {
+        case 'pending':
+          counts.pending = (counts.pending || 0) + 1;
+          break;
+        case 'confirmed':
+        case 'processing':
+          counts.confirmed = (counts.confirmed || 0) + 1;
+          break;
+        case 'shipped':
+          counts.shipped = (counts.shipped || 0) + 1;
+          break;
+        case 'completed':
+          counts.completed = (counts.completed || 0) + 1;
+          break;
+        case 'cancelled':
+          counts.cancelled = (counts.cancelled || 0) + 1;
+          break;
+        default:
+          counts.pending = (counts.pending || 0) + 1;
+      }
+    });
+
+    const updatedCounts = ORDER_STATUS_FILTERS.map(filter => ({
+      ...filter,
+      count: counts[filter.key] || 0
+    }));
+    
+    setStatusCounts(updatedCounts);
+  };
+
+  const filterOrders = (orders: Order[], filter: string) => {
+    if (filter === 'all') {
+      setFilteredOrders(orders);
+    } else {
+      const filtered = orders.filter(order => {
+        switch (filter) {
+          case 'pending':
+            return order.status === 'pending';
+          case 'confirmed':
+            return order.status === 'confirmed' || order.status === 'processing';
+          case 'shipped':
+            return order.status === 'shipped';
+          case 'completed':
+            return order.status === 'completed';
+          case 'cancelled':
+            return order.status === 'cancelled';
+          default:
+            return true;
+        }
+      });
+      setFilteredOrders(filtered);
+    }
+  };
+
+  const handleFilterChange = (filter: string) => {
+    setSelectedFilter(filter);
+    filterOrders(orders, filter);
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const formatDate = (date: any) => {
+    if (!date) return '';
+    
+    let dateObj;
+    if (date.toDate) {
+      dateObj = date.toDate();
+    } else if (date instanceof Date) {
+      dateObj = date;
+    } else {
+      dateObj = new Date(date);
+    }
+    
+    return dateObj.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    });
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return '#FF9500';
+      case 'confirmed': case 'processing': return '#007AFF';
+      case 'shipped': return '#5856D6';
+      case 'completed': return '#34C759';
+      case 'cancelled': return '#FF3B30';
+      default: return '#8E8E93';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'pending': return 'Belum Proses';
+      case 'confirmed': case 'processing': return 'Diproses';
+      case 'shipped': return 'Dikirim';
+      case 'completed': return 'Selesai';
+      case 'cancelled': return 'Dibatalkan';
+      default: return 'Unknown';
     }
   };
 
