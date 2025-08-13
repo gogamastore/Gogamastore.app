@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { userService } from '../../services/firestoreService';
+import { userService, orderService } from '../../services/firestoreService';
 import { useRouter } from 'expo-router';
 
 interface UserProfile {
@@ -21,11 +21,13 @@ interface UserProfile {
   email: string;
   nomor_whatsapp: string;
   created_at: string;
+  photoURL?: string;
 }
 
 export default function ProfileScreen() {
   const router = useRouter();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [activeOrdersCount, setActiveOrdersCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const { user, logout } = useAuth();
 
@@ -39,23 +41,30 @@ export default function ProfileScreen() {
     if (!user) return;
 
     try {
+      console.log('📱 Loading profile data from Firebase for user:', user.uid);
       const profile = await userService.getUserProfile(user.uid);
+      console.log('📄 Profile data retrieved:', profile);
+      
       setUserProfile({
-        id: profile.id,
-        nama_lengkap: profile.nama_lengkap || user.displayName || '',
+        id: profile.id || user.uid,
+        nama_lengkap: profile.name || profile.nama_lengkap || user.displayName || '',
         email: profile.email || user.email || '',
-        nomor_whatsapp: profile.nomor_whatsapp || '',
-        created_at: profile.created_at || new Date().toISOString()
+        nomor_whatsapp: profile.whatsapp || profile.nomor_whatsapp || '',
+        created_at: profile.created_at || new Date().toISOString(),
+        photoURL: profile.photoURL || user.photoURL || ''
       });
+      
+      console.log('✅ Profile loaded successfully with photo:', profile.photoURL || user.photoURL || 'No photo');
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('❌ Error fetching profile:', error);
       // Use auth user data as fallback
       setUserProfile({
         id: user.uid,
         nama_lengkap: user.displayName || '',
         email: user.email || '',
         nomor_whatsapp: '',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        photoURL: user.photoURL || ''
       });
     } finally {
       setLoading(false);
@@ -150,7 +159,17 @@ export default function ProfileScreen() {
           <View style={styles.profileCard}>
             <View style={styles.avatarContainer}>
               <View style={styles.avatarCircle}>
-                <MaterialIcons name="person" size={32} color="#007AFF" />
+                {userProfile.photoURL ? (
+                  <Image 
+                    source={{ uri: userProfile.photoURL }} 
+                    style={styles.profileImage}
+                    onError={(error) => {
+                      console.log('❌ Error loading profile image:', error);
+                    }}
+                  />
+                ) : (
+                  <MaterialIcons name="person" size={32} color="#007AFF" />
+                )}
               </View>
               <View style={styles.statusBadge}>
                 <MaterialIcons name="verified" size={16} color="#32D74B" />
@@ -296,6 +315,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#E3F2FD',
+  },
+  profileImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   statusBadge: {
     position: 'absolute',
