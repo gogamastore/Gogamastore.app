@@ -379,14 +379,7 @@ export default function HomeScreen() {
       {brands.length > 0 && (
         <View style={styles.brandsSection}>
           <Text style={styles.sectionTitle}>Brand Favoritmu</Text>
-          <ScrollView
           <View style={styles.brandsGrid}>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.brandsScrollContainer}
-            style={styles.brandsScrollView}
-          >
             {brands.map((brand) => {
               console.log('Rendering brand:', brand);
               return (
@@ -401,7 +394,7 @@ export default function HomeScreen() {
                     />
                   ) : (
                     <View style={styles.brandLogoPlaceholder}>
-                      <MaterialIcons name="business" size={20} color="#666" />
+                      <MaterialIcons name="business" size={32} color="#666" />
                     </View>
                   )}
                   <Text style={styles.brandName}>
@@ -409,8 +402,6 @@ export default function HomeScreen() {
                   </Text>
                 </TouchableOpacity>
               );
-            })}
-          </ScrollView>
             })}
           </View>
         </View>
@@ -799,21 +790,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 8,
   },
-  brandsScrollView: {
-  brandsScrollContainer: {
-    paddingRight: 16,
-  },
-    
-    
+  brandsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     paddingHorizontal: 16,
-    
+    justifyContent: 'space-between',
   },
   brandCard: {
-    width: 100,
+    width: '48%',
     backgroundColor: '#f8f9fa',
     borderRadius: 8,
     padding: 12,
-    marginRight: 12,
+    marginBottom: 12,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#E5E5EA',
