@@ -327,10 +327,10 @@ Mohon transfer sesuai dengan nominal yang tertera dan kirim bukti transfer.
       <View style={styles.actionButtons}>
         <TouchableOpacity
           style={styles.secondaryButton}
-          onPress={() => router.push('/order/history')}
+          onPress={() => router.push(`/payment/upload/${orderId}`)}
         >
-          <MaterialIcons name="history" size={20} color="#007AFF" />
-          <Text style={styles.secondaryButtonText}>Cek Pesanan</Text>
+          <MaterialIcons name="cloud-upload" size={20} color="#007AFF" />
+          <Text style={styles.secondaryButtonText}>Upload Bukti</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
