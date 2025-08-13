@@ -118,23 +118,45 @@ export default function OrderConfirmationScreen() {
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'Menunggu Konfirmasi';
-      case 'confirmed':
-        return 'Pesanan Dikonfirmasi';
-      case 'processing':
-        return 'Sedang Diproses';
-      case 'shipped':
-        return 'Sedang Dikirim';
-      case 'delivered':
-        return 'Pesanan Selesai';
-      case 'cancelled':
-        return 'Pesanan Dibatalkan';
-      default:
-        return 'Status Tidak Diketahui';
+  const handleCancelOrder = () => {
+    if (order?.status !== 'pending') {
+      Alert.alert('Error', 'Hanya pesanan dengan status "Menunggu Konfirmasi" yang dapat dibatalkan');
+      return;
     }
+
+    Alert.alert(
+      'Batalkan Pesanan',
+      'Apakah Anda yakin ingin membatalkan pesanan ini? Tindakan ini tidak dapat dibatalkan.',
+      [
+        {
+          text: 'Batal',
+          style: 'cancel',
+        },
+        {
+          text: 'Ya, Batalkan',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              console.log('🚫 Cancelling order:', order.id);
+              await orderService.updateOrderStatus(order.id, 'cancelled');
+              Alert.alert(
+                'Pesanan Dibatalkan', 
+                'Pesanan Anda telah berhasil dibatalkan',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => router.replace('/order/history')
+                  }
+                ]
+              );
+            } catch (error) {
+              console.error('Error cancelling order:', error);
+              Alert.alert('Error', 'Gagal membatalkan pesanan. Silakan coba lagi.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   if (loading) {
