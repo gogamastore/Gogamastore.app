@@ -105,6 +105,110 @@ export default function ProfileScreen() {
     );
   };
 
+  const handleCreateSampleOrders = async () => {
+    if (!user) {
+      Alert.alert('Error', 'User tidak ditemukan');
+      return;
+    }
+
+    Alert.alert(
+      'Create Sample Orders',
+      'Apakah Anda ingin membuat beberapa sample order untuk testing?',
+      [
+        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Ya, Buat Orders',
+          onPress: async () => {
+            try {
+              console.log('🔨 Creating sample orders...');
+              
+              // Import orderService
+              const { orderService } = await import('../../services/firestoreService');
+              
+              // Sample orders data
+              const sampleOrders = [
+                {
+                  userId: user.uid,
+                  customerId: user.uid,
+                  customer: userProfile?.nama_lengkap || 'Test User',
+                  customerDetails: {
+                    name: userProfile?.nama_lengkap || 'Test User',
+                    address: 'Jl. Test No. 123, Jakarta',
+                    whatsapp: userProfile?.nomor_whatsapp || '081234567890'
+                  },
+                  products: [
+                    {
+                      productId: 'sample-1',
+                      name: 'Smartphone Samsung Galaxy',
+                      price: 3500000,
+                      quantity: 1,
+                      image: 'https://via.placeholder.com/100'
+                    }
+                  ],
+                  productIds: ['sample-1'],
+                  total: 'Rp 3.515.000',
+                  subtotal: 3500000,
+                  shippingFee: 15000,
+                  shippingMethod: 'Pengiriman oleh Kurir',
+                  status: 'confirmed',
+                  paymentStatus: 'pending',
+                  paymentMethod: 'bank_transfer',
+                  paymentProofUrl: '',
+                  date: new Date(),
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                },
+                {
+                  userId: user.uid,
+                  customerId: user.uid,
+                  customer: userProfile?.nama_lengkap || 'Test User',
+                  customerDetails: {
+                    name: userProfile?.nama_lengkap || 'Test User',
+                    address: 'Jl. Test No. 123, Jakarta',
+                    whatsapp: userProfile?.nomor_whatsapp || '081234567890'
+                  },
+                  products: [
+                    {
+                      productId: 'sample-2',
+                      name: 'Laptop Asus ROG',
+                      price: 12500000,
+                      quantity: 1,
+                      image: 'https://via.placeholder.com/100'
+                    }
+                  ],
+                  productIds: ['sample-2'],
+                  total: 'Rp 12.500.000',
+                  subtotal: 12500000,
+                  shippingFee: 0,
+                  shippingMethod: 'Ambil di Toko',
+                  status: 'shipped',
+                  paymentStatus: 'paid',
+                  paymentMethod: 'cod',
+                  paymentProofUrl: '',
+                  date: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
+                  created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                  updated_at: new Date().toISOString()
+                }
+              ];
+
+              console.log('📦 Sample orders to create:', sampleOrders);
+
+              for (const orderData of sampleOrders) {
+                const orderId = await orderService.createOrder(orderData);
+                console.log('✅ Created order:', orderId);
+              }
+
+              Alert.alert('Berhasil', 'Sample orders berhasil dibuat! Silakan cek riwayat pesanan.');
+            } catch (error) {
+              console.error('❌ Error creating sample orders:', error);
+              Alert.alert('Error', 'Gagal membuat sample orders: ' + error.message);
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const menuItems = [
     {
       title: 'Profil Saya',
