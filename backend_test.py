@@ -2,6 +2,7 @@
 """
 Backend API Testing for Gogama Store
 Tests all backend APIs including authentication, products, categories, cart, and profile
+SPECIAL FOCUS: Firebase Order Data Fetching Debug
 """
 
 import requests
