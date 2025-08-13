@@ -188,21 +188,27 @@ export default function OrderConfirmationScreen() {
   };
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
+    // Normalize status to lowercase for consistent comparison
+    const normalizedStatus = status ? status.toLowerCase() : '';
+    
+    switch (normalizedStatus) {
       case 'pending':
-        return { name: 'hourglass-empty', color: '#FF9500' };
-      case 'confirmed':
-        return { name: 'check-circle', color: '#34C759' };
+        return { name: 'schedule', color: '#FF9500' };
       case 'processing':
-        return { name: 'settings', color: '#007AFF' };
+        return { name: 'autorenew', color: '#007AFF' };
       case 'shipped':
-        return { name: 'local-shipping', color: '#007AFF' };
+        return { name: 'local-shipping', color: '#5856D6' };
       case 'delivered':
-        return { name: 'done-all', color: '#34C759' };
+        return { name: 'check-circle', color: '#34C759' };
       case 'cancelled':
         return { name: 'cancel', color: '#FF3B30' };
+      // Legacy status support
+      case 'confirmed':
+        return { name: 'autorenew', color: '#007AFF' };
+      case 'completed':
+        return { name: 'check-circle', color: '#34C759' };
       default:
-        return { name: 'help', color: '#8E8E93' };
+        return { name: 'schedule', color: '#FF9500' }; // Default to pending
     }
   };
 
