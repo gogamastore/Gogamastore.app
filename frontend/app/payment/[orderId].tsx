@@ -133,17 +133,13 @@ export default function PaymentScreen() {
   };
 
   const calculateTotalWithFee = () => {
-    let fee = 0;
-    if (selectedMethod === 'dana' || selectedMethod === 'gopay') {
-      fee = 1500; // Biaya admin Rp 1.500
-    }
-    // COD tidak ada biaya tambahan
-    return (orderData?.total || 0) + fee;
+    // All payment methods are now free
+    return (orderData?.total || 0);
   };
 
   const getSelectedMethodFee = () => {
-    if (selectedMethod === 'dana' || selectedMethod === 'gopay') return 1500;
-    return 0; // COD dan transfer bank gratis
+    // All payment methods are now free
+    return 0;
   };
 
   const copyToClipboard = (text: string, label: string) => {
