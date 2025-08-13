@@ -74,9 +74,37 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { user } = await signInWithEmailAndPassword(auth, email, password);
+      console.log('🔐 Attempting login for:', email);
+      console.log('🔥 Firebase Auth instance:', auth ? 'Available' : 'Not Available');
+      
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      console.log('✅ Login successful!', {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName
+      });
+      
       return user;
     } catch (error) {
+      console.error('❌ Login error details:', {
+        code: error.code,
+        message: error.message,
+        stack: error.stack
+      });
+      
+      // Enhanced error handling with specific Firebase error codes
+      if (error.code === 'auth/configuration-not-found') {
+        console.error('🔥 Firebase configuration issue detected!');
+        console.error('- Check Firebase project settings');
+        console.error('- Verify API keys and project ID');
+      } else if (error.code === 'auth/network-request-failed') {
+        console.error('🌐 Network issue detected!');
+        console.error('- Check internet connection');
+        console.error('- Verify Firebase project is active');
+      }
+      
       throw error;
     }
   };
