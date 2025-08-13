@@ -394,7 +394,7 @@ export default function OrderHistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#F2F2F7',
   },
   header: {
     flexDirection: 'row',
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
   filterLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#666',
+    color: '#1a1a1a',
     marginRight: 6,
   },
   filterLabelActive: {
@@ -467,8 +467,8 @@ const styles = StyleSheet.create({
   filterCount: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#666',
-    backgroundColor: '#E5E5EA',
+    color: '#8E8E93',
+    backgroundColor: '#fff',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 10,
@@ -476,8 +476,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   filterCountActive: {
-    color: '#007AFF',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    color: '#fff',
   },
   loadingContainer: {
     flex: 1,
@@ -485,52 +485,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
+    marginTop: 12,
     fontSize: 16,
     color: '#666',
-    marginTop: 12,
   },
   listContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   orderCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     marginBottom: 12,
+    padding: 16,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 1,
   },
   orderHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
+    alignItems: 'flex-start',
+    marginBottom: 12,
   },
   orderInfo: {
     flex: 1,
   },
   orderId: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '600',
     color: '#1a1a1a',
     marginBottom: 4,
   },
   orderDate: {
     fontSize: 12,
-    color: '#666',
-    fontWeight: '500',
+    color: '#8E8E93',
   },
   statusBadge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: 6,
   },
   statusText: {
     fontSize: 12,
@@ -538,11 +534,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   orderContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 12,
+    marginBottom: 12,
   },
   customerName: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
     color: '#1a1a1a',
     marginBottom: 4,
@@ -554,24 +549,20 @@ const styles = StyleSheet.create({
   },
   paymentMethod: {
     fontSize: 12,
-    color: '#007AFF',
-    fontWeight: '500',
+    color: '#8E8E93',
   },
   orderFooter: {
     alignItems: 'flex-end',
-    paddingHorizontal: 16,
-    paddingBottom: 16,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,
-    marginTop: 80,
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#1a1a1a',
     marginTop: 16,
     marginBottom: 8,
@@ -579,7 +570,7 @@ const styles = StyleSheet.create({
   },
   emptyDescription: {
     fontSize: 14,
-    color: '#666',
+    color: '#8E8E93',
     textAlign: 'center',
     lineHeight: 20,
   },
