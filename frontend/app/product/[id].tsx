@@ -232,6 +232,35 @@ export default function ProductDetailScreen() {
           </View>
 
           {/* Add to Cart Button */}
+          {/* Native HTML Add to Cart Button */}
+          <div 
+            style={{
+              backgroundColor: '#007AFF',
+              padding: '16px',
+              borderRadius: '8px',
+              margin: '16px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+            onClick={async () => {
+              console.log('🟦 NATIVE ADD TO CART CLICKED!!!');
+              alert('Adding to cart with native button...');
+              try {
+                await addToCart();
+              } catch (error) {
+                console.error('Add to cart error:', error);
+                alert('Error adding to cart: ' + error.message);
+              }
+            }}
+          >
+            <span style={{ color: 'white', fontSize: '18px', fontWeight: '600' }}>
+              🛒 Tambah ke Keranjang - {formatPrice(product.harga * quantity)}
+            </span>
+          </div>
+          
           <TouchableOpacity
             style={[
               styles.addToCartButton,
