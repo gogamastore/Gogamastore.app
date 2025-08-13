@@ -500,6 +500,102 @@ def test_firebase_integration_endpoints():
     
     return False
 
+def test_payment_proof_upload_endpoints():
+    """Test payment proof upload endpoints"""
+    print("\n=== Testing Payment Proof Upload Endpoints ===")
+    
+    if not auth_token:
+        log_test("Payment Proof Upload", False, "No auth token available")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    
+    # Test payment proof upload endpoint
+    try:
+        response = requests.post(f"{BASE_URL}/payment-proof/upload", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Payment Proof Upload Endpoint", False, "❌ MISSING: POST /api/payment-proof/upload endpoint not implemented")
+        else:
+            log_test("Payment Proof Upload Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Payment Proof Upload Endpoint", False, f"Request failed: {str(e)}")
+    
+    # Test get payment proof endpoint
+    try:
+        response = requests.get(f"{BASE_URL}/payment-proof/order/test-id", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Get Payment Proof Endpoint", False, "❌ MISSING: GET /api/payment-proof/order/{orderId} endpoint not implemented")
+        else:
+            log_test("Get Payment Proof Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Get Payment Proof Endpoint", False, f"Request failed: {str(e)}")
+    
+    return False
+
+def test_trending_products_endpoints():
+    """Test trending products endpoints"""
+    print("\n=== Testing Trending Products Endpoints ===")
+    
+    if not auth_token:
+        log_test("Trending Products", False, "No auth token available")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    
+    # Test trending products endpoint
+    try:
+        response = requests.get(f"{BASE_URL}/products/trending", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Trending Products Endpoint", False, "❌ MISSING: GET /api/products/trending endpoint not implemented")
+        else:
+            log_test("Trending Products Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Trending Products Endpoint", False, f"Request failed: {str(e)}")
+    
+    # Test trending products collection endpoint
+    try:
+        response = requests.get(f"{BASE_URL}/trending-products", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Trending Products Collection Endpoint", False, "❌ MISSING: GET /api/trending-products endpoint not implemented")
+        else:
+            log_test("Trending Products Collection Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Trending Products Collection Endpoint", False, f"Request failed: {str(e)}")
+    
+    return False
+
+def test_firebase_storage_integration():
+    """Test Firebase Storage integration endpoints"""
+    print("\n=== Testing Firebase Storage Integration ===")
+    
+    if not auth_token:
+        log_test("Firebase Storage", False, "No auth token available")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    
+    # Test Firebase Storage config endpoint
+    try:
+        response = requests.get(f"{BASE_URL}/firebase/storage/config", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Firebase Storage Config", False, "❌ MISSING: GET /api/firebase/storage/config endpoint not implemented")
+        else:
+            log_test("Firebase Storage Config", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Firebase Storage Config", False, f"Request failed: {str(e)}")
+    
+    # Test Firebase Storage upload endpoint
+    try:
+        response = requests.post(f"{BASE_URL}/firebase/storage/upload", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Firebase Storage Upload", False, "❌ MISSING: POST /api/firebase/storage/upload endpoint not implemented")
+        else:
+            log_test("Firebase Storage Upload", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Firebase Storage Upload", False, f"Request failed: {str(e)}")
+    
+    return False
+
 def run_all_tests():
     """Run all backend API tests"""
     print("🚀 Starting Gogama Store Backend API Tests")
