@@ -77,6 +77,20 @@ export default function AddAddressScreen() {
     return true;
   };
 
+  // Function to show success toast
+  const showSuccessToast = (message: string) => {
+    if (Platform.OS === 'android') {
+      ToastAndroid.showWithGravity(
+        message,
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+      );
+    } else {
+      // For iOS and web, use Alert as fallback
+      Alert.alert('Berhasil', message);
+    }
+  };
+
   const handleSave = async () => {
     console.log('🔄 HandleSave called');
     
@@ -110,12 +124,15 @@ export default function AddAddressScreen() {
       const result = await userService.addUserAddress(user.uid, addressData);
       console.log('✅ Address saved successfully, ID:', result);
       
-      Alert.alert('Berhasil', 'Alamat berhasil ditambahkan', [
-        { text: 'OK', onPress: () => {
-          console.log('🔙 Navigating back after success');
-          router.back();
-        }}
-      ]);
+      // Show success toast
+      showSuccessToast('✅ Alamat berhasil ditambahkan!');
+      
+      // Navigate back to address list after short delay
+      setTimeout(() => {
+        console.log('🔙 Navigating back to address list');
+        router.replace('/profile/address');
+      }, 1500);
+      
     } catch (error) {
       console.error('❌ Error saving address:', error);
       console.error('❌ Error stack:', error.stack);
