@@ -224,25 +224,6 @@ export default function OrderHistoryScreen() {
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'Menunggu Konfirmasi';
-      case 'confirmed':
-        return 'Pesanan Dikonfirmasi';
-      case 'processing':
-        return 'Sedang Diproses';
-      case 'shipped':
-        return 'Sedang Dikirim';
-      case 'delivered':
-        return 'Pesanan Selesai';
-      case 'cancelled':
-        return 'Pesanan Dibatalkan';
-      default:
-        return 'Status Tidak Diketahui';
-    }
-  };
-
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
       case 'paid':
