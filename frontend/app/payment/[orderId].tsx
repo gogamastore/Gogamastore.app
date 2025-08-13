@@ -373,23 +373,22 @@ export default function PaymentScreen() {
             padding: '16px',
             borderRadius: '8px',
             margin: '16px 0',
-            cursor: selectedMethod ? 'pointer' : 'not-allowed',
+            cursor: selectedMethod && !processing ? 'pointer' : 'not-allowed',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '8px'
+            gap: '8px',
+            opacity: selectedMethod ? 1 : 0.6
           }}
           onClick={async () => {
             if (!selectedMethod || processing) return;
             
-            console.log('🟦 NATIVE BUAT PESANAN CLICKED!!!');
-            alert('Creating order with native button...');
-            
+            console.log('🛒 Native Buat Pesanan clicked!');
             try {
               await processPayment();
             } catch (error) {
               console.error('Payment error:', error);
-              alert('Error creating order: ' + error.message);
+              alert('Error: ' + error.message);
             }
           }}
         >
@@ -398,7 +397,7 @@ export default function PaymentScreen() {
             fontSize: '18px', 
             fontWeight: '600' 
           }}>
-            {processing ? '⏳ Processing...' : '🛒 Buat Pesanan (Native)'}
+            {processing ? '⏳ Memproses...' : '🛒 Buat Pesanan'}
           </span>
         </div>
         
