@@ -504,30 +504,42 @@ export const orderService = {
     }
   },
 
-  // Get user orders
+  // Get user orders with improved error handling
   async getUserOrders(userId) {
     try {
       console.log('🔍 Fetching orders for userId:', userId);
       
+      // Validate userId
+      if (!userId) {
+        console.error('❌ No userId provided');
+        return [];
+      }
+      
       // Try both possible field names for user identification
       const queries = [
         query(collection(db, 'orders'), where('userId', '==', userId)),
-        query(collection(db, 'orders'), where('customerId', '==', userId))
+        query(collection(db, 'orders'), where('customerId', '==', userId)),
+        query(collection(db, 'orders'), where('user.uid', '==', userId)) // nested field
       ];
       
       let allOrders = [];
+      let hasPermissionError = false;
       
       for (const q of queries) {
         try {
+          console.log('🔍 Trying query:', q);
           const querySnapshot = await getDocs(q);
           const orders = querySnapshot.docs.map(doc => {
             const data = doc.data();
-            console.log('📦 Found order:', { id: doc.id, ...data });
+            console.log('📦 Found order:', { id: doc.id, status: data.status, customer: data.customer });
             return { id: doc.id, ...data };
           });
           allOrders = allOrders.concat(orders);
         } catch (error) {
-          console.warn('Query failed for one field:', error);
+          console.warn('⚠️ Query failed:', error.code, error.message);
+          if (error.code === 'permission-denied') {
+            hasPermissionError = true;
+          }
         }
       }
       
@@ -537,9 +549,33 @@ export const orderService = {
       );
       
       console.log('📋 Total unique orders found:', uniqueOrders.length);
+      
+      // If no orders found and we have permission errors, provide helpful message
+      if (uniqueOrders.length === 0 && hasPermissionError) {
+        console.error('🔒 Firebase permission denied for orders collection');
+        console.error('💡 This may indicate Firebase security rules need adjustment');
+        
+        // Try to create sample data for development
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔧 Development mode: attempting to create sample order');
+          return await this.createSampleOrderIfNeeded(userId);
+        }
+      }
+      
       return uniqueOrders;
     } catch (error) {
-      console.error('Error getting user orders:', error);
+      console.error('❌ Error getting user orders:', error);
+      
+      // Provide specific error messages based on Firebase error codes
+      if (error.code === 'permission-denied') {
+        console.error('🔒 Permission denied - check Firebase security rules');
+        console.error('💡 Rules should allow authenticated users to read their own orders');
+      } else if (error.code === 'unavailable') {
+        console.error('🌐 Firebase service unavailable - network issue');
+      } else if (error.code === 'unauthenticated') {
+        console.error('🔐 User not authenticated - login required');
+      }
+      
       throw error;
     }
   },
