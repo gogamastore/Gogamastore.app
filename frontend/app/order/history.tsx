@@ -250,101 +250,37 @@ export default function OrderHistoryScreen() {
     }
   };
 
-  const renderOrderItem = ({ item }: { item: Order }) => {
-    const statusIcon = getStatusIcon(item.status);
-    const paymentColor = getPaymentStatusColor(item.paymentStatus);
-    
-    return (
-      <TouchableOpacity
-        style={styles.orderCard}
-        onPress={() => router.push(`/order/confirmation/${item.id}`)}
-        activeOpacity={0.7}
-      >
-        <View style={styles.orderHeader}>
-          <View style={styles.orderIdContainer}>
-            <Text style={styles.orderIdLabel}>Pesanan</Text>
-            <Text style={styles.orderId} numberOfLines={1}>
-              #{item.id.slice(-8).toUpperCase()}
-            </Text>
-          </View>
-          
-          <View style={styles.orderDate}>
-            <Text style={styles.orderDateText}>
-              {new Date(item.created_at).toLocaleDateString('id-ID', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-              })}
-            </Text>
-          </View>
+  const renderOrderItem = ({ item }: { item: Order }) => (
+    <TouchableOpacity
+      style={styles.orderCard}
+      onPress={() => router.push(`/order/confirmation/${item.id}`)}
+      activeOpacity={0.7}
+    >
+      <View style={styles.orderHeader}>
+        <View style={styles.orderInfo}>
+          <Text style={styles.orderId}>#{item.id.slice(-8).toUpperCase()}</Text>
+          <Text style={styles.orderDate}>{formatDate(item.date)}</Text>
         </View>
-
-        <View style={styles.orderContent}>
-          {/* Items Summary */}
-          <View style={styles.itemsSummary}>
-            <Text style={styles.itemsCount}>
-              {item.items.length} produk
-            </Text>
-            <Text style={styles.firstItemName} numberOfLines={1}>
-              {item.items[0]?.nama}
-              {item.items.length > 1 && ` +${item.items.length - 1} lainnya`}
-            </Text>
-          </View>
-
-          {/* Status */}
-          <View style={styles.statusContainer}>
-            <View style={styles.orderStatusRow}>
-              <MaterialIcons 
-                name={statusIcon.name as any} 
-                size={16} 
-                color={statusIcon.color} 
-              />
-              <Text style={[styles.statusText, { color: statusIcon.color }]}>
-                {getStatusText(item.status)}
-              </Text>
-            </View>
-            
-            <View style={styles.paymentStatusRow}>
-              <MaterialIcons 
-                name="payment" 
-                size={16} 
-                color={paymentColor} 
-              />
-              <Text style={[styles.paymentStatusText, { color: paymentColor }]}>
-                {getPaymentStatusText(item.paymentStatus)}
-              </Text>
-            </View>
-          </View>
-
-          {/* Total and Action */}
-          <View style={styles.orderFooter}>
-            <View style={styles.totalContainer}>
-              <Text style={styles.totalLabel}>Total</Text>
-              <Text style={styles.totalAmount}>
-                {formatPrice(item.grandTotal)}
-              </Text>
-            </View>
-            
-            <TouchableOpacity
-              style={styles.detailButton}
-              onPress={() => router.push(`/order/confirmation/${item.id}`)}
-            >
-              <Text style={styles.detailButtonText}>Lihat Detail</Text>
-              <MaterialIcons name="chevron-right" size={16} color="#007AFF" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Shipping Info */}
-          <View style={styles.shippingInfo}>
-            <MaterialIcons name="local-shipping" size={14} color="#666" />
-            <Text style={styles.shippingText}>
-              {item.shippingOption.name} • {item.shippingOption.estimatedDays}
-            </Text>
-          </View>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
+          <Text style={styles.statusText}>{getStatusText(item.status)}</Text>
         </View>
-      </TouchableOpacity>
-    );
-  };
+      </View>
+
+      <View style={styles.orderContent}>
+        <Text style={styles.customerName}>{item.customer}</Text>
+        <Text style={styles.orderSummary}>
+          {item.products.length} produk • {formatPrice(item.total)}
+        </Text>
+        <Text style={styles.paymentMethod}>
+          {item.paymentMethod === 'cod' ? 'COD' : 'Transfer Bank'}
+        </Text>
+      </View>
+
+      <View style={styles.orderFooter}>
+        <MaterialIcons name="chevron-right" size={20} color="#C7C7CC" />
+      </View>
+    </TouchableOpacity>
+  );
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
