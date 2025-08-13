@@ -831,7 +831,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#1a1a1a',
     textAlign: 'center',
-    numberOfLines: 1,
+    
   },
   productsSectionHeader: {
     flexDirection: 'row',
