@@ -637,6 +637,21 @@ def run_all_tests():
     test_order_cancellation_endpoint()
     test_firebase_integration_endpoints()
     
+    # NEW: Payment Proof Upload System Testing
+    print("\n" + "💳" * 60)
+    print("PAYMENT PROOF UPLOAD SYSTEM TESTING")
+    print("💳" * 60)
+    
+    test_payment_proof_upload_endpoints()
+    test_firebase_storage_integration()
+    
+    # NEW: Trending Products Testing
+    print("\n" + "📈" * 60)
+    print("TRENDING PRODUCTS FUNCTIONALITY TESTING")
+    print("📈" * 60)
+    
+    test_trending_products_endpoints()
+    
     # Summary
     print("\n" + "=" * 60)
     print("📊 COMPREHENSIVE TEST SUMMARY")
