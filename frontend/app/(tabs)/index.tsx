@@ -328,7 +328,6 @@ export default function HomeScreen() {
       {/* Promotional Banners */}
       {banners.length > 0 && (
         <View style={styles.bannersSection}>
-          <Text style={styles.sectionTitle}>Penawaran Spesial ({banners.length})</Text>
           <ScrollView 
             ref={bannerScrollRef}
             horizontal 
