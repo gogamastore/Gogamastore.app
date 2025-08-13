@@ -282,6 +282,158 @@ export const userService = {
       console.error('Error updating user profile:', error);
       throw error;
     }
+  },
+
+  // Address management
+  async getUserAddresses(userId) {
+    try {
+      console.log('🏠 Fetching addresses for userId:', userId);
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const addresses = userData.addresses || [];
+        console.log('📍 Found addresses:', addresses.length);
+        return addresses;
+      } else {
+        console.log('❌ User document not found');
+        return [];
+      }
+    } catch (error) {
+      console.error('Error getting user addresses:', error);
+      throw error;
+    }
+  },
+
+  async addUserAddress(userId, addressData) {
+    try {
+      console.log('➕ Adding address for userId:', userId);
+      const userDocRef = doc(db, 'users', userId);
+      
+      // Get current addresses
+      const userDoc = await getDoc(userDocRef);
+      const currentAddresses = userDoc.exists() ? (userDoc.data().addresses || []) : [];
+      
+      // Create new address with ID
+      const newAddress = {
+        id: Date.now().toString(),
+        ...addressData,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      // If this is the first address or isDefault is true, make sure only one is default
+      if (newAddress.isDefault || currentAddresses.length === 0) {
+        currentAddresses.forEach(addr => addr.isDefault = false);
+        newAddress.isDefault = true;
+      }
+
+      // Add new address to array
+      const updatedAddresses = [...currentAddresses, newAddress];
+      
+      // Update user document
+      await updateDoc(userDocRef, {
+        addresses: updatedAddresses,
+        updated_at: new Date().toISOString()
+      });
+      
+      console.log('✅ Address added successfully');
+      return newAddress.id;
+    } catch (error) {
+      console.error('Error adding user address:', error);
+      throw error;
+    }
+  },
+
+  async updateUserAddress(userId, addressId, addressData) {
+    try {
+      console.log('📝 Updating address:', addressId, 'for userId:', userId);
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (userDoc.exists()) {
+        const currentAddresses = userDoc.data().addresses || [];
+        const addressIndex = currentAddresses.findIndex(addr => addr.id === addressId);
+        
+        if (addressIndex !== -1) {
+          // If setting as default, make others non-default
+          if (addressData.isDefault) {
+            currentAddresses.forEach(addr => addr.isDefault = false);
+          }
+          
+          // Update the address
+          currentAddresses[addressIndex] = {
+            ...currentAddresses[addressIndex],
+            ...addressData,
+            updated_at: new Date().toISOString()
+          };
+          
+          await updateDoc(userDocRef, {
+            addresses: currentAddresses,
+            updated_at: new Date().toISOString()
+          });
+          
+          console.log('✅ Address updated successfully');
+        } else {
+          throw new Error('Address not found');
+        }
+      }
+    } catch (error) {
+      console.error('Error updating user address:', error);
+      throw error;
+    }
+  },
+
+  async deleteUserAddress(userId, addressId) {
+    try {
+      console.log('🗑️ Deleting address:', addressId, 'for userId:', userId);
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (userDoc.exists()) {
+        const currentAddresses = userDoc.data().addresses || [];
+        const updatedAddresses = currentAddresses.filter(addr => addr.id !== addressId);
+        
+        await updateDoc(userDocRef, {
+          addresses: updatedAddresses,
+          updated_at: new Date().toISOString()
+        });
+        
+        console.log('✅ Address deleted successfully');
+      }
+    } catch (error) {
+      console.error('Error deleting user address:', error);
+      throw error;
+    }
+  },
+
+  async setDefaultAddress(userId, addressId) {
+    try {
+      console.log('⭐ Setting default address:', addressId, 'for userId:', userId);
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (userDoc.exists()) {
+        const currentAddresses = userDoc.data().addresses || [];
+        
+        // Set all addresses to non-default, then set the selected one as default
+        const updatedAddresses = currentAddresses.map(addr => ({
+          ...addr,
+          isDefault: addr.id === addressId
+        }));
+        
+        await updateDoc(userDocRef, {
+          addresses: updatedAddresses,
+          updated_at: new Date().toISOString()
+        });
+        
+        console.log('✅ Default address updated successfully');
+      }
+    } catch (error) {
+      console.error('Error setting default address:', error);
+      throw error;
+    }
   }
 };
 
