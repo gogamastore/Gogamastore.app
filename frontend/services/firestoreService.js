@@ -389,6 +389,20 @@ export const orderService = {
       console.error('Error updating payment status:', error);
       throw error;
     }
+  },
+
+  // Update payment method
+  async updatePaymentMethod(orderId, paymentData) {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, {
+        paymentMethod: paymentData,
+        updated_at: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error updating payment method:', error);
+      throw error;
+    }
   }
 };
 
