@@ -51,25 +51,18 @@ interface ShippingOption {
 
 const shippingOptions: ShippingOption[] = [
   {
-    id: 'regular',
-    name: 'Pengiriman Reguler',
+    id: 'courier',
+    name: 'Pengiriman oleh Kurir',
     price: 15000,
-    estimatedDays: '3-5 hari',
-    description: 'Pengiriman standar dengan estimasi 3-5 hari kerja'
+    estimatedDays: '1-3 hari',
+    description: 'Pengiriman menggunakan kurir, harga mulai dari Rp 15.000/koli'
   },
   {
-    id: 'express',
-    name: 'Pengiriman Express',
-    price: 25000,
-    estimatedDays: '1-2 hari',
-    description: 'Pengiriman cepat dengan estimasi 1-2 hari kerja'
-  },
-  {
-    id: 'same_day',
-    name: 'Same Day Delivery',
-    price: 35000,
+    id: 'pickup',
+    name: 'Ambil di Toko',
+    price: 0,
     estimatedDays: 'Hari ini',
-    description: 'Pengiriman di hari yang sama (khusus area tertentu)'
+    description: 'Ambil sendiri di toko, tidak ada biaya pengiriman'
   }
 ];
 
