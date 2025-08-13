@@ -167,17 +167,26 @@ export default function PaymentScreen() {
         fee: selectedMethod.includes('dana') || selectedMethod.includes('gopay') ? 1500 : 0,
       });
       
+      // Clear cart after payment method is selected and order is confirmed
+      if (user) {
+        await cartService.clearCart(user.uid);
+      }
+      
       if (selectedMethod === 'cod') {
         // For COD, confirm order but keep payment status as "belum bayar"
         await orderService.updateOrderStatus(orderId as string, 'confirmed');
         await orderService.updatePaymentStatus(orderId as string, 'unpaid'); // Status "belum bayar"
         router.replace(`/payment/success/${orderId}?method=cod`);
-      } else if (selectedBankAccount) {
+      } else if (selectedBankAccount || bankAccounts.some(account => account.id === selectedMethod)) {
         // For bank transfers, show payment instructions
         router.push(`/payment/instructions/${orderId}?method=${selectedMethod}`);
       } else if (selectedMethod.includes('dana') || selectedMethod.includes('gopay')) {
         // For digital wallets, show payment instructions
         router.push(`/payment/instructions/${orderId}?method=${selectedMethod}`);
+      } else {
+        console.log('No matching navigation condition found for method:', selectedMethod);
+        console.log('Available bank accounts:', bankAccounts);
+        Alert.alert('Error', 'Metode pembayaran tidak valid. Silakan pilih metode lain.');
       }
       
     } catch (error) {
