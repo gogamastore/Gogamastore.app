@@ -65,20 +65,103 @@ export default function OrderConfirmationScreen() {
   useEffect(() => {
     if (id && user) {
       fetchOrder();
+      checkExistingPaymentProof();
     }
   }, [id, user]);
 
   const fetchOrder = async () => {
+    if (!id || !user) return;
+    
     try {
       const orderData = await orderService.getOrderById(id as string);
       setOrder(orderData);
     } catch (error) {
       console.error('Error fetching order:', error);
-      Alert.alert('Error', 'Gagal memuat data pesanan', [
-        { text: 'OK', onPress: () => router.replace('/(tabs)/') }
-      ]);
+      Alert.alert('Error', 'Gagal memuat data pesanan');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkExistingPaymentProof = async () => {
+    if (!id) return;
+    
+    try {
+      const proofStatus = await paymentProofService.hasPaymentProof(id as string);
+      setHasExistingProof(proofStatus.hasProof);
+      if (proofStatus.hasProof && proofStatus.proofUrl) {
+        setPaymentProofImage(proofStatus.proofUrl);
+      }
+    } catch (error) {
+      console.error('Error checking payment proof:', error);
+    }
+  };
+
+  const pickPaymentProofImage = async () => {
+    try {
+      // Request permission to access media library
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (permissionResult.granted === false) {
+        Alert.alert('Permission Required', 'Izin akses galeri diperlukan untuk mengunggah bukti pembayaran');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setPaymentProofImage(result.assets[0].uri);
+        console.log('✅ Payment proof image selected:', result.assets[0].uri);
+        
+        // Auto upload if order exists
+        if (order) {
+          await uploadPaymentProof(result.assets[0].uri);
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error picking image:', error);
+      Alert.alert('Error', 'Gagal memilih gambar. Silakan coba lagi.');
+    }
+  };
+
+  const uploadPaymentProof = async (imageUri: string) => {
+    if (!order || !imageUri) return;
+    
+    try {
+      setUploadingProof(true);
+      const fileName = `payment_proof_${order.id}_${Date.now()}.jpg`;
+      
+      const result = await paymentProofService.uploadPaymentProof(
+        order.id, 
+        imageUri, 
+        fileName
+      );
+      
+      if (result.success) {
+        setHasExistingProof(true);
+        Alert.alert('Berhasil', 'Bukti pembayaran berhasil diunggah');
+        
+        // Refresh order data
+        await fetchOrder();
+      }
+    } catch (error) {
+      console.error('❌ Error uploading payment proof:', error);
+      Alert.alert('Error', 'Gagal mengunggah bukti pembayaran. Silakan coba lagi.');
+    } finally {
+      setUploadingProof(false);
+    }
+  };
+
+  const removePaymentProofImage = () => {
+    if (!hasExistingProof) {
+      setPaymentProofImage(null);
+    } else {
+      Alert.alert('Info', 'Bukti pembayaran yang sudah diunggah tidak dapat dihapus.');
     }
   };
 
