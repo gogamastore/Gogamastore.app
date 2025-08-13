@@ -180,6 +180,30 @@ backend:
         agent: "testing"
         comment: "✅ TESTED: Profile endpoints working perfectly. GET /api/profile returns complete user data, PUT /api/profile successfully updates allowed fields (nama_lengkap, nomor_whatsapp). Authentication required and working."
 
+  - task: "Order Management APIs (Firebase Integration)"
+    implemented: false
+    working: false
+    file: "server.py"
+    stuck_count: 3
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL MISSING: Backend has NO order management APIs. Missing endpoints: POST /api/orders (create order), GET /api/orders (get user orders), GET /api/orders/{id} (get order by ID), PUT /api/orders/{id}/status (update order status), PUT /api/orders/{id}/cancel (cancel order). Frontend uses Firebase orderService functions but backend provides no order support."
+
+  - task: "Firebase Connection and Authentication"
+    implemented: false
+    working: false
+    file: "server.py"
+    stuck_count: 2
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ PARTIAL FIREBASE CONNECTIVITY: Firebase Auth API working, 3/7 collections accessible (products: 100 docs, banners: 3 docs, brands: 6 docs). However, critical collections restricted: orders, bank_accounts, user collections have permission denied. Missing backend endpoints: POST /api/firebase/sync, POST /api/firebase/validate. Architecture mismatch: frontend expects Firebase but backend has no Firebase integration."
+
 frontend:
   - task: "Authentication Screens (Login/Register)"
     implemented: true
