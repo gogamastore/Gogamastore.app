@@ -323,6 +323,7 @@ export default function HomeScreen() {
       >
       {/* Debug Info */}
       <View style={{ padding: 16, backgroundColor: '#f0f0f0' }}>
+      </View>
       
       {/* Promotional Banners */}
       {banners.length > 0 && (
