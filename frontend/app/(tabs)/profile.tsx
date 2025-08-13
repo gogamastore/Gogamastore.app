@@ -354,6 +354,13 @@ export default function ProfileScreen() {
             <MaterialIcons name="data-usage" size={20} color="#FF6B35" />
             <Text style={styles.devMenuTitle}>Initialize Sample Data</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.devMenuItem, { marginTop: 8 }]}
+            onPress={handleCreateSampleOrders}
+          >
+            <MaterialIcons name="receipt" size={20} color="#32D74B" />
+            <Text style={styles.devMenuTitle}>Create Sample Orders</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Logout Button */}
