@@ -355,12 +355,37 @@ export const orderService = {
   // Get user orders
   async getUserOrders(userId) {
     try {
-      const q = query(
-        collection(db, 'orders'), 
-        where('userId', '==', userId)
+      console.log('🔍 Fetching orders for userId:', userId);
+      
+      // Try both possible field names for user identification
+      const queries = [
+        query(collection(db, 'orders'), where('userId', '==', userId)),
+        query(collection(db, 'orders'), where('customerId', '==', userId))
+      ];
+      
+      let allOrders = [];
+      
+      for (const q of queries) {
+        try {
+          const querySnapshot = await getDocs(q);
+          const orders = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            console.log('📦 Found order:', { id: doc.id, ...data });
+            return { id: doc.id, ...data };
+          });
+          allOrders = allOrders.concat(orders);
+        } catch (error) {
+          console.warn('Query failed for one field:', error);
+        }
+      }
+      
+      // Remove duplicates based on order ID
+      const uniqueOrders = allOrders.filter((order, index, self) => 
+        index === self.findIndex(o => o.id === order.id)
       );
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      console.log('📋 Total unique orders found:', uniqueOrders.length);
+      return uniqueOrders;
     } catch (error) {
       console.error('Error getting user orders:', error);
       throw error;
