@@ -77,22 +77,38 @@ export default function AddressManagementScreen() {
   };
 
   const handleDeleteAddress = (address: Address) => {
+    console.log('🗑️ handleDeleteAddress called for address:', address.name);
+    
     if (address.isDefault) {
-      Alert.alert('Peringatan', 'Alamat utama tidak dapat dihapus. Silakan pilih alamat utama yang lain terlebih dahulu.');
+      Alert.alert(
+        'Tidak Dapat Menghapus', 
+        'Alamat utama tidak dapat dihapus. Silakan pilih alamat utama yang lain terlebih dahulu.',
+        [{ text: 'OK', style: 'default' }]
+      );
       return;
     }
 
     Alert.alert(
       'Hapus Alamat',
-      `Apakah Anda yakin ingin menghapus alamat "${address.name}"?`,
+      `Apakah Anda yakin ingin menghapus alamat "${address.name}"?\n\nTindakan ini tidak dapat dibatalkan.`,
       [
-        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Batal',
+          style: 'cancel',
+          onPress: () => {
+            console.log('❌ User cancelled address deletion');
+          }
+        },
         {
           text: 'Hapus',
           style: 'destructive',
-          onPress: () => deleteAddress(address.id)
+          onPress: () => {
+            console.log('✅ User confirmed address deletion for:', address.name);
+            deleteAddress(address.id);
+          }
         }
-      ]
+      ],
+      { cancelable: true }
     );
   };
 
