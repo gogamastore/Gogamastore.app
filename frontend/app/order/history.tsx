@@ -357,36 +357,38 @@ export default function OrderHistoryScreen() {
   );
 
   const renderStatusFilter = () => (
-    <ScrollView 
-      horizontal 
-      showsHorizontalScrollIndicator={false}
-      style={styles.filtersContainer}
-      contentContainerStyle={styles.filtersContent}
-    >
-      {statusCounts.map((filter) => (
-        <TouchableOpacity
-          key={filter.key}
-          style={[
-            styles.filterTab,
-            selectedFilter === filter.key && styles.filterTabActive
-          ]}
-          onPress={() => handleFilterChange(filter.key)}
-        >
-          <Text style={[
-            styles.filterLabel,
-            selectedFilter === filter.key && styles.filterLabelActive
-          ]}>
-            {filter.label}
-          </Text>
-          <Text style={[
-            styles.filterCount,
-            selectedFilter === filter.key && styles.filterCountActive
-          ]}>
-            {filter.count}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+    <View style={styles.filtersContainer}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filtersContent}
+        style={styles.filtersScrollView}
+      >
+        {statusCounts.map((filter) => (
+          <TouchableOpacity
+            key={filter.key}
+            style={[
+              styles.filterTab,
+              selectedFilter === filter.key && styles.filterTabActive,
+            ]}
+            onPress={() => handleFilterChange(filter.key)}
+          >
+            <Text style={[
+              styles.filterLabel,
+              selectedFilter === filter.key && styles.filterLabelActive,
+            ]}>
+              {filter.label}
+            </Text>
+            <Text style={[
+              styles.filterCount,
+              selectedFilter === filter.key && styles.filterCountActive,
+            ]}>
+              {filter.count}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
   );
 
   const renderEmptyState = () => (
