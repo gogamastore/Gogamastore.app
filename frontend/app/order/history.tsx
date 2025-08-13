@@ -66,7 +66,7 @@ export default function OrderHistoryScreen() {
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [selectedFilter, setSelectedFilter] = useState('pending');
   const [statusCounts, setStatusCounts] = useState(ORDER_STATUS_FILTERS);
 
   useEffect(() => {
