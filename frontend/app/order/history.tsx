@@ -52,11 +52,11 @@ interface Order {
 
 const ORDER_STATUS_FILTERS = [
   { key: 'all', label: 'Semua', count: 0 },
-  { key: 'pending', label: 'Belum', count: 0 },
-  { key: 'confirmed', label: 'Proses', count: 0 },
-  { key: 'shipped', label: 'Kirim', count: 0 },
+  { key: 'pending', label: 'Belum Proses', count: 0 },
+  { key: 'confirmed', label: 'Diproses', count: 0 },
+  { key: 'shipped', label: 'Dikirim', count: 0 },
   { key: 'completed', label: 'Selesai', count: 0 },
-  { key: 'cancelled', label: 'Batal', count: 0 },
+  { key: 'cancelled', label: 'Dibatalkan', count: 0 },
 ];
 
 export default function OrderHistoryScreen() {
