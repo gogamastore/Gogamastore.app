@@ -350,16 +350,34 @@ export default function OrderConfirmationScreen() {
           </View>
         </View>
 
-        {/* Next Steps */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Langkah Selanjutnya</Text>
-          <View style={styles.nextStep}>
-            <MaterialIcons name="info" size={20} color="#007AFF" />
-            <Text style={styles.nextStepText}>
-              Kami akan mengirimkan konfirmasi dan update status pesanan melalui notifikasi aplikasi.
-            </Text>
+        {/* Cancel Order Section - Only for Pending Orders */}
+        {order.status === 'pending' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Batalkan Pesanan</Text>
+            <TouchableOpacity 
+              style={styles.cancelOrderSection}
+              onPress={handleCancelOrder}
+            >
+              <MaterialIcons name="cancel" size={20} color="#FF3B30" />
+              <Text style={styles.cancelOrderSectionText}>
+                Batalkan pesanan ini jika Anda sudah tidak memerlukan produk ini lagi.
+              </Text>
+            </TouchableOpacity>
           </View>
-        </View>
+        )}
+
+        {/* Next Steps - Only for Non-Pending Orders */}
+        {order.status !== 'pending' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Langkah Selanjutnya</Text>
+            <View style={styles.nextStep}>
+              <MaterialIcons name="info" size={20} color="#007AFF" />
+              <Text style={styles.nextStepText}>
+                Kami akan mengirimkan konfirmasi dan update status pesanan melalui notifikasi aplikasi.
+              </Text>
+            </View>
+          </View>
+        )}
       </ScrollView>
 
       {/* Action Buttons */}
