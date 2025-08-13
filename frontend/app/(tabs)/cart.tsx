@@ -159,16 +159,28 @@ export default function CartScreen() {
 
   const confirmRemoveItem = (item: CartItem) => {
     console.log('🔴 confirmRemoveItem called for:', item.nama);
+    
     Alert.alert(
-      'Konfirmasi',
-      `Hapus ${item.nama} dari keranjang?`,
+      'Hapus Item',
+      `Apakah Anda yakin ingin menghapus "${item.nama}" dari keranjang?`,
       [
-        { text: 'Batal', style: 'cancel' },
-        { text: 'Hapus', style: 'destructive', onPress: () => {
-          console.log('🔴 User confirmed deletion');
-          removeFromCart(item.product_id);
-        }},
-      ]
+        {
+          text: 'Batal',
+          style: 'cancel',
+          onPress: () => {
+            console.log('❌ User cancelled item removal');
+          }
+        },
+        { 
+          text: 'Hapus', 
+          style: 'destructive',
+          onPress: () => {
+            console.log('✅ User confirmed item removal for:', item.nama);
+            removeFromCart(item.product_id);
+          }
+        }
+      ],
+      { cancelable: true }
     );
   };
 
