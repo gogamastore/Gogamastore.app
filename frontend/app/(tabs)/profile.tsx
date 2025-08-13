@@ -153,7 +153,17 @@ export default function ProfileScreen() {
           <View style={styles.profileCard}>
             <View style={styles.avatarContainer}>
               <View style={styles.avatarCircle}>
-                <MaterialIcons name="person" size={32} color="#007AFF" />
+                {userProfile.photoURL ? (
+                  <Image 
+                    source={{ uri: userProfile.photoURL }} 
+                    style={styles.profileImage}
+                    onError={(error) => {
+                      console.log('❌ Error loading profile image:', error);
+                    }}
+                  />
+                ) : (
+                  <MaterialIcons name="person" size={32} color="#007AFF" />
+                )}
               </View>
               <View style={styles.statusBadge}>
                 <MaterialIcons name="verified" size={16} color="#32D74B" />
