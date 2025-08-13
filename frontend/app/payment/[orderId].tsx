@@ -145,18 +145,16 @@ export default function PaymentScreen() {
 
   const calculateTotalWithFee = () => {
     let fee = 0;
-    if (selectedMethod === 'cod') {
-      fee = 5000;
-    } else if (selectedMethod === 'dana' || selectedMethod === 'gopay') {
-      fee = 2500;
+    if (selectedMethod === 'dana' || selectedMethod === 'gopay') {
+      fee = 1500; // Biaya admin Rp 1.500
     }
-    return (orderData?.grandTotal || 0) + fee;
+    // COD tidak ada biaya tambahan
+    return (orderData?.total || 0) + fee;
   };
 
   const getSelectedMethodFee = () => {
-    if (selectedMethod === 'cod') return 5000;
-    if (selectedMethod === 'dana' || selectedMethod === 'gopay') return 2500;
-    return 0;
+    if (selectedMethod === 'dana' || selectedMethod === 'gopay') return 1500;
+    return 0; // COD dan transfer bank gratis
   };
 
   const copyToClipboard = (text: string, label: string) => {
