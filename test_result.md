@@ -319,6 +319,18 @@ frontend:
         agent: "main"
         comment: "Implemented comprehensive real payment integration with Indonesian payment methods: Transfer Bank BRI/BNI, COD (Cash on Delivery), DANA & GoPay digital wallets. Includes payment method selection screen, detailed bank transfer instructions with copy-to-clipboard functionality, payment verification timeline, and payment status tracking. Integrated with Firebase orderService for payment management."
 
+  - task: "Payment System Revision"
+    implemented: true
+    working: "NA"
+    file: "app/payment/[orderId].tsx, app/payment/upload/[orderId].tsx, services/firestoreService.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Revised payment system with dynamic bank accounts from Firestore /bank_accounts collection, improved COD flow with 'belum bayar' status, and comprehensive payment proof upload functionality. Added bankAccountService and paymentProofService for Firebase Storage integration (/payment_proofs/{fileName}). Includes camera/gallery image picker, upload validation, and payment verification workflow."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
