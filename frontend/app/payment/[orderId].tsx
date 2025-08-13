@@ -240,7 +240,7 @@ export default function PaymentScreen() {
           <Text style={styles.sectionTitle}>Ringkasan Pesanan</Text>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Total Pesanan</Text>
-            <Text style={styles.summaryValue}>{formatPrice(orderData.grandTotal)}</Text>
+            <Text style={styles.summaryValue}>{formatPrice(orderData.total || 0)}</Text>
           </View>
           {selectedMethod && getSelectedMethodFee() > 0 && (
             <View style={styles.summaryRow}>
