@@ -45,6 +45,16 @@ export default function CartScreen() {
     }
   }, [user]);
 
+  // Auto-refresh cart when screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        console.log('🟢 Cart screen focused - refreshing cart data');
+        fetchCart();
+      }
+    }, [user])
+  );
+
   const fetchCart = async () => {
     if (!user) return;
     
