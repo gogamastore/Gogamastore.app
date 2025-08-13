@@ -144,9 +144,19 @@ export default function PaymentScreen() {
   };
 
   const calculateTotalWithFee = () => {
-    const selectedMethodData = paymentMethods.find(m => m.id === selectedMethod);
-    const fee = selectedMethodData?.fee || 0;
+    let fee = 0;
+    if (selectedMethod === 'cod') {
+      fee = 5000;
+    } else if (selectedMethod === 'dana' || selectedMethod === 'gopay') {
+      fee = 2500;
+    }
     return (orderData?.grandTotal || 0) + fee;
+  };
+
+  const getSelectedMethodFee = () => {
+    if (selectedMethod === 'cod') return 5000;
+    if (selectedMethod === 'dana' || selectedMethod === 'gopay') return 2500;
+    return 0;
   };
 
   const copyToClipboard = (text: string, label: string) => {
