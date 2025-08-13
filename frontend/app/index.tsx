@@ -1,27 +1,45 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Index() {
   const { user, loading } = useAuth();
+  const [timeoutReached, setTimeoutReached] = useState(false);
 
   useEffect(() => {
+    console.log('🔍 Index.tsx - Auth state:', { user: !!user, loading });
+    
     if (!loading) {
+      console.log('🔄 Auth loading complete, routing...');
       if (user) {
-        // User is logged in, redirect to main app
+        console.log('✅ User authenticated, redirecting to tabs');
         router.replace('/(tabs)');
       } else {
-        // User is not logged in, redirect to login
+        console.log('🔐 User not authenticated, redirecting to login');
         router.replace('/(auth)/login');
       }
     }
   }, [user, loading]);
 
-  if (loading) {
+  // Timeout fallback - if loading takes too long, force redirect to login
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.log('⏰ Loading timeout reached, forcing redirect to login');
+        setTimeoutReached(true);
+        router.replace('/(auth)/login');
+      }
+    }, 8000); // 8 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [loading]);
+
+  if (loading && !timeoutReached) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
