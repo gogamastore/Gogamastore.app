@@ -607,11 +607,33 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     paddingHorizontal: 16,
     paddingVertical: 20,
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#E5E5EA',
+  },
+  cancelButton: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#FF3B30',
+    borderRadius: 8,
+    marginBottom: 12,
+    backgroundColor: '#FFF5F5',
+  },
+  cancelButtonText: {
+    color: '#FF3B30',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  buttonHalf: {
+    flex: 0.5,
   },
   secondaryButton: {
     flex: 1,
