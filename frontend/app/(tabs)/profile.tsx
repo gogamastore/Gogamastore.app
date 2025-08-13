@@ -122,7 +122,7 @@ export default function ProfileScreen() {
     {
       title: 'Riwayat Pesanan',
       icon: 'history',
-      onPress: () => Alert.alert('Info', 'Fitur riwayat pesanan akan segera tersedia'),
+      onPress: () => router.push('/order/history'),
     },
     {
       title: 'Alamat',
