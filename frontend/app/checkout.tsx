@@ -349,6 +349,8 @@ export default function CheckoutScreen() {
           <Text>- Name: {deliveryInfo.recipientName}</Text>
           <Text>- Phone: {deliveryInfo.phoneNumber}</Text>
           <Text>- Address: {deliveryInfo.address}</Text>
+          <Text>- City: {deliveryInfo.city}</Text>
+          <Text>- Postal Code: {deliveryInfo.postalCode}</Text>
           
           <TouchableOpacity 
             style={{ backgroundColor: 'red', padding: 10, marginTop: 10, borderRadius: 5 }}
