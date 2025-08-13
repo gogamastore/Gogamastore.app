@@ -157,7 +157,12 @@ export default function OrderHistoryScreen() {
     filterOrders(orders, filter);
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: string | number) => {
+    if (typeof price === 'string') {
+      // If already formatted (e.g., "Rp 930.000"), return as is
+      return price;
+    }
+    
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
