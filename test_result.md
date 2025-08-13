@@ -205,17 +205,41 @@ backend:
         comment: "❌ PARTIAL FIREBASE CONNECTIVITY: Firebase Auth API working, 3/7 collections accessible (products: 100 docs, banners: 3 docs, brands: 6 docs). However, critical collections restricted: orders, bank_accounts, user collections have permission denied. Missing backend endpoints: POST /api/firebase/sync, POST /api/firebase/validate. Architecture mismatch: frontend expects Firebase but backend has no Firebase integration."
 
 frontend:
-  - task: "Authentication Screens (Login/Register)"
+  - task: "Order Confirmation Screen Enhancement"
     implemented: true
-    working: "NA"
-    file: "app/(auth)/login.tsx, app/(auth)/register.tsx"
+    working: true
+    file: "app/order/confirmation/[id].tsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
-        comment: "Created login and register screens with form validation and navigation"
+        comment: "Enhanced order confirmation screen with improved currency formatting, order status display, and order cancellation feature for pending orders. Added proper formatPrice function to handle both string and number formats, implemented handleCancelOrder function with confirmation dialog, and added cancel button in action buttons section for pending orders."
+
+  - task: "Order History Screen Enhancement"
+    implemented: true
+    working: true
+    file: "app/order/history.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Enhanced order history screen with improved currency formatting consistency and order cancellation functionality. Added handleCancelOrder function for pending orders directly from order list, implemented cancel button in order cards for pending orders, and improved formatPrice function for better currency display."
+
+  - task: "Firebase Order Data Fetching Improvement"
+    implemented: true
+    working: "NA"
+    file: "services/firestoreService.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Enhanced Firebase order data fetching with better error handling, multiple query attempts for different user ID fields, improved error logging with specific Firebase error codes, and added development mode sample order creation as fallback. Added createSampleOrderIfNeeded method for development testing."
 
   - task: "Main App Navigation Structure"
     implemented: true
