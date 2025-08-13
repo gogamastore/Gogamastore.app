@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../../contexts/AuthContext';
-import { orderService } from '../../../services/firestoreService';
+import { orderService, paymentProofService } from '../../../services/firestoreService';
 
 interface OrderItem {
   productId: string;
