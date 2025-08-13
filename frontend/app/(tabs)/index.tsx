@@ -380,6 +380,12 @@ export default function HomeScreen() {
         <View style={styles.brandsSection}>
           <Text style={styles.sectionTitle}>Brand Favoritmu</Text>
           <View style={styles.brandsGrid}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.brandsScrollContainer}
+            style={styles.brandsScrollView}
+          >
             {brands.map((brand) => {
               console.log('Rendering brand:', brand);
               return (
@@ -394,7 +400,7 @@ export default function HomeScreen() {
                     />
                   ) : (
                     <View style={styles.brandLogoPlaceholder}>
-                      <MaterialIcons name="business" size={32} color="#666" />
+                      <MaterialIcons name="business" size={20} color="#666" />
                     </View>
                   )}
                   <Text style={styles.brandName}>
@@ -402,6 +408,8 @@ export default function HomeScreen() {
                   </Text>
                 </TouchableOpacity>
               );
+            })}
+          </ScrollView>
             })}
           </View>
         </View>
