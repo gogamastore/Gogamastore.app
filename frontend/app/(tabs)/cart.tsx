@@ -234,16 +234,19 @@ export default function CartScreen() {
         </View>
       </View>
       
+      {/* Enhanced Delete Button with Background */}
       <TouchableOpacity
-        style={styles.removeButton}
+        style={styles.removeButtonEnhanced}
         onPress={() => {
-          console.log('🔴 Delete TouchableOpacity pressed for item:', item.nama);
+          console.log('🔴 ENHANCED Delete TouchableOpacity pressed for item:', item.nama);
+          console.log('🔴 User UID:', user?.uid);
+          console.log('🔴 Product ID:', item.product_id);
           confirmRemoveItem(item);
         }}
-        activeOpacity={0.6}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        activeOpacity={0.7}
+        hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
       >
-        <MaterialIcons name="delete" size={24} color="#FF3B30" />
+        <MaterialIcons name="delete" size={24} color="#fff" />
       </TouchableOpacity>
     </View>
   );
