@@ -646,6 +646,22 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     flex: 1,
   },
+  cancelOrderSection: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 12,
+    backgroundColor: '#FFF5F5',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FF3B30',
+  },
+  cancelOrderSectionText: {
+    fontSize: 14,
+    color: '#FF3B30',
+    marginLeft: 12,
+    lineHeight: 20,
+    flex: 1,
+  },
   actionButtons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
