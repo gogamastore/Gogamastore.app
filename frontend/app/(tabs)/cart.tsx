@@ -255,7 +255,7 @@ export default function CartScreen() {
         }}
         activeOpacity={0.7}
       >
-        <MaterialIcons name="delete" size={24} color="#fff" />
+        <MaterialIcons name="delete" size={18} color="#fff" />
       </TouchableOpacity>
     </View>
   );
