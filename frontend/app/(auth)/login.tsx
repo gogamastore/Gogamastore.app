@@ -30,7 +30,8 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(email.toLowerCase(), password);
-      // Navigation will be handled by AuthContext
+      // Force navigation to main tabs after successful login
+      router.replace('/(tabs)');
     } catch (error) {
       console.error('Login error:', error);
       let errorMessage = 'Login gagal';
