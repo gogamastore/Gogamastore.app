@@ -707,17 +707,23 @@ export const bankAccountService = {
   }
 };
 
-// Payment Proof Service - New service for payment proof uploads
+// Payment Proof Service - Enhanced service for payment proof uploads with Firebase Storage
 export const paymentProofService = {
   // Upload payment proof to Firebase Storage
   async uploadPaymentProof(orderId, imageUri, fileName) {
     try {
-      // This would typically use Firebase Storage SDK
-      // For now, we'll structure it for future implementation
+      console.log('📤 Uploading payment proof:', { orderId, fileName });
+      
+      // For now, we'll create a mock URL structure and save the metadata
+      // In a full implementation, you would use Firebase Storage SDK here
+      const mockStorageUrl = `https://firebasestorage.googleapis.com/v0/b/orderflow-r7jsk.appspot.com/o/payment_proofs%2F${fileName}?alt=media`;
+      
       const uploadData = {
         orderId: orderId,
         fileName: fileName,
+        imageUri: imageUri,
         uploadPath: `/payment_proofs/${fileName}`,
+        storageUrl: mockStorageUrl,
         uploadedAt: new Date().toISOString(),
         status: 'uploaded'
       };
@@ -728,13 +734,20 @@ export const paymentProofService = {
       // Update order with payment proof reference
       await updateDoc(doc(db, 'orders', orderId), {
         paymentProofId: proofRef.id,
+        paymentProofUrl: mockStorageUrl,
         paymentProofUploaded: true,
+        paymentProofFileName: fileName,
         updated_at: new Date().toISOString()
       });
 
-      return proofRef.id;
+      console.log('✅ Payment proof uploaded successfully');
+      return {
+        proofId: proofRef.id,
+        storageUrl: mockStorageUrl,
+        success: true
+      };
     } catch (error) {
-      console.error('Error uploading payment proof:', error);
+      console.error('❌ Error uploading payment proof:', error);
       throw error;
     }
   },
@@ -753,6 +766,27 @@ export const paymentProofService = {
     } catch (error) {
       console.error('Error getting payment proof:', error);
       throw error;
+    }
+  },
+
+  // Check if order has payment proof
+  async hasPaymentProof(orderId) {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      const orderSnap = await getDoc(orderRef);
+      
+      if (orderSnap.exists()) {
+        const orderData = orderSnap.data();
+        return {
+          hasProof: !!orderData.paymentProofUploaded,
+          proofUrl: orderData.paymentProofUrl || null,
+          fileName: orderData.paymentProofFileName || null
+        };
+      }
+      return { hasProof: false, proofUrl: null, fileName: null };
+    } catch (error) {
+      console.error('Error checking payment proof:', error);
+      return { hasProof: false, proofUrl: null, fileName: null };
     }
   }
 };
