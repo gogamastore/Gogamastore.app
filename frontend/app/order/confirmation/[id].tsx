@@ -58,6 +58,9 @@ export default function OrderConfirmationScreen() {
   
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [paymentProofImage, setPaymentProofImage] = useState<string | null>(null);
+  const [uploadingProof, setUploadingProof] = useState(false);
+  const [hasExistingProof, setHasExistingProof] = useState(false);
 
   useEffect(() => {
     if (id && user) {
