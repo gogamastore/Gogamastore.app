@@ -202,9 +202,18 @@ export default function OrderHistoryScreen() {
   };
 
   const formatPrice = (price: string | number) => {
+    // Handle both number and string formats
     if (typeof price === 'string') {
       // If already formatted (e.g., "Rp 930.000"), return as is
-      return price;
+      if (price.includes('Rp')) return price;
+      
+      // Try to parse the string as number
+      const numPrice = parseInt(price.replace(/[Rp\s\.,]/g, '')) || 0;
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+      }).format(numPrice);
     }
     
     return new Intl.NumberFormat('id-ID', {
