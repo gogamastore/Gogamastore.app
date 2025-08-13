@@ -379,6 +379,7 @@ export default function HomeScreen() {
       {brands.length > 0 && (
         <View style={styles.brandsSection}>
           <Text style={styles.sectionTitle}>Brand Favoritmu</Text>
+          <ScrollView
           <View style={styles.brandsGrid}>
           <ScrollView 
             horizontal 
