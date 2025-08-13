@@ -235,27 +235,19 @@ export default function OrderConfirmationScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Informasi Pengiriman</Text>
           <View style={styles.deliveryInfo}>
-            <Text style={styles.deliveryName}>{order.deliveryInfo.recipientName}</Text>
-            <Text style={styles.deliveryPhone}>{order.deliveryInfo.phoneNumber}</Text>
+            <Text style={styles.deliveryName}>{order.customerDetails.name}</Text>
+            <Text style={styles.deliveryPhone}>{order.customerDetails.whatsapp}</Text>
             <Text style={styles.deliveryAddress}>
-              {order.deliveryInfo.address}
+              {order.customerDetails.address}
             </Text>
-            <Text style={styles.deliveryCity}>
-              {order.deliveryInfo.city}, {order.deliveryInfo.postalCode}
-            </Text>
-            {order.deliveryInfo.specialInstructions && (
-              <Text style={styles.deliveryInstructions}>
-                Catatan: {order.deliveryInfo.specialInstructions}
-              </Text>
-            )}
           </View>
           
           <View style={styles.shippingMethod}>
             <MaterialIcons name="local-shipping" size={20} color="#007AFF" />
             <View style={styles.shippingInfo}>
-              <Text style={styles.shippingName}>{order.shippingOption.name}</Text>
+              <Text style={styles.shippingName}>{order.shippingMethod}</Text>
               <Text style={styles.shippingTime}>
-                Estimasi: {order.shippingOption.estimatedDays}
+                {order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Transfer Bank'}
               </Text>
             </View>
           </View>
@@ -270,15 +262,13 @@ export default function OrderConfirmationScreen() {
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Pengiriman</Text>
-            <Text style={styles.summaryValue}>{formatPrice(order.shippingCost)}</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Pajak (PPN 11%)</Text>
-            <Text style={styles.summaryValue}>{formatPrice(order.tax)}</Text>
+            <Text style={styles.summaryValue}>
+              {order.shippingFee > 0 ? formatPrice(order.shippingFee) : 'Gratis'}
+            </Text>
           </View>
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Pembayaran</Text>
-            <Text style={styles.totalValue}>{formatPrice(order.grandTotal)}</Text>
+            <Text style={styles.totalValue}>{order.total}</Text>
           </View>
         </View>
 
