@@ -253,6 +253,37 @@ export default function CheckoutScreen() {
     }));
   };
 
+  const pickPaymentProofImage = async () => {
+    try {
+      // Request permission to access media library
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (permissionResult.granted === false) {
+        Alert.alert('Permission Required', 'Izin akses galeri diperlukan untuk mengunggah bukti pembayaran');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setPaymentProofImage(result.assets[0].uri);
+        console.log('✅ Payment proof image selected:', result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('❌ Error picking image:', error);
+      Alert.alert('Error', 'Gagal memilih gambar. Silakan coba lagi.');
+    }
+  };
+
+  const removePaymentProofImage = () => {
+    setPaymentProofImage(null);
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
