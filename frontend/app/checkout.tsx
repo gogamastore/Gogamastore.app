@@ -481,6 +481,37 @@ export default function CheckoutScreen() {
                       </View>
                     </View>
                   ))}
+                  
+                  {/* Payment Proof Upload Section */}
+                  <View style={styles.paymentProofSection}>
+                    <Text style={styles.paymentProofTitle}>Unggah Bukti Pembayaran (Opsional)</Text>
+                    <Text style={styles.paymentProofSubtitle}>
+                      Anda dapat mengunggah bukti pembayaran sekarang atau nanti setelah pesanan dibuat
+                    </Text>
+                    
+                    {paymentProofImage ? (
+                      <View style={styles.selectedImageContainer}>
+                        <Image source={{ uri: paymentProofImage }} style={styles.selectedImage} />
+                        <TouchableOpacity 
+                          style={styles.removeImageButton} 
+                          onPress={removePaymentProofImage}
+                        >
+                          <MaterialIcons name="close" size={16} color="#FF3B30" />
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <TouchableOpacity 
+                        style={styles.uploadButton} 
+                        onPress={pickPaymentProofImage}
+                        disabled={uploadingProof}
+                      >
+                        <MaterialIcons name="cloud-upload" size={24} color="#007AFF" />
+                        <Text style={styles.uploadButtonText}>
+                          {uploadingProof ? 'Mengunggah...' : 'Pilih Gambar dari Galeri'}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 </View>
               )}
             </TouchableOpacity>
