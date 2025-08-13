@@ -799,6 +799,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   brandsScrollView: {
+  brandsScrollContainer: {
+    paddingRight: 16,
+  },
     
     
     paddingHorizontal: 16,
