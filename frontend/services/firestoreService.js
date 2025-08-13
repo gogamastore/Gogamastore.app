@@ -418,11 +418,10 @@ export const initializeSampleData = async () => {
 
 // Bank Account Service - New service for dynamic bank account management
 export const bankAccountService = {
-  // Get all active bank accounts
+  // Get all bank accounts
   async getActiveBankAccounts() {
     try {
-      const q = query(collection(db, 'bank_accounts'), where('isActive', '==', true));
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await getDocs(collection(db, 'bank_accounts'));
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       console.error('Error getting bank accounts:', error);
