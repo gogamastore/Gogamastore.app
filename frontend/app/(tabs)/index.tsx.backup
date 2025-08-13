@@ -242,7 +242,12 @@ export default function HomeScreen() {
           {item.deskripsi}
         </Text>
         <Text style={styles.productPrice}>{formatPrice(item.harga)}</Text>
-        <Text style={styles.productStock}>Stok: {item.stok}</Text>
+        <Text style={[
+          styles.productStock,
+          { color: item.stok === 0 ? '#FF3B30' : '#666' }
+        ]}>
+          {item.stok === 0 ? 'Stok: Habis' : `Stok: ${item.stok}`}
+        </Text>
         
         <View style={styles.productActions}>
           <TouchableOpacity
@@ -316,17 +321,9 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-      {/* Debug Info */}
-      <View style={{ padding: 16, backgroundColor: '#f0f0f0' }}>
-        <Text style={{ fontSize: 12, color: '#666' }}>
-          Debug: Banners: {banners.length}, Brands: {brands.length}
-        </Text>
-      </View>
-      
       {/* Promotional Banners */}
       {banners.length > 0 && (
         <View style={styles.bannersSection}>
-          <Text style={styles.sectionTitle}>Penawaran Spesial ({banners.length})</Text>
           <ScrollView 
             ref={bannerScrollRef}
             horizontal 
@@ -381,7 +378,7 @@ export default function HomeScreen() {
       {/* Brand Directory */}
       {brands.length > 0 && (
         <View style={styles.brandsSection}>
-          <Text style={styles.sectionTitle}>Brand Terpercaya ({brands.length})</Text>
+          <Text style={styles.sectionTitle}>Brand Favoritmu</Text>
           <View style={styles.brandsGrid}>
             {brands.map((brand) => {
               console.log('Rendering brand:', brand);
