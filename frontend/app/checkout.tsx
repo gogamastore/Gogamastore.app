@@ -436,7 +436,11 @@ export default function CheckoutScreen() {
 
           <TouchableOpacity
             style={[styles.checkoutButton, processing && styles.checkoutButtonDisabled]}
-            onPress={processOrder}
+            onPress={() => {
+              console.log('🔴 Checkout button pressed!');
+              console.log('🔴 Processing state:', processing);
+              processOrder();
+            }}
             disabled={processing}
           >
             {processing ? (
