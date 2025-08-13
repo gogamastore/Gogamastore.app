@@ -520,4 +520,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#1a1a1a',
   },
+  deleteButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 48,
+    height: 48,
+    backgroundColor: '#FF3B30',
+    borderRadius: 24,
+    marginLeft: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
 });
