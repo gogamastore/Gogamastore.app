@@ -839,9 +839,6 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     marginBottom: 12,
   },
-  bankAccountsList: {
-    width: '100%',
-  },
   bankAccountCard: {
     flexDirection: 'row',
     alignItems: 'center',
