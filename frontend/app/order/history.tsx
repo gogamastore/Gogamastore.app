@@ -179,17 +179,22 @@ export default function OrderHistoryScreen() {
       setFilteredOrders(orders);
     } else {
       const filtered = orders.filter(order => {
+        // Normalize status to lowercase for consistent comparison
+        const normalizedStatus = order.status ? order.status.toLowerCase() : '';
+        
         switch (filter) {
           case 'pending':
-            return order.status === 'pending';
+            return normalizedStatus === 'pending';
           case 'confirmed':
-            return order.status === 'confirmed' || order.status === 'processing';
+            // Map to "processing" status from Firebase
+            return normalizedStatus === 'processing' || normalizedStatus === 'confirmed';
           case 'shipped':
-            return order.status === 'shipped';
+            return normalizedStatus === 'shipped';
           case 'completed':
-            return order.status === 'completed';
+            // Map to "delivered" status from Firebase
+            return normalizedStatus === 'delivered' || normalizedStatus === 'completed';
           case 'cancelled':
-            return order.status === 'cancelled';
+            return normalizedStatus === 'cancelled';
           default:
             return true;
         }
