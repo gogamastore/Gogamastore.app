@@ -291,69 +291,6 @@ export default function PaymentScreen() {
             ))}
           </View>
 
-          {/* Digital Wallets */}
-          <View style={styles.methodCategory}>
-            <Text style={styles.categoryTitle}>Dompet Digital</Text>
-            
-            {/* DANA */}
-            <TouchableOpacity
-              style={[
-                styles.methodCard,
-                selectedMethod === 'dana' && styles.methodCardSelected
-              ]}
-              onPress={() => setSelectedMethod('dana')}
-            >
-              <View style={styles.methodInfo}>
-                <Text style={styles.methodIcon}>📱</Text>
-                <View style={styles.methodDetails}>
-                  <Text style={styles.methodName}>DANA</Text>
-                  <Text style={styles.methodDescription}>Transfer via DANA</Text>
-                  <Text style={styles.methodTime}>Instan</Text>
-                </View>
-              </View>
-              <View style={styles.methodRight}>
-                <Text style={styles.methodFee}>{formatPrice(1500)}</Text>
-                <View style={[
-                  styles.radioButton,
-                  selectedMethod === 'dana' && styles.radioButtonSelected
-                ]}>
-                  {selectedMethod === 'dana' && (
-                    <View style={styles.radioButtonInner} />
-                  )}
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            {/* GoPay */}
-            <TouchableOpacity
-              style={[
-                styles.methodCard,
-                selectedMethod === 'gopay' && styles.methodCardSelected
-              ]}
-              onPress={() => setSelectedMethod('gopay')}
-            >
-              <View style={styles.methodInfo}>
-                <Text style={styles.methodIcon}>🟢</Text>
-                <View style={styles.methodDetails}>
-                  <Text style={styles.methodName}>GoPay</Text>
-                  <Text style={styles.methodDescription}>Transfer via GoPay</Text>
-                  <Text style={styles.methodTime}>Instan</Text>
-                </View>
-              </View>
-              <View style={styles.methodRight}>
-                <Text style={styles.methodFee}>{formatPrice(1500)}</Text>
-                <View style={[
-                  styles.radioButton,
-                  selectedMethod === 'gopay' && styles.radioButtonSelected
-                ]}>
-                  {selectedMethod === 'gopay' && (
-                    <View style={styles.radioButtonInner} />
-                  )}
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-
           {/* COD */}
           <View style={styles.methodCategory}>
             <Text style={styles.categoryTitle}>Bayar di Tempat</Text>
