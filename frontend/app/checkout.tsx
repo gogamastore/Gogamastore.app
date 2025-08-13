@@ -198,11 +198,8 @@ export default function CheckoutScreen() {
       
       const orderId = await orderService.createOrder(orderData);
       
-      // Clear cart after successful order
-      await cartService.clearCart(user.uid);
-      
-      // Navigate to order confirmation
-      router.replace(`/order/confirmation/${orderId}`);
+      // Navigate to payment selection
+      router.replace(`/payment/${orderId}`);
       
     } catch (error) {
       console.error('Error processing order:', error);
