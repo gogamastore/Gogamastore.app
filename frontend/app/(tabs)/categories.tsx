@@ -228,6 +228,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     color: '#8E8E93',
+    textAlign: 'center',
   },
   header: {
     backgroundColor: '#fff',
@@ -243,11 +244,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#1a1a1a',
-    marginLeft: 8,
     flex: 1,
+    marginLeft: 12,
   },
   refreshHeaderButton: {
-    padding: 8,
+    padding: 4,
   },
   statsContainer: {
     backgroundColor: '#fff',
@@ -285,10 +286,10 @@ const styles = StyleSheet.create({
   trendingBadge: {
     position: 'absolute',
     top: 8,
-    right: 8,
-    backgroundColor: '#FF6B35',
+    left: 8,
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#FF6B35',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -301,9 +302,11 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   productImageContainer: {
-    width: '100%',
     height: 120,
     backgroundColor: '#f8f9fa',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    overflow: 'hidden',
   },
   productImage: {
     width: '100%',
@@ -311,11 +314,10 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   placeholderImage: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f0f0f0',
   },
   productInfo: {
     padding: 12,
@@ -343,16 +345,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   trendingText: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#FF6B35',
-    fontWeight: '500',
+    fontWeight: '600',
     marginLeft: 4,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 32,
+    padding: 32,
   },
   emptyTitle: {
     fontSize: 18,
@@ -372,17 +374,15 @@ const styles = StyleSheet.create({
   refreshButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f8ff',
+    backgroundColor: '#007AFF',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#007AFF',
   },
   refreshButtonText: {
-    color: '#007AFF',
     fontSize: 14,
-    fontWeight: '500',
+    color: '#fff',
+    fontWeight: '600',
     marginLeft: 8,
   },
 });
