@@ -348,34 +348,7 @@ export default function CheckoutScreen() {
             ))}
           </View>
 
-          {/* Debug Section - Temporary */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Debug Info</Text>
-          <Text>User: {user ? 'Logged in' : 'Not logged in'}</Text>
-          <Text>Cart items: {cart?.items?.length || 0}</Text>
-          <Text>Cart total: {cart?.total || 0}</Text>
-          <Text>Processing: {processing ? 'Yes' : 'No'}</Text>
-          <Text>Form data:</Text>
-          <Text>- Name: {deliveryInfo.recipientName}</Text>
-          <Text>- Phone: {deliveryInfo.phoneNumber}</Text>
-          <Text>- Address: {deliveryInfo.address}</Text>
-          <Text>- City: {deliveryInfo.city}</Text>
-          <Text>- Postal Code: {deliveryInfo.postalCode}</Text>
-          
-          <TouchableOpacity 
-            style={{ backgroundColor: 'red', padding: 10, marginTop: 10, borderRadius: 5 }}
-            onPress={() => {
-              console.log('TEST BUTTON PRESSED');
-              console.log('User:', user);
-              console.log('Cart:', cart);
-              console.log('DeliveryInfo:', deliveryInfo);
-            }}
-          >
-            <Text style={{ color: 'white' }}>Debug Test Button</Text>
-          </TouchableOpacity>
-        </View>
-        
-        {/* Delivery Information */}
+          {/* Delivery Information */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Informasi Pengiriman</Text>
             
