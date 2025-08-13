@@ -382,7 +382,7 @@ export default function HomeScreen() {
       {/* Brand Directory */}
       {brands.length > 0 && (
         <View style={styles.brandsSection}>
-          <Text style={styles.sectionTitle}>Brand Terpercaya ({brands.length})</Text>
+          <Text style={styles.sectionTitle}>Brand Favoritmu</Text>
           <View style={styles.brandsGrid}>
             {brands.map((brand) => {
               console.log('Rendering brand:', brand);
