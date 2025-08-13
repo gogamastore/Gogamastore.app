@@ -448,6 +448,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#E3F2FD',
+    overflow: 'hidden',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 48,
   },
   photoEditButton: {
     position: 'absolute',
