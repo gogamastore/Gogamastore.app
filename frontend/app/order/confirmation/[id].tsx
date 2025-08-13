@@ -119,21 +119,44 @@ export default function OrderConfirmationScreen() {
   };
 
   const getStatusText = (status: string) => {
-    switch (status) {
+    // Normalize status to lowercase for consistent comparison
+    const normalizedStatus = status ? status.toLowerCase() : '';
+    
+    switch (normalizedStatus) {
       case 'pending':
-        return 'Menunggu Konfirmasi';
-      case 'confirmed':
-        return 'Pesanan Dikonfirmasi';
+        return 'Belum Proses';
       case 'processing':
-        return 'Sedang Diproses';
+        return 'Diproses';
       case 'shipped':
-        return 'Sedang Dikirim';
+        return 'Dikirim';
       case 'delivered':
-        return 'Pesanan Selesai';
+        return 'Selesai';
       case 'cancelled':
-        return 'Pesanan Dibatalkan';
+        return 'Dibatalkan';
+      // Legacy status support
+      case 'confirmed':
+        return 'Diproses';
+      case 'completed':
+        return 'Selesai';
       default:
-        return 'Status Tidak Diketahui';
+        return 'Belum Proses'; // Default to pending instead of unknown
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    // Normalize status to lowercase for consistent comparison
+    const normalizedStatus = status ? status.toLowerCase() : '';
+    
+    switch (normalizedStatus) {
+      case 'pending': return '#FF9500';
+      case 'processing': return '#007AFF';
+      case 'shipped': return '#5856D6';
+      case 'delivered': return '#34C759';
+      case 'cancelled': return '#FF3B30';
+      // Legacy status support
+      case 'confirmed': return '#007AFF';
+      case 'completed': return '#34C759';
+      default: return '#FF9500'; // Default to pending color
     }
   };
 
