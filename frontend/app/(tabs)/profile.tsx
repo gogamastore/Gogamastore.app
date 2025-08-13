@@ -220,14 +220,6 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        {/* Developer Tools */}
-        <View style={styles.devSection}>
-          <Text style={styles.devSectionTitle}>Developer Tools</Text>
-          <TouchableOpacity
-            style={styles.devMenuItem}
-          <TouchableOpacity
-            style={[styles.devMenuItem, { marginTop: 8 }]}
-        </View>
 
         {/* Logout Button */}
         <View style={styles.logoutSection}>
