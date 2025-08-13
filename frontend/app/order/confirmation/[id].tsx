@@ -438,6 +438,59 @@ export default function OrderConfirmationScreen() {
           </View>
         </View>
 
+        {/* Payment Proof Section - Only for Bank Transfer */}
+        {order.paymentMethod === 'bank_transfer' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Bukti Pembayaran</Text>
+            
+            {paymentProofImage || hasExistingProof ? (
+              <View style={styles.paymentProofContainer}>
+                {paymentProofImage && (
+                  <View style={styles.selectedImageContainer}>
+                    <Image source={{ uri: paymentProofImage }} style={styles.selectedImage} />
+                    {!hasExistingProof && (
+                      <TouchableOpacity 
+                        style={styles.removeImageButton} 
+                        onPress={removePaymentProofImage}
+                      >
+                        <MaterialIcons name="close" size={16} color="#FF3B30" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )}
+                
+                {hasExistingProof ? (
+                  <View style={styles.proofStatusContainer}>
+                    <MaterialIcons name="check-circle" size={20} color="#34C759" />
+                    <Text style={styles.proofStatusText}>Bukti pembayaran berhasil diunggah</Text>
+                  </View>
+                ) : (
+                  <Text style={styles.paymentProofSubtitle}>
+                    Bukti pembayaran akan segera diverifikasi oleh tim kami
+                  </Text>
+                )}
+              </View>
+            ) : (
+              <View style={styles.paymentProofContainer}>
+                <Text style={styles.paymentProofDescription}>
+                  Silakan unggah bukti pembayaran Anda untuk mempercepat proses verifikasi
+                </Text>
+                
+                <TouchableOpacity 
+                  style={styles.uploadButton} 
+                  onPress={pickPaymentProofImage}
+                  disabled={uploadingProof}
+                >
+                  <MaterialIcons name="cloud-upload" size={24} color="#007AFF" />
+                  <Text style={styles.uploadButtonText}>
+                    {uploadingProof ? 'Mengunggah...' : 'Pilih Gambar dari Galeri'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        )}
+
         {/* Cancel Order Section - Only for Pending Orders */}
         {order.status === 'pending' && (
           <View style={styles.section}>
