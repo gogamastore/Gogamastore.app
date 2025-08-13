@@ -385,6 +385,21 @@ export default function PaymentScreen() {
             </>
           )}
         </TouchableOpacity>
+        
+        {/* Test Navigation Button */}
+        <TouchableOpacity
+          style={styles.testNavButton}
+          onPress={() => {
+            console.log('🟦 TEST NAV BUTTON PRESSED!!!');
+            Alert.alert('Navigation Test', 'Testing navigation directly', [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Go to History', onPress: () => router.push('/order/history') },
+              { text: 'Go to Tabs', onPress: () => router.push('/(tabs)') }
+            ]);
+          }}
+        >
+          <Text style={styles.testNavButtonText}>TEST NAVIGATION</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
