@@ -191,12 +191,42 @@ export default function PaymentScreen() {
       
       // Navigate to order history instead of payment instructions
       console.log('🟡 Navigating to order history...');
+      console.log('🟡 Current processing state:', processing);
+      console.log('🟡 User state:', user ? 'authenticated' : 'not authenticated');
       
-      // Add small delay to ensure all Firebase operations complete
-      setTimeout(() => {
-        console.log('🟡 Executing navigation to order history');
+      try {
+        // First attempt: Immediate navigation
+        console.log('🟡 Attempting immediate navigation');
         router.replace('/order/history');
-      }, 500);
+        
+        // Second attempt: Delayed navigation as backup
+        setTimeout(() => {
+          console.log('🟡 Backup navigation attempt after 1 second');
+          router.push('/(tabs)');
+          setTimeout(() => {
+            router.push('/order/history');
+          }, 100);
+        }, 1000);
+        
+        // Third attempt: Force navigation with window.location if on web
+        setTimeout(() => {
+          console.log('🟡 Final navigation attempt');
+          if (typeof window !== 'undefined') {
+            console.log('🟡 Using window.location for web navigation');
+            window.location.href = '/order/history';
+          }
+        }, 2000);
+        
+      } catch (navigationError) {
+        console.error('🔴 Navigation error:', navigationError);
+        Alert.alert(
+          'Pesanan Berhasil Dibuat', 
+          'Pesanan Anda berhasil dibuat. Silakan periksa di menu Pesanan.',
+          [
+            { text: 'OK', onPress: () => router.push('/(tabs)') }
+          ]
+        );
+      }
       
       console.log('✅ Navigation triggered');
       
