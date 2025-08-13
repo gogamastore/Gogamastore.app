@@ -83,27 +83,6 @@ export default function ProfileScreen() {
     );
   };
 
-  const handleInitializeSampleData = async () => {
-    Alert.alert(
-      'Initialize Sample Data',
-      'Apakah Anda ingin menambahkan data sample produk dan kategori?',
-      [
-        { text: 'Batal', style: 'cancel' },
-        {
-          text: 'Ya',
-          onPress: async () => {
-            try {
-              await initializeSampleData();
-              Alert.alert('Berhasil', 'Data sample berhasil ditambahkan');
-            } catch (error) {
-              console.error('Error initializing sample data:', error);
-              Alert.alert('Error', 'Gagal menambahkan data sample');
-            }
-          }
-        }
-      ]
-    );
-  };
 
   const handleCreateSampleOrders = async () => {
     if (!user) {
