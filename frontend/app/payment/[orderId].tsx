@@ -366,6 +366,42 @@ export default function PaymentScreen() {
 
       {/* Payment Button */}
       <View style={styles.bottomAction}>
+        {/* Native HTML Buat Pesanan Button */}
+        <div 
+          style={{
+            backgroundColor: selectedMethod ? '#007AFF' : '#ccc',
+            padding: '16px',
+            borderRadius: '8px',
+            margin: '16px 0',
+            cursor: selectedMethod ? 'pointer' : 'not-allowed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+          onClick={async () => {
+            if (!selectedMethod || processing) return;
+            
+            console.log('🟦 NATIVE BUAT PESANAN CLICKED!!!');
+            alert('Creating order with native button...');
+            
+            try {
+              await processPayment();
+            } catch (error) {
+              console.error('Payment error:', error);
+              alert('Error creating order: ' + error.message);
+            }
+          }}
+        >
+          <span style={{ 
+            color: selectedMethod ? 'white' : '#666', 
+            fontSize: '18px', 
+            fontWeight: '600' 
+          }}>
+            {processing ? '⏳ Processing...' : '🛒 Buat Pesanan (Native)'}
+          </span>
+        </div>
+        
         <TouchableOpacity
           style={[
             styles.paymentButton,
