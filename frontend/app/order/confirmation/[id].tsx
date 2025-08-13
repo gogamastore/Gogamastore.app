@@ -341,8 +341,18 @@ export default function OrderConfirmationScreen() {
 
       {/* Action Buttons */}
       <View style={styles.actionButtons}>
+        {order.status === 'pending' && (
+          <TouchableOpacity 
+            style={styles.cancelButton}
+            onPress={handleCancelOrder}
+          >
+            <MaterialIcons name="cancel" size={20} color="#FF3B30" />
+            <Text style={styles.cancelButtonText}>Batalkan Pesanan</Text>
+          </TouchableOpacity>
+        )}
+        
         <TouchableOpacity 
-          style={styles.secondaryButton}
+          style={[styles.secondaryButton, order.status === 'pending' && styles.buttonHalf]}
           onPress={() => router.push('/order/history')}
         >
           <MaterialIcons name="history" size={20} color="#007AFF" />
@@ -350,7 +360,7 @@ export default function OrderConfirmationScreen() {
         </TouchableOpacity>
         
         <TouchableOpacity 
-          style={styles.primaryButton}
+          style={[styles.primaryButton, order.status === 'pending' && styles.buttonHalf]}
           onPress={() => router.replace('/(tabs)/')}
         >
           <MaterialIcons name="home" size={20} color="#fff" />
