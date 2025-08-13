@@ -83,8 +83,6 @@ export default function ProfileScreen() {
     );
   };
 
-
-
   const menuItems = [
     {
       title: 'Profil Saya',
@@ -219,8 +217,6 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           ))}
         </View>
-
-
         {/* Logout Button */}
         <View style={styles.logoutSection}>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
