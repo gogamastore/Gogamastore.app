@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
   },
   filterLabel: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '500',
     color: '#1a1a1a',
     textAlign: 'center',
