@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   RefreshControl,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -16,33 +17,52 @@ import { useAuth } from '../../contexts/AuthContext';
 import { orderService } from '../../services/firestoreService';
 
 interface OrderItem {
-  product_id: string;
-  nama: string;
-  harga: number;
+  productId: string;
+  name: string;
+  price: number;
   quantity: number;
+  image?: string;
 }
 
 interface Order {
   id: string;
-  userId: string;
-  items: OrderItem[];
-  grandTotal: number;
+  customerId: string;
+  customer: string;
+  products: OrderItem[];
+  total: number;
   status: string;
   paymentStatus: string;
-  created_at: string;
-  shippingOption: {
+  paymentMethod: string;
+  date: any;
+  customerDetails: {
     name: string;
-    estimatedDays: string;
+    address: string;
+    whatsapp: string;
   };
+  shippingMethod: string;
+  shippingFee: number;
+  subtotal: number;
 }
+
+const ORDER_STATUS_FILTERS = [
+  { key: 'all', label: 'Semua', count: 0 },
+  { key: 'pending', label: 'Belum Proses', count: 0 },
+  { key: 'confirmed', label: 'Diproses', count: 0 },
+  { key: 'shipped', label: 'Dikirim', count: 0 },
+  { key: 'completed', label: 'Selesai', count: 0 },
+  { key: 'cancelled', label: 'Dibatalkan', count: 0 },
+];
 
 export default function OrderHistoryScreen() {
   const router = useRouter();
   const { user } = useAuth();
   
   const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [statusCounts, setStatusCounts] = useState(ORDER_STATUS_FILTERS);
 
   useEffect(() => {
     if (user) {
