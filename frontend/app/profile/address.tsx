@@ -41,6 +41,16 @@ export default function AddressManagementScreen() {
     }
   }, [user]);
 
+  // Refresh addresses when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('🏠 Address screen focused - refreshing addresses');
+      if (user) {
+        loadAddresses();
+      }
+    }, [user])
+  );
+
   const loadAddresses = async () => {
     if (!user) return;
 
