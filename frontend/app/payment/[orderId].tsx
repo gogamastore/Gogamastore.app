@@ -364,62 +364,11 @@ export default function PaymentScreen() {
         </View>
       </ScrollView>
 
-      {/* Payment Button */}
+      {/* Payment Button Removed - Moved to Checkout Screen */}
       <View style={styles.bottomAction}>
-        {/* Native HTML Buat Pesanan Button */}
-        <div 
-          style={{
-            backgroundColor: selectedMethod ? '#007AFF' : '#ccc',
-            padding: '16px',
-            borderRadius: '8px',
-            margin: '16px 0',
-            cursor: selectedMethod && !processing ? 'pointer' : 'not-allowed',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            opacity: selectedMethod ? 1 : 0.6
-          }}
-          onClick={async () => {
-            if (!selectedMethod || processing) return;
-            
-            console.log('🛒 Native Buat Pesanan clicked!');
-            try {
-              await processPayment();
-            } catch (error) {
-              console.error('Payment error:', error);
-              alert('Error: ' + error.message);
-            }
-          }}
-        >
-          <span style={{ 
-            color: selectedMethod ? 'white' : '#666', 
-            fontSize: '18px', 
-            fontWeight: '600' 
-          }}>
-            {processing ? '⏳ Memproses...' : '🛒 Buat Pesanan'}
-          </span>
-        </div>
-        
-        <TouchableOpacity
-          style={[
-            styles.paymentButton,
-            !selectedMethod && styles.paymentButtonDisabled
-          ]}
-          onPress={processPayment}
-          disabled={!selectedMethod || processing}
-        >
-          {processing ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <>
-              <MaterialIcons name="shopping-cart" size={20} color="#fff" />
-              <Text style={styles.paymentButtonText}>
-                Buat Pesanan
-              </Text>
-            </>
-          )}
-        </TouchableOpacity>
+        <Text style={{ textAlign: 'center', color: '#666', fontSize: 16, padding: 20 }}>
+          Silakan pilih metode pembayaran untuk melanjutkan
+        </Text>
       </View>
     </SafeAreaView>
   );
