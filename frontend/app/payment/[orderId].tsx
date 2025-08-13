@@ -329,9 +329,9 @@ export default function PaymentScreen() {
             <ActivityIndicator size="small" color="#fff" />
           ) : (
             <>
-              <MaterialIcons name="payment" size={20} color="#fff" />
+              <MaterialIcons name="shopping-cart" size={20} color="#fff" />
               <Text style={styles.paymentButtonText}>
-                Lanjutkan Pembayaran
+                Buat Pesanan
               </Text>
             </>
           )}
