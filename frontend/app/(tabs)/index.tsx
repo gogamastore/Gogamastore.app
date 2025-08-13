@@ -808,11 +808,11 @@ const styles = StyleSheet.create({
     
   },
   brandCard: {
-    width: '48%',
+    width: 100,
     backgroundColor: '#f8f9fa',
     borderRadius: 8,
     padding: 12,
-    marginBottom: 12,
+    marginRight: 12,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#E5E5EA',
