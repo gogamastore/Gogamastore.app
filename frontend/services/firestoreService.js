@@ -712,43 +712,83 @@ export const paymentProofService = {
   // Upload payment proof to Firebase Storage
   async uploadPaymentProof(orderId, imageUri, fileName) {
     try {
-      console.log('📤 Uploading payment proof:', { orderId, fileName });
+      console.log('📤 Starting payment proof upload:', { orderId, fileName });
       
-      // For now, we'll create a mock URL structure and save the metadata
-      // In a full implementation, you would use Firebase Storage SDK here
-      const mockStorageUrl = `https://firebasestorage.googleapis.com/v0/b/orderflow-r7jsk.appspot.com/o/payment_proofs%2F${fileName}?alt=media`;
+      if (!imageUri || !orderId || !fileName) {
+        throw new Error('Missing required parameters for upload');
+      }
       
+      // Convert image to blob for Firebase Storage upload
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      
+      console.log('📁 Image converted to blob, size:', blob.size);
+      
+      // Create Firebase Storage reference
+      const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+      const { storage } = await import('../lib/firebase');
+      
+      // Upload path: /payment_proofs/{fileName}
+      const storageRef = ref(storage, `payment_proofs/${fileName}`);
+      
+      console.log('🔄 Uploading to Firebase Storage...');
+      
+      // Upload file to Firebase Storage
+      const snapshot = await uploadBytes(storageRef, blob);
+      console.log('✅ File uploaded successfully:', snapshot.metadata.name);
+      
+      // Get download URL
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log('🔗 Download URL obtained:', downloadURL);
+      
+      // Save upload record to Firestore /payment_proofs collection
       const uploadData = {
         orderId: orderId,
         fileName: fileName,
-        imageUri: imageUri,
-        uploadPath: `/payment_proofs/${fileName}`,
-        storageUrl: mockStorageUrl,
+        uploadPath: `payment_proofs/${fileName}`,
+        storageUrl: downloadURL,
         uploadedAt: new Date().toISOString(),
-        status: 'uploaded'
+        status: 'uploaded',
+        fileSize: blob.size,
+        contentType: blob.type || 'image/jpeg'
       };
 
-      // Save upload record to Firestore
       const proofRef = await addDoc(collection(db, 'payment_proofs'), uploadData);
+      console.log('💾 Upload record saved to Firestore:', proofRef.id);
       
-      // Update order with payment proof reference
-      await updateDoc(doc(db, 'orders', orderId), {
+      // Update order document with payment proof reference  
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, {
         paymentProofId: proofRef.id,
-        paymentProofUrl: mockStorageUrl,
+        paymentProofUrl: downloadURL,
         paymentProofUploaded: true,
         paymentProofFileName: fileName,
+        paymentStatus: 'proof_uploaded',
         updated_at: new Date().toISOString()
       });
 
-      console.log('✅ Payment proof uploaded successfully');
+      console.log('✅ Order updated with payment proof reference');
+      
       return {
+        success: true,
         proofId: proofRef.id,
-        storageUrl: mockStorageUrl,
-        success: true
+        storageUrl: downloadURL,
+        fileName: fileName
       };
+      
     } catch (error) {
       console.error('❌ Error uploading payment proof:', error);
-      throw error;
+      
+      // Provide specific error messages
+      if (error.code === 'storage/unauthorized') {
+        throw new Error('Tidak memiliki izin untuk mengunggah file. Silakan login ulang.');
+      } else if (error.code === 'storage/quota-exceeded') {
+        throw new Error('Kuota storage penuh. Silakan hubungi admin.');
+      } else if (error.code === 'storage/invalid-format') {
+        throw new Error('Format file tidak didukung. Gunakan format JPG, PNG, atau WEBP.');
+      } else {
+        throw new Error(`Gagal mengunggah bukti pembayaran: ${error.message}`);
+      }
     }
   },
 
@@ -769,24 +809,42 @@ export const paymentProofService = {
     }
   },
 
-  // Check if order has payment proof
+  // Check if order has payment proof - enhanced version
   async hasPaymentProof(orderId) {
     try {
+      // Check order document first
       const orderRef = doc(db, 'orders', orderId);
       const orderSnap = await getDoc(orderRef);
       
       if (orderSnap.exists()) {
         const orderData = orderSnap.data();
+        const hasProofInOrder = !!orderData.paymentProofUploaded;
+        
+        if (hasProofInOrder) {
+          return {
+            hasProof: true,
+            proofUrl: orderData.paymentProofUrl || null,
+            fileName: orderData.paymentProofFileName || null,
+            proofId: orderData.paymentProofId || null
+          };
+        }
+      }
+      
+      // Fallback: check payment_proofs collection
+      const proofData = await this.getPaymentProofByOrderId(orderId);
+      if (proofData) {
         return {
-          hasProof: !!orderData.paymentProofUploaded,
-          proofUrl: orderData.paymentProofUrl || null,
-          fileName: orderData.paymentProofFileName || null
+          hasProof: true,
+          proofUrl: proofData.storageUrl || null,
+          fileName: proofData.fileName || null,
+          proofId: proofData.id
         };
       }
-      return { hasProof: false, proofUrl: null, fileName: null };
+      
+      return { hasProof: false, proofUrl: null, fileName: null, proofId: null };
     } catch (error) {
       console.error('Error checking payment proof:', error);
-      return { hasProof: false, proofUrl: null, fileName: null };
+      return { hasProof: false, proofUrl: null, fileName: null, proofId: null };
     }
   }
 };
