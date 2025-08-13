@@ -219,7 +219,7 @@ export default function ProfileScreen() {
         {/* Quick Stats */}
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>0</Text>
+            <Text style={styles.statNumber}>{activeOrdersCount}</Text>
             <Text style={styles.statLabel}>Pesanan</Text>
           </View>
           <View style={styles.statDivider} />
