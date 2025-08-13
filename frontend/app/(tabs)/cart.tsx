@@ -241,7 +241,7 @@ export default function CartScreen() {
           console.log('🔴 ENHANCED Delete TouchableOpacity pressed for item:', item.nama);
           console.log('🔴 User UID:', user?.uid);
           console.log('🔴 Product ID:', item.product_id);
-          confirmRemoveItem(item);
+          () => { console.log("🟦 NATIVE DELETE CLICKED for:", item.nama); alert("Deleting " + item.nama); confirmRemoveItem(item); };
         }}
         activeOpacity={0.7}
         hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
