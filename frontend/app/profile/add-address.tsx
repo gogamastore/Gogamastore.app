@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../../contexts/AuthContext';
+import { userService } from '../../../services/firestoreService';
 
 interface AddressForm {
   name: string;
