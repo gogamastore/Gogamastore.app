@@ -102,6 +102,7 @@ export default function PaymentScreen() {
   
   const [selectedMethod, setSelectedMethod] = useState<string>('');
   const [processing, setProcessing] = useState(false);
+  const [bankAccounts, setBankAccounts] = useState<any[]>([]);
   const [orderData, setOrderData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
