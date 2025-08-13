@@ -6,129 +6,172 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-interface Category {
+interface TrendingProduct {
   id: string;
-  nama: string;
-  gambar?: string;
+  productId: string;
 }
 
 interface Product {
   id: string;
   nama: string;
-  kategori: string;
+  harga: number;
+  gambar?: string;
+  stok?: number;
+  deskripsi?: string;
 }
 
-export default function CategoriesScreen() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+export default function TrendingScreen() {
+  const [trendingProducts, setTrendingProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadData();
+    fetchTrendingProducts();
   }, []);
 
-  const loadData = async () => {
-    await Promise.all([fetchCategories(), fetchProducts()]);
-    setLoading(false);
-  };
-
-  const fetchCategories = async () => {
+  const fetchTrendingProducts = async () => {
     try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/categories`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCategories(data);
+      console.log('🔥 Fetching trending products...');
+      
+      // Step 1: Get trending product IDs from /trending_products collection
+      const trendingRef = collection(db, 'trending_products');
+      const trendingSnapshot = await getDocs(trendingRef);
+      
+      if (trendingSnapshot.empty) {
+        console.log('⚠️ No trending products found in Firebase');
+        setLoading(false);
+        return;
       }
+      
+      const trendingData: TrendingProduct[] = trendingSnapshot.docs.map(doc => ({
+        id: doc.id,
+        productId: doc.data().productId,
+        ...doc.data()
+      }));
+      
+      console.log('📋 Found trending product IDs:', trendingData);
+      
+      // Step 2: Get product details for each trending product ID
+      const productPromises = trendingData.map(async (trending) => {
+        try {
+          const productRef = doc(db, 'products', trending.productId);
+          const productSnap = await getDoc(productRef);
+          
+          if (productSnap.exists()) {
+            return {
+              id: productSnap.id,
+              ...productSnap.data()
+            } as Product;
+          }
+          return null;
+        } catch (error) {
+          console.error(`Error fetching product ${trending.productId}:`, error);
+          return null;
+        }
+      });
+      
+      const products = await Promise.all(productPromises);
+      const validProducts = products.filter(product => product !== null) as Product[];
+      
+      console.log('✅ Loaded trending products:', validProducts.length);
+      setTrendingProducts(validProducts);
+      
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error('❌ Error fetching trending products:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const fetchProducts = async () => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${EXPO_PUBLIC_BACKEND_URL}/api/products`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data);
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(price);
   };
 
-  const getProductCountByCategory = (categoryName: string) => {
-    return products.filter(product => product.kategori === categoryName).length;
+  const handleProductPress = (productId: string) => {
+    router.push(`/product/${productId}`);
   };
 
-  const handleCategoryPress = (categoryName: string) => {
-    // Navigate to home screen with category filter
-    router.navigate('/(tabs)');
-    // You can implement category navigation here
-  };
-
-  const renderCategory = ({ item }: { item: Category }) => (
+  const renderTrendingProduct = ({ item, index }: { item: Product; index: number }) => (
     <TouchableOpacity
-      style={styles.categoryCard}
-      onPress={() => handleCategoryPress(item.nama)}
+      style={styles.productCard}
+      onPress={() => handleProductPress(item.id)}
+      activeOpacity={0.7}
     >
-      <View style={styles.categoryIcon}>
-        <MaterialIcons 
-          name={getCategoryIcon(item.nama)} 
-          size={32} 
-          color="#007AFF" 
-        />
+      {/* Trending Badge */}
+      <View style={styles.trendingBadge}>
+        <MaterialIcons name="trending-up" size={16} color="#fff" />
+        <Text style={styles.trendingRank}>#{index + 1}</Text>
       </View>
-      <View style={styles.categoryInfo}>
-        <Text style={styles.categoryName}>{item.nama}</Text>
-        <Text style={styles.categoryCount}>
-          {getProductCountByCategory(item.nama)} produk
+
+      {/* Product Image */}
+      <View style={styles.productImageContainer}>
+        {item.gambar ? (
+          <Image source={{ uri: item.gambar }} style={styles.productImage} />
+        ) : (
+          <View style={styles.placeholderImage}>
+            <MaterialIcons name="image" size={40} color="#C7C7CC" />
+          </View>
+        )}
+      </View>
+
+      {/* Product Info */}
+      <View style={styles.productInfo}>
+        <Text style={styles.productName} numberOfLines={2}>
+          {item.nama}
         </Text>
+        
+        <Text style={styles.productPrice}>
+          {formatPrice(item.harga)}
+        </Text>
+        
+        {item.stok !== undefined && (
+          <Text style={styles.productStock}>
+            Stok: {item.stok}
+          </Text>
+        )}
+        
+        <View style={styles.trendingIndicator}>
+          <MaterialIcons name="local-fire-department" size={14} color="#FF6B35" />
+          <Text style={styles.trendingText}>Produk Trending</Text>
+        </View>
       </View>
-      <MaterialIcons name="chevron-right" size={24} color="#C7C7CC" />
     </TouchableOpacity>
   );
 
-  const getCategoryIcon = (categoryName: string) => {
-    const safeCategoryName = (categoryName || '').toLowerCase();
-    switch (safeCategoryName) {
-      case 'elektronik':
-        return 'devices';
-      case 'fashion':
-        return 'checkroom';
-      case 'makanan':
-        return 'restaurant';
-      case 'kesehatan':
-        return 'local-hospital';
-      default:
-        return 'category';
-    }
-  };
+  const renderEmptyState = () => (
+    <View style={styles.emptyContainer}>
+      <MaterialIcons name="trending-up" size={64} color="#C7C7CC" />
+      <Text style={styles.emptyTitle}>Belum Ada Produk Trending</Text>
+      <Text style={styles.emptySubtitle}>
+        Produk trending akan muncul di sini berdasarkan popularitas dan penjualan
+      </Text>
+      <TouchableOpacity 
+        style={styles.refreshButton}
+        onPress={fetchTrendingProducts}
+      >
+        <MaterialIcons name="refresh" size={20} color="#007AFF" />
+        <Text style={styles.refreshButtonText}>Refresh</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
+          <Text style={styles.loadingText}>Memuat produk trending...</Text>
         </View>
       </SafeAreaView>
     );
@@ -138,32 +181,35 @@ export default function CategoriesScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Kategori Produk</Text>
+        <MaterialIcons name="trending-up" size={24} color="#FF6B35" />
+        <Text style={styles.headerTitle}>Produk Trending</Text>
+        <TouchableOpacity onPress={fetchTrendingProducts} style={styles.refreshHeaderButton}>
+          <MaterialIcons name="refresh" size={20} color="#007AFF" />
+        </TouchableOpacity>
       </View>
 
-      {/* Categories List */}
-      <FlatList
-        data={categories}
-        renderItem={renderCategory}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.categoriesContainer}
-      />
-
-      {/* All Products Option */}
-      <TouchableOpacity
-        style={[styles.categoryCard, styles.allProductsCard]}
-        onPress={() => router.navigate('/(tabs)')}
-      >
-        <View style={styles.categoryIcon}>
-          <MaterialIcons name="apps" size={32} color="#34C759" />
-        </View>
-        <View style={styles.categoryInfo}>
-          <Text style={styles.categoryName}>Semua Produk</Text>
-          <Text style={styles.categoryCount}>{products.length} produk</Text>
-        </View>
-        <MaterialIcons name="chevron-right" size={24} color="#C7C7CC" />
-      </TouchableOpacity>
+      {/* Trending Products List */}
+      {trendingProducts.length > 0 ? (
+        <>
+          <View style={styles.statsContainer}>
+            <Text style={styles.statsText}>
+              {trendingProducts.length} produk sedang trending saat ini
+            </Text>
+          </View>
+          
+          <FlatList
+            data={trendingProducts}
+            renderItem={renderTrendingProduct}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.productsContainer}
+            columnWrapperStyle={styles.productRow}
+          />
+        </>
+      ) : (
+        renderEmptyState()
+      )}
     </SafeAreaView>
   );
 }
@@ -178,28 +224,54 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#8E8E93',
+  },
   header: {
     backgroundColor: '#fff',
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5EA',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#1a1a1a',
+    marginLeft: 8,
+    flex: 1,
   },
-  categoriesContainer: {
-    padding: 16,
+  refreshHeaderButton: {
+    padding: 8,
   },
-  categoryCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  statsContainer: {
     backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
+  },
+  statsText: {
+    fontSize: 14,
+    color: '#8E8E93',
+    textAlign: 'center',
+  },
+  productsContainer: {
     padding: 16,
+  },
+  productRow: {
+    justifyContent: 'space-between',
+  },
+  productCard: {
+    width: '48%',
+    backgroundColor: '#fff',
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -208,31 +280,109 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    overflow: 'hidden',
   },
-  allProductsCard: {
-    borderColor: '#34C759',
-    borderWidth: 1,
+  trendingBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: '#FF6B35',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    zIndex: 1,
   },
-  categoryIcon: {
-    width: 56,
-    height: 56,
-    backgroundColor: '#f0f8ff',
-    borderRadius: 28,
+  trendingRank: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginLeft: 4,
+  },
+  productImageContainer: {
+    width: '100%',
+    height: 120,
+    backgroundColor: '#f8f9fa',
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  placeholderImage: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    backgroundColor: '#f8f9fa',
   },
-  categoryInfo: {
-    flex: 1,
+  productInfo: {
+    padding: 12,
   },
-  categoryName: {
-    fontSize: 16,
+  productName: {
+    fontSize: 14,
     fontWeight: '600',
     color: '#1a1a1a',
     marginBottom: 4,
+    lineHeight: 18,
   },
-  categoryCount: {
+  productPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 4,
+  },
+  productStock: {
+    fontSize: 12,
+    color: '#8E8E93',
+    marginBottom: 8,
+  },
+  trendingIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  trendingText: {
+    fontSize: 12,
+    color: '#FF6B35',
+    fontWeight: '500',
+    marginLeft: 4,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptySubtitle: {
     fontSize: 14,
     color: '#8E8E93',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  refreshButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f8ff',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#007AFF',
+  },
+  refreshButtonText: {
+    color: '#007AFF',
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 8,
   },
 });
