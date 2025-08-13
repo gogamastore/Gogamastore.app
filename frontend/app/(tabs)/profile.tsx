@@ -40,17 +40,22 @@ export default function ProfileScreen() {
     if (!user) return;
 
     try {
+      console.log('📱 Loading profile data from Firebase for user:', user.uid);
       const profile = await userService.getUserProfile(user.uid);
+      console.log('📄 Profile data retrieved:', profile);
+      
       setUserProfile({
-        id: profile.id,
-        nama_lengkap: profile.nama_lengkap || user.displayName || '',
+        id: profile.id || user.uid,
+        nama_lengkap: profile.name || profile.nama_lengkap || user.displayName || '',
         email: profile.email || user.email || '',
-        nomor_whatsapp: profile.nomor_whatsapp || '',
+        nomor_whatsapp: profile.whatsapp || profile.nomor_whatsapp || '',
         created_at: profile.created_at || new Date().toISOString(),
-        photoURL: profile.photoURL || user.photoURL
+        photoURL: profile.photoURL || user.photoURL || ''
       });
+      
+      console.log('✅ Profile loaded successfully with photo:', profile.photoURL || user.photoURL || 'No photo');
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('❌ Error fetching profile:', error);
       // Use auth user data as fallback
       setUserProfile({
         id: user.uid,
@@ -58,7 +63,7 @@ export default function ProfileScreen() {
         email: user.email || '',
         nomor_whatsapp: '',
         created_at: new Date().toISOString(),
-        photoURL: user.photoURL
+        photoURL: user.photoURL || ''
       });
     } finally {
       setLoading(false);
