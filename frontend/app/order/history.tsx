@@ -406,18 +406,88 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5EA',
   },
+  backButton: {
+    padding: 4,
+  },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1a1a1a',
+    flex: 1,
+    textAlign: 'center',
+    marginHorizontal: 16,
   },
-  headerSpace: {
-    width: 24,
+  subHeader: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
+  },
+  subHeaderTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  subHeaderDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  filtersContainer: {
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
+  },
+  filtersContent: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  filterTab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginRight: 8,
+    borderRadius: 20,
+    backgroundColor: '#F2F2F7',
+  },
+  filterTabActive: {
+    backgroundColor: '#007AFF',
+  },
+  filterLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#666',
+    marginRight: 6,
+  },
+  filterLabelActive: {
+    color: '#fff',
+  },
+  filterCount: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#666',
+    backgroundColor: '#E5E5EA',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+    minWidth: 20,
+    textAlign: 'center',
+  },
+  filterCountActive: {
+    color: '#007AFF',
+    backgroundColor: '#fff',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 12,
   },
   listContainer: {
     padding: 16,
@@ -443,111 +513,54 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 8,
   },
-  orderIdContainer: {
+  orderInfo: {
     flex: 1,
   },
-  orderIdLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 2,
-  },
   orderId: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#1a1a1a',
-  },
-  orderDate: {
-    alignItems: 'flex-end',
-  },
-  orderDateText: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '500',
-  },
-  orderContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-  },
-  itemsSummary: {
-    marginBottom: 12,
-  },
-  itemsCount: {
-    fontSize: 12,
-    color: '#666',
     marginBottom: 4,
   },
-  firstItemName: {
-    fontSize: 14,
-    color: '#1a1a1a',
+  orderDate: {
+    fontSize: 12,
+    color: '#666',
     fontWeight: '500',
   },
-  statusContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  orderStatusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   statusText: {
     fontSize: 12,
     fontWeight: '600',
-    marginLeft: 4,
+    color: '#fff',
   },
-  paymentStatusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  orderContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 12,
   },
-  paymentStatusText: {
-    fontSize: 12,
+  customerName: {
+    fontSize: 14,
     fontWeight: '600',
-    marginLeft: 4,
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  orderSummary: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  paymentMethod: {
+    fontSize: 12,
+    color: '#007AFF',
+    fontWeight: '500',
   },
   orderFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  totalContainer: {
-    flex: 1,
-  },
-  totalLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 2,
-  },
-  totalAmount: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007AFF',
-  },
-  detailButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#F0F8FF',
-  },
-  detailButtonText: {
-    fontSize: 12,
-    color: '#007AFF',
-    fontWeight: '600',
-    marginRight: 4,
-  },
-  shippingInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-  },
-  shippingText: {
-    fontSize: 12,
-    color: '#666',
-    marginLeft: 6,
+    alignItems: 'flex-end',
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   emptyContainer: {
     flex: 1,
@@ -557,31 +570,17 @@ const styles = StyleSheet.create({
     marginTop: 80,
   },
   emptyTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#1a1a1a',
     marginTop: 16,
     marginBottom: 8,
+    textAlign: 'center',
   },
-  emptySubtitle: {
-    fontSize: 16,
+  emptyDescription: {
+    fontSize: 14,
     color: '#666',
     textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 24,
-  },
-  shopButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  shopButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
+    lineHeight: 20,
   },
 });
