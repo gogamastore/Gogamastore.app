@@ -394,10 +394,117 @@ def test_update_profile():
         log_test("Update Profile", False, f"Request failed: {str(e)}")
         return False
 
+def test_firebase_order_endpoints():
+    """Test Firebase-related order management endpoints"""
+    print("\n=== Testing Firebase Order Management Endpoints ===")
+    
+    if not auth_token:
+        log_test("Firebase Order Endpoints", False, "No auth token available")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    
+    # Test order creation endpoint
+    try:
+        response = requests.post(f"{BASE_URL}/orders", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Order Creation Endpoint", False, "❌ MISSING: POST /api/orders endpoint not implemented")
+        else:
+            log_test("Order Creation Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Order Creation Endpoint", False, f"Request failed: {str(e)}")
+    
+    # Test get orders endpoint
+    try:
+        response = requests.get(f"{BASE_URL}/orders", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Get Orders Endpoint", False, "❌ MISSING: GET /api/orders endpoint not implemented")
+        else:
+            log_test("Get Orders Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Get Orders Endpoint", False, f"Request failed: {str(e)}")
+    
+    # Test get order by ID endpoint
+    try:
+        response = requests.get(f"{BASE_URL}/orders/test-id", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Get Order by ID Endpoint", False, "❌ MISSING: GET /api/orders/{id} endpoint not implemented")
+        else:
+            log_test("Get Order by ID Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Get Order by ID Endpoint", False, f"Request failed: {str(e)}")
+    
+    # Test update order status endpoint
+    try:
+        response = requests.put(f"{BASE_URL}/orders/test-id/status", headers=headers, json={"status": "confirmed"}, timeout=10)
+        if response.status_code == 404:
+            log_test("Update Order Status Endpoint", False, "❌ MISSING: PUT /api/orders/{id}/status endpoint not implemented")
+        else:
+            log_test("Update Order Status Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Update Order Status Endpoint", False, f"Request failed: {str(e)}")
+    
+    return False  # All endpoints are missing
+
+def test_order_cancellation_endpoint():
+    """Test order cancellation functionality"""
+    print("\n=== Testing Order Cancellation Endpoint ===")
+    
+    if not auth_token:
+        log_test("Order Cancellation", False, "No auth token available")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    
+    try:
+        response = requests.put(f"{BASE_URL}/orders/test-id/cancel", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Order Cancellation Endpoint", False, "❌ MISSING: PUT /api/orders/{id}/cancel endpoint not implemented")
+            return False
+        else:
+            log_test("Order Cancellation Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+            return True
+    except Exception as e:
+        log_test("Order Cancellation Endpoint", False, f"Request failed: {str(e)}")
+        return False
+
+def test_firebase_integration_endpoints():
+    """Test Firebase integration endpoints"""
+    print("\n=== Testing Firebase Integration Endpoints ===")
+    
+    if not auth_token:
+        log_test("Firebase Integration", False, "No auth token available")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    
+    # Test Firebase sync endpoint
+    try:
+        response = requests.post(f"{BASE_URL}/firebase/sync", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Firebase Sync Endpoint", False, "❌ MISSING: POST /api/firebase/sync endpoint not implemented")
+        else:
+            log_test("Firebase Sync Endpoint", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Firebase Sync Endpoint", False, f"Request failed: {str(e)}")
+    
+    # Test Firebase auth validation endpoint
+    try:
+        response = requests.post(f"{BASE_URL}/firebase/validate", headers=headers, timeout=10)
+        if response.status_code == 404:
+            log_test("Firebase Auth Validation", False, "❌ MISSING: POST /api/firebase/validate endpoint not implemented")
+        else:
+            log_test("Firebase Auth Validation", True, f"Endpoint exists (HTTP {response.status_code})")
+    except Exception as e:
+        log_test("Firebase Auth Validation", False, f"Request failed: {str(e)}")
+    
+    return False
+
 def run_all_tests():
     """Run all backend API tests"""
     print("🚀 Starting Gogama Store Backend API Tests")
-    print("=" * 50)
+    print("🔥 SPECIAL FOCUS: Firebase Order Management & Order Cancellation")
+    print("=" * 60)
     
     # Authentication tests
     if not test_user_registration():
@@ -425,10 +532,19 @@ def run_all_tests():
     test_get_profile()
     test_update_profile()
     
+    # NEW: Firebase and Order Management tests
+    print("\n" + "🔥" * 60)
+    print("FIREBASE & ORDER MANAGEMENT TESTING")
+    print("🔥" * 60)
+    
+    test_firebase_order_endpoints()
+    test_order_cancellation_endpoint()
+    test_firebase_integration_endpoints()
+    
     # Summary
-    print("\n" + "=" * 50)
-    print("📊 TEST SUMMARY")
-    print("=" * 50)
+    print("\n" + "=" * 60)
+    print("📊 COMPREHENSIVE TEST SUMMARY")
+    print("=" * 60)
     
     passed = sum(1 for result in test_results if result["success"])
     total = len(test_results)
@@ -438,15 +554,33 @@ def run_all_tests():
     print(f"Failed: {total - passed}")
     print(f"Success Rate: {(passed/total)*100:.1f}%")
     
+    # Categorize results
+    basic_api_tests = [r for r in test_results if not any(keyword in r["test"] for keyword in ["Firebase", "Order"])]
+    firebase_order_tests = [r for r in test_results if any(keyword in r["test"] for keyword in ["Firebase", "Order"])]
+    
+    basic_passed = sum(1 for r in basic_api_tests if r["success"])
+    firebase_passed = sum(1 for r in firebase_order_tests if r["success"])
+    
+    print(f"\n📈 BASIC API TESTS: {basic_passed}/{len(basic_api_tests)} passed")
+    print(f"🔥 FIREBASE/ORDER TESTS: {firebase_passed}/{len(firebase_order_tests)} passed")
+    
     if passed == total:
         print("\n🎉 All tests passed!")
         return True
     else:
         print(f"\n⚠️  {total - passed} tests failed")
-        print("\nFailed tests:")
+        print("\n❌ Failed tests:")
         for result in test_results:
             if not result["success"]:
                 print(f"  - {result['test']}: {result['message']}")
+        
+        # Special analysis for Firebase/Order issues
+        if len(firebase_order_tests) > 0 and firebase_passed == 0:
+            print(f"\n🔴 CRITICAL FINDING: Firebase/Order Management Backend Missing")
+            print(f"   - All Firebase and order management endpoints are missing from backend")
+            print(f"   - Frontend uses Firebase services but backend has no order APIs")
+            print(f"   - This explains the Firebase order data fetching issues reported")
+        
         return False
 
 if __name__ == "__main__":
