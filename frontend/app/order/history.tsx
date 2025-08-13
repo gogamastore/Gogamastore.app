@@ -172,32 +172,28 @@ export default function OrderHistoryScreen() {
   };
 
   const filterOrders = (orders: Order[], filter: string) => {
-    if (filter === 'all') {
-      setFilteredOrders(orders);
-    } else {
-      const filtered = orders.filter(order => {
-        // Normalize status to lowercase for consistent comparison
-        const normalizedStatus = order.status ? order.status.toLowerCase() : '';
-        
-        switch (filter) {
-          case 'pending':
-            return normalizedStatus === 'pending';
-          case 'confirmed':
-            // Map to "processing" status from Firebase
-            return normalizedStatus === 'processing' || normalizedStatus === 'confirmed';
-          case 'shipped':
-            return normalizedStatus === 'shipped';
-          case 'completed':
-            // Map to "delivered" status from Firebase
-            return normalizedStatus === 'delivered' || normalizedStatus === 'completed';
-          case 'cancelled':
-            return normalizedStatus === 'cancelled';
-          default:
-            return true;
-        }
-      });
-      setFilteredOrders(filtered);
-    }
+    const filtered = orders.filter(order => {
+      // Normalize status to lowercase for consistent comparison
+      const normalizedStatus = order.status ? order.status.toLowerCase() : '';
+      
+      switch (filter) {
+        case 'pending':
+          return normalizedStatus === 'pending';
+        case 'confirmed':
+          // Map to "processing" status from Firebase
+          return normalizedStatus === 'processing' || normalizedStatus === 'confirmed';
+        case 'shipped':
+          return normalizedStatus === 'shipped';
+        case 'completed':
+          // Map to "delivered" status from Firebase
+          return normalizedStatus === 'delivered' || normalizedStatus === 'completed';
+        case 'cancelled':
+          return normalizedStatus === 'cancelled';
+        default:
+          return normalizedStatus === 'pending'; // default to pending if unknown filter
+      }
+    });
+    setFilteredOrders(filtered);
   };
 
   const handleFilterChange = (filter: string) => {
