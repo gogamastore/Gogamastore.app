@@ -191,7 +191,13 @@ export default function PaymentScreen() {
       
       // Navigate to order history instead of payment instructions
       console.log('🟡 Navigating to order history...');
-      router.push('/order/history');
+      
+      // Add small delay to ensure all Firebase operations complete
+      setTimeout(() => {
+        console.log('🟡 Executing navigation to order history');
+        router.replace('/order/history');
+      }, 500);
+      
       console.log('✅ Navigation triggered');
       
     } catch (error) {
