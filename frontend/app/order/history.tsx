@@ -80,13 +80,25 @@ export default function OrderHistoryScreen() {
     if (!user) return;
     
     try {
+      console.log('🔍 Fetching orders for user:', user.uid);
+      console.log('📱 User auth object:', user);
+      
       const data = await orderService.getUserOrders(user.uid);
+      console.log('📋 Orders fetched:', data);
+      console.log('📦 Number of orders:', data.length);
+      
       setOrders(data);
       filterOrders(data, selectedFilter);
       updateStatusCounts(data);
+      
+      if (data.length === 0) {
+        console.log('❌ No orders found for user');
+      } else {
+        console.log('✅ Orders loaded successfully');
+      }
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      Alert.alert('Error', 'Gagal memuat riwayat pesanan');
+      console.error('❌ Error fetching orders:', error);
+      Alert.alert('Error', 'Gagal memuat riwayat pesanan: ' + error.message);
     } finally {
       setLoading(false);
       setRefreshing(false);
