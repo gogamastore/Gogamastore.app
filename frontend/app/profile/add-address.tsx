@@ -80,14 +80,23 @@ export default function AddAddressScreen() {
 
     setSaving(true);
     try {
-      // TODO: Save to Firebase user/{userId}/addresses collection
-      // For now, show success and navigate back
+      const addressData = {
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        address: form.address.trim(),
+        city: form.city.trim(),
+        postalCode: form.postalCode.trim(),
+        province: form.province.trim(),
+        isDefault: form.isDefault
+      };
+
+      await userService.addUserAddress(user.uid, addressData);
       Alert.alert('Berhasil', 'Alamat berhasil ditambahkan', [
         { text: 'OK', onPress: () => router.back() }
       ]);
     } catch (error) {
       console.error('Error saving address:', error);
-      Alert.alert('Error', 'Gagal menambahkan alamat');
+      Alert.alert('Error', 'Gagal menambahkan alamat: ' + error.message);
     } finally {
       setSaving(false);
     }
