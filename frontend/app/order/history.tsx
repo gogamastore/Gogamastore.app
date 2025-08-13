@@ -133,24 +133,35 @@ export default function OrderHistoryScreen() {
     
     orders.forEach(order => {
       counts.all = (counts.all || 0) + 1;
-      switch (order.status) {
+      
+      // Normalize status to lowercase for consistent comparison
+      const normalizedStatus = order.status ? order.status.toLowerCase() : '';
+      
+      switch (normalizedStatus) {
         case 'pending':
           counts.pending = (counts.pending || 0) + 1;
           break;
-        case 'confirmed':
         case 'processing':
           counts.confirmed = (counts.confirmed || 0) + 1;
           break;
         case 'shipped':
           counts.shipped = (counts.shipped || 0) + 1;
           break;
-        case 'completed':
+        case 'delivered':
           counts.completed = (counts.completed || 0) + 1;
           break;
         case 'cancelled':
           counts.cancelled = (counts.cancelled || 0) + 1;
           break;
+        // Legacy status support
+        case 'confirmed':
+          counts.confirmed = (counts.confirmed || 0) + 1;
+          break;
+        case 'completed':
+          counts.completed = (counts.completed || 0) + 1;
+          break;
         default:
+          console.log('📊 Unknown status found:', order.status);
           counts.pending = (counts.pending || 0) + 1;
       }
     });
