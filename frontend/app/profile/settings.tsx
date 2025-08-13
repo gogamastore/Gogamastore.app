@@ -279,14 +279,34 @@ export default function ProfileSettingsScreen() {
           <View style={styles.photoSection}>
             <View style={styles.photoContainer}>
               <View style={styles.photoPlaceholder}>
-                <MaterialIcons name="person" size={48} color="#007AFF" />
+                {profile.photoURL ? (
+                  <Image 
+                    source={{ uri: profile.photoURL }} 
+                    style={styles.profileImage}
+                    onError={(error) => {
+                      console.log('❌ Error loading profile image:', error);
+                    }}
+                  />
+                ) : (
+                  <MaterialIcons name="person" size={48} color="#007AFF" />
+                )}
               </View>
-              <TouchableOpacity style={styles.photoEditButton}>
-                <MaterialIcons name="camera-alt" size={16} color="#007AFF" />
+              <TouchableOpacity 
+                style={styles.photoEditButton}
+                onPress={handlePhotoUpload}
+                disabled={uploadingPhoto}
+              >
+                {uploadingPhoto ? (
+                  <ActivityIndicator size="small" color="#007AFF" />
+                ) : (
+                  <MaterialIcons name="camera-alt" size={16} color="#007AFF" />
+                )}
               </TouchableOpacity>
             </View>
             <Text style={styles.photoText}>Foto Profil</Text>
-            <Text style={styles.photoSubtext}>Gunakan foto yang jelas dan profesional</Text>
+            <Text style={styles.photoSubtext}>
+              {uploadingPhoto ? 'Mengupload foto...' : 'Gunakan foto yang jelas dan profesional'}
+            </Text>
           </View>
 
           {/* Form Section */}
