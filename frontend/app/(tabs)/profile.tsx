@@ -227,11 +227,6 @@ export default function ProfileScreen() {
             style={styles.devMenuItem}
           <TouchableOpacity
             style={[styles.devMenuItem, { marginTop: 8 }]}
-            onPress={handleCreateSampleOrders}
-          >
-            <MaterialIcons name="receipt" size={20} color="#32D74B" />
-            <Text style={styles.devMenuTitle}>Create Sample Orders</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Logout Button */}
