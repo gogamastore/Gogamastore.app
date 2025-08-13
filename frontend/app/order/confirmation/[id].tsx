@@ -214,18 +214,18 @@ export default function OrderConfirmationScreen() {
         {/* Items */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Produk Dipesan</Text>
-          {order.items.map((item) => (
-            <View key={item.product_id} style={styles.orderItem}>
+          {order.products && order.products.map((item) => (
+            <View key={item.productId} style={styles.orderItem}>
               <View style={styles.itemInfo}>
                 <Text style={styles.itemName} numberOfLines={2}>
-                  {item.nama}
+                  {item.name}
                 </Text>
                 <Text style={styles.itemQuantity}>
-                  {item.quantity}x {formatPrice(item.harga)}
+                  {item.quantity}x {formatPrice(item.price)}
                 </Text>
               </View>
               <Text style={styles.itemTotal}>
-                {formatPrice(item.harga * item.quantity)}
+                {formatPrice(item.price * item.quantity)}
               </Text>
             </View>
           ))}
