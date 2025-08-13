@@ -31,7 +31,7 @@ export const productService = {
           gambar: data.image || '',
           kategori: data.category || '',
           harga: this.parsePrice(data.price),
-          stok: data.stock || 99 // default stock if not specified
+          stok: typeof data.stock !== 'undefined' ? data.stock : 0 // Use actual stock value, default to 0 if not specified
         };
       });
     } catch (error) {
