@@ -14,8 +14,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useAuth } from '../../contexts/AuthContext';
-import { cartService, orderService } from '../../services/firestoreService';
+import { useAuth } from '../contexts/AuthContext';
+import { cartService, orderService } from '../services/firestoreService';
 
 interface CartItem {
   product_id: string;
