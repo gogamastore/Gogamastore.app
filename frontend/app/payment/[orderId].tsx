@@ -175,7 +175,7 @@ export default function PaymentScreen() {
         method: selectedMethod,
         bankAccount: selectedBankAccount || null,
         status: selectedMethod === 'cod' ? 'pending_cod' : 'pending_transfer',
-        fee: selectedMethod === 'cod' ? 5000 : (selectedMethod.includes('dana') || selectedMethod.includes('gopay') ? 2500 : 0),
+        fee: selectedMethod.includes('dana') || selectedMethod.includes('gopay') ? 1500 : 0,
       });
       
       if (selectedMethod === 'cod') {
