@@ -178,9 +178,30 @@ export default function CheckoutScreen() {
   };
 
   const processOrder = async () => {
-    if (!validateForm() || !cart || !user) return;
+    console.log('🔵 processOrder called');
+    console.log('🔵 validateForm result:', !validateForm());
+    console.log('🔵 cart:', cart);
+    console.log('🔵 user:', user);
+    
+    if (!validateForm()) {
+      console.log('❌ Form validation failed');
+      return;
+    }
+    
+    if (!cart) {
+      console.log('❌ No cart data');
+      Alert.alert('Error', 'Data keranjang tidak ditemukan');
+      return;
+    }
+    
+    if (!user) {
+      console.log('❌ No user data');
+      Alert.alert('Error', 'Anda harus login terlebih dahulu');
+      return;
+    }
     
     try {
+      console.log('🟡 Starting order creation process...');
       setProcessing(true);
       
       const orderData = {
@@ -196,20 +217,25 @@ export default function CheckoutScreen() {
         paymentStatus: 'pending'
       };
       
-      console.log('Creating order with data:', orderData);
+      console.log('🔵 Order data prepared:', orderData);
+      console.log('🟡 Calling orderService.createOrder...');
+      
       const orderId = await orderService.createOrder(orderData);
-      console.log('Order created with ID:', orderId);
+      console.log('✅ Order created with ID:', orderId);
       
-      // Clear cart after successful order creation
+      console.log('🟡 Clearing cart...');
       await cartService.clearCart(user.uid);
+      console.log('✅ Cart cleared');
       
-      // Navigate to payment selection
+      console.log('🟡 Navigating to payment...');
       router.replace(`/payment/${orderId}`);
+      console.log('✅ Navigation triggered');
       
     } catch (error) {
-      console.error('Error processing order:', error);
-      Alert.alert('Error', 'Gagal memproses pesanan. Silakan coba lagi.');
+      console.error('❌ Error processing order:', error);
+      Alert.alert('Error', `Gagal memproses pesanan: ${error.message}`);
     } finally {
+      console.log('🔵 Setting processing to false');
       setProcessing(false);
     }
   };
