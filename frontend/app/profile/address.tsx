@@ -167,7 +167,11 @@ export default function AddressManagementScreen() {
         </TouchableOpacity>
         <TouchableOpacity 
           style={[styles.actionButton, styles.deleteActionButton]}
-          onPress={() => handleDeleteAddress(item)}
+          onPress={() => {
+            console.log('🗑️ Delete address button pressed for:', item.name);
+            handleDeleteAddress(item);
+          }}
+          activeOpacity={0.7}
         >
           <MaterialIcons name="delete" size={16} color="#FF3B30" />
           <Text style={[styles.actionButtonText, styles.deleteActionButtonText]}>Hapus</Text>
