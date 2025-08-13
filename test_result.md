@@ -465,11 +465,15 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Payment Proof Upload System (Firebase Storage Integration)"
+    - "Trending Products Functionality"
     - "Order Management APIs (Firebase Integration)"
     - "Firebase Connection and Authentication"
   stuck_tasks:
     - "Order Management APIs (Firebase Integration)"
     - "Firebase Connection and Authentication"
+    - "Payment Proof Upload System (Firebase Storage Integration)"
+    - "Trending Products Functionality"
   test_all: false
   test_priority: "stuck_first"
 
