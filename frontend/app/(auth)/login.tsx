@@ -21,19 +21,37 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
+  // Auto-fill test credentials for easier testing
+  React.useEffect(() => {
+    console.log('🔧 Login screen mounted');
+    console.log('🔥 Available login function:', typeof login);
+  }, []);
+
+  const fillTestCredentials = () => {
+    setEmail('test@gogama.store');
+    setPassword('test123456');
+    Alert.alert('Test Credentials Filled', 'Email: test@gogama.store\nPassword: test123456');
+  };
+
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Mohon isi email dan password');
       return;
     }
 
+    console.log('🔐 Starting login process...');
+    console.log('📧 Email:', email);
+    console.log('🔒 Password length:', password.length);
+
     setLoading(true);
     try {
-      await login(email.toLowerCase(), password);
+      const user = await login(email.toLowerCase(), password);
+      console.log('✅ Login successful, navigating to tabs...');
+      
       // Force navigation to main tabs after successful login
       router.replace('/(tabs)');
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Login error caught in component:', error);
       let errorMessage = 'Login gagal';
       
       switch (error.code) {
@@ -50,13 +68,19 @@ export default function LoginScreen() {
           errorMessage = 'Terlalu banyak percobaan. Coba lagi nanti';
           break;
         case 'auth/network-request-failed':
-          errorMessage = 'Koneksi internet bermasalah';
+          errorMessage = 'Koneksi internet bermasalah. Periksa koneksi Anda.';
+          break;
+        case 'auth/configuration-not-found':
+          errorMessage = 'Konfigurasi Firebase bermasalah. Hubungi admin.';
+          break;
+        case 'auth/invalid-credential':
+          errorMessage = 'Email atau password salah';
           break;
         default:
-          errorMessage = error.message || 'Terjadi kesalahan';
+          errorMessage = `${error.code}: ${error.message}` || 'Terjadi kesalahan';
       }
       
-      Alert.alert('Error', errorMessage);
+      Alert.alert('Error Login', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -113,6 +137,16 @@ export default function LoginScreen() {
 
             <TouchableOpacity style={styles.forgotPassword}>
               <Text style={styles.forgotPasswordText}>Lupa password?</Text>
+            </TouchableOpacity>
+
+            {/* Test Credentials Button */}
+            <TouchableOpacity
+              style={[styles.loginButton, { backgroundColor: '#FF9500', marginBottom: 16 }]}
+              onPress={fillTestCredentials}
+            >
+              <Text style={styles.loginButtonText}>
+                Fill Test Credentials
+              </Text>
             </TouchableOpacity>
 
             {/* Native HTML Button for Emergency Testing */}
