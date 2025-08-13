@@ -217,7 +217,10 @@ export default function CheckoutScreen() {
       };
       
       const orderId = await orderService.createOrder(orderData);
-      router.replace(`/payment/${orderId}`);
+      
+      // Clear cart and go directly to order history
+      await cartService.clearCart(user.uid);
+      router.replace('/order/history');
       
     } catch (error) {
       console.error('Error processing order:', error);
