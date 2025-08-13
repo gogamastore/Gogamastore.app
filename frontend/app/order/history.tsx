@@ -351,27 +351,42 @@ export default function OrderHistoryScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Riwayat Pesanan</Text>
-        <View style={styles.headerSpace} />
       </View>
 
-      {/* Orders List */}
-      <FlatList
-        data={orders}
-        renderItem={renderOrderItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListEmptyComponent={renderEmptyState}
-      />
+      <View style={styles.subHeader}>
+        <Text style={styles.subHeaderTitle}>Pesanan Saya</Text>
+        <Text style={styles.subHeaderDescription}>
+          Lihat semua riwayat transaksi Anda di sini.
+        </Text>
+      </View>
+
+      {renderStatusFilter()}
+
+      {filteredOrders.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <MaterialIcons name="receipt-long" size={64} color="#C7C7CC" />
+          <Text style={styles.emptyTitle}>Tidak ada pesanan di kategori ini</Text>
+          <Text style={styles.emptyDescription}>
+            Pesanan yang Anda buat akan muncul di sini
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filteredOrders}
+          renderItem={renderOrderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </SafeAreaView>
   );
 }
