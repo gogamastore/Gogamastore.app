@@ -380,3 +380,33 @@ export default function HomeScreen() {
         <View style={styles.brandsSection}>
           <Text style={styles.sectionTitle}>Brand Favoritmu</Text>
           <View style={styles.brandsGrid}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.brandsScrollContainer}
+            style={styles.brandsScrollView}
+          >
+            {brands.map((brand) => {
+              console.log('Rendering brand:', brand);
+              return (
+                <TouchableOpacity key={brand.id} style={styles.brandCard}>
+                  {(brand.logoUrl || brand.logo || brand.gambar || brand.image) ? (
+                    <Image 
+                      source={{ uri: brand.logoUrl || brand.logo || brand.gambar || brand.image }} 
+                      style={styles.brandLogo}
+                      resizeMode="contain"
+                      onError={() => console.log('Brand image failed to load:', brand)}
+                      onLoad={() => console.log('Brand image loaded:', brand)}
+                    />
+                  ) : (
+                    <View style={styles.brandLogoPlaceholder}>
+                      <MaterialIcons name="business" size={20} color="#666" />
+                    </View>
+                  )}
+                  <Text style={styles.brandName}>
+                    {brand.nama || brand.name || brand.title || 'Unknown Brand'}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
