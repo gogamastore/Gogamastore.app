@@ -186,7 +186,7 @@ export default function CheckoutScreen() {
       const orderData = {
         userId: user.uid,
         items: cart.items,
-        subtotal: calculateSubtotal(),
+        subtotal: cart.total || 0,
         shippingCost: calculateShippingCost(),
         tax: calculateTax(),
         grandTotal: calculateGrandTotal(),
@@ -196,7 +196,9 @@ export default function CheckoutScreen() {
         paymentStatus: 'pending'
       };
       
+      console.log('Creating order with data:', orderData);
       const orderId = await orderService.createOrder(orderData);
+      console.log('Order created with ID:', orderId);
       
       // Navigate to payment selection
       router.replace(`/payment/${orderId}`);
