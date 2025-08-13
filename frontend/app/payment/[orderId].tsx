@@ -150,40 +150,53 @@ export default function PaymentScreen() {
   const processPayment = async () => {
     if (!selectedMethod || !orderData) return;
     
+    console.log('🟡 Starting processPayment with method:', selectedMethod);
     setProcessing(true);
     
     try {
       const selectedBankAccount = bankAccounts.find(account => account.id === selectedMethod);
+      console.log('🟡 Found bank account:', selectedBankAccount);
       
       // Update payment method in order (no duplicate order creation)
+      console.log('🟡 Updating payment method...');
       await orderService.updatePaymentMethod(orderId as string, {
         method: selectedMethod,
         bankAccount: selectedBankAccount || null,
         status: selectedMethod === 'cod' ? 'pending_cod' : 'pending_transfer',
         fee: 0, // All methods are now free
       });
+      console.log('✅ Payment method updated');
       
       // Update order status to confirmed
+      console.log('🟡 Updating order status...');
       await orderService.updateOrderStatus(orderId as string, 'confirmed');
+      console.log('✅ Order status updated');
       
       // Set payment status based on method
       if (selectedMethod === 'cod') {
+        console.log('🟡 Setting COD payment status...');
         await orderService.updatePaymentStatus(orderId as string, 'unpaid'); // Status "belum bayar"
       } else {
+        console.log('🟡 Setting bank transfer payment status...');
         await orderService.updatePaymentStatus(orderId as string, 'pending'); // Status "menunggu pembayaran"
       }
+      console.log('✅ Payment status updated');
       
       // Clear cart after order is confirmed
       if (user) {
+        console.log('🟡 Clearing cart...');
         await cartService.clearCart(user.uid);
+        console.log('✅ Cart cleared');
       }
       
       // Navigate to order history instead of payment instructions
-      router.replace('/order/history');
+      console.log('🟡 Navigating to order history...');
+      router.push('/order/history');
+      console.log('✅ Navigation triggered');
       
     } catch (error) {
-      console.error('Error processing order:', error);
-      Alert.alert('Error', 'Gagal membuat pesanan. Silakan coba lagi.');
+      console.error('❌ Error processing order:', error);
+      Alert.alert('Error', `Gagal membuat pesanan: ${error.message}`);
     } finally {
       setProcessing(false);
     }
