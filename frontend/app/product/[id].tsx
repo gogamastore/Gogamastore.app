@@ -246,13 +246,16 @@ export default function ProductDetailScreen() {
               gap: '8px'
             }}
             onClick={async () => {
-              console.log('🟦 NATIVE ADD TO CART CLICKED!!!');
-              alert('Adding to cart with native button...');
+              console.log('🛒 Native add to cart clicked!');
               try {
                 await addToCart();
+                // Force refresh cart by triggering a small delay then success message
+                setTimeout(() => {
+                  alert(`✅ ${quantity} ${product.nama} berhasil ditambahkan ke keranjang!`);
+                }, 100);
               } catch (error) {
                 console.error('Add to cart error:', error);
-                alert('Error adding to cart: ' + error.message);
+                alert('Error: ' + error.message);
               }
             }}
           >
