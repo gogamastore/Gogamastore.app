@@ -409,6 +409,7 @@ export default function OrderHistoryScreen() {
           <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Riwayat Pesanan</Text>
+        <View style={{ width: 24 }} />
       </View>
 
       <View style={styles.subHeader}>
