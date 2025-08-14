@@ -622,8 +622,8 @@ export default function OrderConfirmationScreen() {
               </View>
             )}
             
-            {/* Show upload section if payment status is NOT paid AND no existing proof URL */}
-            {(order.paymentStatus !== 'paid' && (!order.paymentProofUrl || order.paymentProofUrl === '')) && (
+            {/* Show upload section if payment status is Unpaid AND no existing proof URL */}
+            {(order.paymentStatus !== 'Paid' && order.paymentStatus !== 'paid' && (!order.paymentProofUrl || order.paymentProofUrl === '')) && (
               <View style={styles.uploadSection}>
                 <Text style={styles.uploadSectionTitle}>Unggah Bukti Pembayaran</Text>
                 <Text style={styles.uploadSectionSubtitle}>
