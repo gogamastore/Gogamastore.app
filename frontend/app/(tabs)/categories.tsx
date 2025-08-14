@@ -66,7 +66,12 @@ export default function TrendingScreen() {
           
           if (productSnap.exists()) {
             const productData = productSnap.data();
-            console.log('📦 Product data:', productData);
+            console.log('📦 Product data for', trending.productId, ':', {
+              nama: productData.nama,
+              harga: productData.harga,
+              gambar: productData.gambar,
+              hasImage: !!productData.gambar
+            });
             
             return {
               id: productSnap.id,
@@ -86,7 +91,13 @@ export default function TrendingScreen() {
       const validProducts = products.filter(product => product !== null) as Product[];
       
       console.log('✅ Loaded trending products:', validProducts.length);
-      console.log('📋 Products details:', validProducts.map(p => ({ id: p.id, nama: p.nama, harga: p.harga })));
+      console.log('📋 Products with images:', validProducts.filter(p => p.gambar).length);
+      console.log('📋 Products details:', validProducts.map(p => ({ 
+        id: p.id, 
+        nama: p.nama, 
+        harga: p.harga,
+        hasImage: !!p.gambar
+      })));
       setTrendingProducts(validProducts);
       
     } catch (error) {
