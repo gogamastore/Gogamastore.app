@@ -189,34 +189,14 @@ export default function AddressManagementScreen() {
   );
 
   const showAddressMenu = (address: Address) => {
-    const options = ['Edit Alamat'];
-    if (!address.isDefault) {
-      options.push('Jadikan Alamat Utama');
-      options.push('Hapus Alamat');
+    // Direct action - just trigger the appropriate function
+    // Simplified approach instead of multiple menu options
+    if (address.isDefault) {
+      handleEditAddress(address.id);
+    } else {
+      // For non-default addresses, could show edit as default action
+      handleEditAddress(address.id);
     }
-    options.push('Batal');
-
-    Alert.alert(
-      address.name,
-      'Pilih tindakan:',
-      options.map((option, index) => ({
-        text: option,
-        style: option === 'Hapus Alamat' ? 'destructive' : option === 'Batal' ? 'cancel' : 'default',
-        onPress: () => {
-          switch (option) {
-            case 'Edit Alamat':
-              handleEditAddress(address.id);
-              break;
-            case 'Jadikan Alamat Utama':
-              handleSetDefault(address.id);
-              break;
-            case 'Hapus Alamat':
-              handleDeleteAddress(address);
-              break;
-          }
-        }
-      }))
-    );
   };
 
   const renderEmptyState = () => (
