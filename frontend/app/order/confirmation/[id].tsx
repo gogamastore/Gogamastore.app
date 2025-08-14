@@ -614,8 +614,8 @@ export default function OrderConfirmationScreen() {
               </View>
             )}
             
-            {/* Show upload section ONLY if payment is still pending/proof_uploaded AND no existing proof URL */}
-            {((order.paymentStatus === 'pending' || order.paymentStatus === 'proof_uploaded' || !order.paymentStatus || order.paymentStatus === '') && order.paymentStatus !== 'paid' && (!order.paymentProofUrl || order.paymentProofUrl === '')) && (
+            {/* Show upload section if payment status is NOT paid AND no existing proof URL */}
+            {(order.paymentStatus !== 'paid' && (!order.paymentProofUrl || order.paymentProofUrl === '')) && (
               <View style={styles.uploadSection}>
                 <Text style={styles.uploadSectionTitle}>Unggah Bukti Pembayaran</Text>
                 <Text style={styles.uploadSectionSubtitle}>
