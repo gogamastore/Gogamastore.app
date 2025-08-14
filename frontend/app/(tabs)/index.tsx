@@ -108,8 +108,26 @@ export default function HomeScreen() {
   }, [banners]);
 
   const loadInitialData = async () => {
-    await Promise.all([fetchProducts(), fetchCategories(), fetchBrands(), fetchBanners()]);
-    setLoading(false);
+    setLoading(true);
+    try {
+      console.log('🏠 Loading home page data...');
+      
+      // Load critical data first (sequential for better UX)
+      await fetchBanners();
+      await fetchBrands();
+      
+      // Load products and categories in parallel
+      await Promise.all([
+        fetchProducts(),
+        fetchCategories()
+      ]);
+      
+      console.log('✅ Home page data loaded successfully');
+    } catch (error) {
+      console.error('❌ Error loading home page data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchProducts = async () => {
