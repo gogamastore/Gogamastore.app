@@ -705,7 +705,8 @@ export default function OrderConfirmationScreen() {
 
       {/* Action Buttons */}
       <View style={styles.actionButtons}>
-        {(order.status === 'pending' || order.paymentStatus === 'Unpaid' || !order.paymentStatus || order.paymentStatus === '') && order.paymentStatus !== 'Paid' && order.paymentStatus !== 'paid' && (
+        {/* Action Buttons - Only for orders that haven't been processed yet */}
+        {(order.status === 'pending' || order.status === 'Pending' || !order.status || order.status === '') && (
           <TouchableOpacity 
             style={styles.cancelButton}
             onPress={handleCancelOrder}
