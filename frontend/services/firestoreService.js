@@ -661,13 +661,44 @@ export const orderService = {
   // Update payment status
   async updatePaymentStatus(orderId, paymentStatus) {
     try {
+      console.log('💳 Updating payment status:', { orderId, paymentStatus });
       const orderRef = doc(db, 'orders', orderId);
       await updateDoc(orderRef, {
         paymentStatus,
         updated_at: new Date().toISOString()
       });
+      console.log('✅ Payment status updated successfully');
     } catch (error) {
       console.error('Error updating payment status:', error);
+      throw error;
+    }
+  },
+
+  // Verify payment proof (admin function) - changes from proof_uploaded to paid
+  async verifyPaymentProof(orderId, isApproved = true) {
+    try {
+      console.log('🔍 Verifying payment proof:', { orderId, isApproved });
+      const orderRef = doc(db, 'orders', orderId);
+      
+      const newPaymentStatus = isApproved ? 'paid' : 'pending';
+      
+      await updateDoc(orderRef, {
+        paymentStatus: newPaymentStatus,
+        paymentVerified: isApproved,
+        paymentVerifiedAt: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+      
+      console.log(`✅ Payment proof ${isApproved ? 'approved' : 'rejected'} for order:`, orderId);
+      
+      return {
+        success: true,
+        orderId,
+        newPaymentStatus,
+        isApproved
+      };
+    } catch (error) {
+      console.error('Error verifying payment proof:', error);
       throw error;
     }
   },
