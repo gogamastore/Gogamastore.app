@@ -65,14 +65,19 @@ export default function TrendingScreen() {
           const productSnap = await getDoc(productRef);
           
           if (productSnap.exists()) {
+            const productData = productSnap.data();
+            console.log('📦 Product data:', productData);
+            
             return {
               id: productSnap.id,
-              ...productSnap.data()
+              ...productData
             } as Product;
+          } else {
+            console.warn(`⚠️ Product not found: ${trending.productId}`);
           }
           return null;
         } catch (error) {
-          console.error(`Error fetching product ${trending.productId}:`, error);
+          console.error(`❌ Error fetching product ${trending.productId}:`, error);
           return null;
         }
       });
@@ -81,6 +86,7 @@ export default function TrendingScreen() {
       const validProducts = products.filter(product => product !== null) as Product[];
       
       console.log('✅ Loaded trending products:', validProducts.length);
+      console.log('📋 Products details:', validProducts.map(p => ({ id: p.id, nama: p.nama, harga: p.harga })));
       setTrendingProducts(validProducts);
       
     } catch (error) {
