@@ -13,6 +13,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import { productService } from '../../services/firestoreService';
 
 interface TrendingProduct {
   id: string;
