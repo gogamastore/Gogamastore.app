@@ -21,17 +21,6 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
-  // Auto-fill test credentials for easier testing
-  React.useEffect(() => {
-    console.log('🔧 Login screen mounted');
-    console.log('🔥 Available login function:', typeof login);
-  }, []);
-
-  const fillTestCredentials = () => {
-    setEmail('test@gogama.store');
-    setPassword('test123456');
-    Alert.alert('Test Credentials Filled', 'Email: test@gogama.store\nPassword: test123456');
-  };
 
   const handleLogin = async () => {
     if (!email || !password) {
