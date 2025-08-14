@@ -579,13 +579,11 @@ export default function OrderConfirmationScreen() {
             <View style={styles.paymentStatusContainer}>
               <MaterialIcons 
                 name={
-                  (order.paymentStatus === 'paid') ? 'check-circle' : 
-                  (order.paymentStatus === 'proof_uploaded') ? 'upload' : 'schedule'
+                  (order.paymentStatus === 'Paid' || order.paymentStatus === 'paid') ? 'check-circle' : 'schedule'
                 } 
                 size={20} 
                 color={
-                  (order.paymentStatus === 'paid') ? '#34C759' : 
-                  (order.paymentStatus === 'proof_uploaded') ? '#007AFF' : '#FF9500'
+                  (order.paymentStatus === 'Paid' || order.paymentStatus === 'paid') ? '#34C759' : '#FF9500'
                 } 
               />
               <Text style={[
