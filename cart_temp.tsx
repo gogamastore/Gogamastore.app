@@ -47,7 +47,7 @@ export default function CartScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<CartItem | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<DeleteItem | null>(null);
   const { user } = useAuth();
   const router = useRouter();
 
