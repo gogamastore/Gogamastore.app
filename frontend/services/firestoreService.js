@@ -482,12 +482,13 @@ export const orderService = {
     try {
       console.log('📦 Creating new order with data:', orderData);
       
-      // Enhanced order data dengan payment status
+      // Enhanced order data dengan payment status dan payment method
       const enhancedOrderData = {
         ...orderData,
-        paymentStatus: 'pending', // Default payment status
+        paymentStatus: 'Unpaid', // Default payment status (changed from 'pending')
+        paymentMethod: orderData.paymentMethod || 'bank_transfer', // Add payment method
         paymentProofUrl: '', // Empty until uploaded
-        paymentProofId: '', // Reference to payment_proofs collection
+        paymentProofId: '', // Reference to payment_proofs collection  
         paymentProofUploaded: false,
         paymentProofFileName: '',
         created_at: new Date().toISOString(),
