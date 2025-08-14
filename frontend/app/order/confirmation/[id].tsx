@@ -229,7 +229,11 @@ export default function OrderConfirmationScreen() {
   };
 
   const getStatusText = (status: string) => {
-    switch (status) {
+    console.log('🎯 getStatusText called with status:', status);
+    
+    const statusLower = status ? status.toLowerCase() : '';
+    
+    switch (statusLower) {
       case 'pending':
         return 'Menunggu Konfirmasi';
       case 'confirmed':
