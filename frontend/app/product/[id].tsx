@@ -250,7 +250,7 @@ export default function ProductDetailScreen() {
             activeOpacity={0.8}
           >
             <MaterialIcons name="shopping-cart" size={20} color="white" />
-            <Text style={styles.addToCartButtonText}>
+            <Text style={styles.addToCartText}>
               Tambah ke Keranjang - {formatPrice(product.harga * quantity)}
             </Text>
           </TouchableOpacity>
