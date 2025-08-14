@@ -695,19 +695,6 @@ export default function OrderConfirmationScreen() {
             </TouchableOpacity>
           </View>
         )}
-
-        {/* Next Steps - Only for Orders that cannot be cancelled */}
-        {!(order.status === 'pending' || order.status === 'waiting_payment' || order.paymentStatus === 'pending') && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Langkah Selanjutnya</Text>
-            <View style={styles.nextStep}>
-              <MaterialIcons name="info" size={20} color="#007AFF" />
-              <Text style={styles.nextStepText}>
-                Kami akan mengirimkan konfirmasi dan update status pesanan melalui notifikasi aplikasi.
-              </Text>
-            </View>
-          </View>
-        )}
       </ScrollView>
 
       {/* Action Buttons */}
