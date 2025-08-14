@@ -496,71 +496,79 @@ export default function CheckoutScreen() {
                   <Text style={styles.optionDescription}>Transfer ke salah satu rekening kami</Text>
                 </View>
               </View>
-              
-              {selectedPayment === 'bank_transfer' && (
-                <View style={styles.bankAccountsContainer}>
-                  <Text style={styles.bankAccountsTitle}>Silakan transfer ke rekening berikut:</Text>
+            </TouchableOpacity>
+
+            {/* Bank Accounts List - Separated Vertically */}
+            {selectedPayment === 'bank_transfer' && (
+              <View style={styles.bankAccountsSection}>
+                <Text style={styles.bankAccountsTitle}>Silakan transfer ke rekening berikut:</Text>
+                
+                {/* Bank Accounts Cards */}
+                <View style={styles.bankAccountsGrid}>
                   {bankAccounts.map((account) => (
                     <View key={account.id} style={styles.bankAccountCard}>
                       <MaterialIcons name="account-balance" size={20} color="#007AFF" />
                       <View style={styles.bankAccountInfo}>
                         <Text style={styles.bankName}>{account.bankName}</Text>
                         <Text style={styles.accountDetails}>
-                          {account.accountNumber} a/n {account.accountHolder}
+                          {account.accountNumber}
+                        </Text>
+                        <Text style={styles.accountHolder}>
+                          a/n {account.accountHolder}
                         </Text>
                       </View>
                     </View>
                   ))}
+                </View>
+                
+                {/* Payment Proof Upload Section - Separated */}
+                <View style={styles.paymentProofSection}>
+                  <Text style={styles.paymentProofTitle}>Unggah Bukti Pembayaran (Opsional)</Text>
+                  <Text style={styles.paymentProofSubtitle}>
+                    Anda dapat mengunggah bukti pembayaran sekarang atau nanti setelah pesanan dibuat
+                  </Text>
                   
-                  {/* Payment Proof Upload Section */}
-                  <View style={styles.paymentProofSection}>
-                    <Text style={styles.paymentProofTitle}>Unggah Bukti Pembayaran (Opsional)</Text>
-                    <Text style={styles.paymentProofSubtitle}>
-                      Anda dapat mengunggah bukti pembayaran sekarang atau nanti setelah pesanan dibuat
-                    </Text>
-                    
-                    {paymentProofImage ? (
-                      <View style={styles.selectedImageContainer}>
-                        <Image source={{ uri: paymentProofImage }} style={styles.selectedImage} />
-                        <TouchableOpacity 
-                          style={styles.removeImageButton} 
-                          onPress={removePaymentProofImage}
-                        >
-                          <MaterialIcons name="close" size={16} color="#FF3B30" />
-                        </TouchableOpacity>
-                        
-                        {/* Upload Button - Only show if image is selected but not uploaded yet */}
-                        <TouchableOpacity 
-                          style={styles.uploadConfirmButton}
-                          onPress={handleUploadPaymentProof}
-                          disabled={uploadingProof}
-                        >
-                          {uploadingProof ? (
-                            <ActivityIndicator size="small" color="#007AFF" />
-                          ) : (
-                            <>
-                              <MaterialIcons name="cloud-upload" size={20} color="#007AFF" />
-                              <Text style={styles.uploadConfirmButtonText}>Unggah Sekarang</Text>
-                            </>
-                          )}
-                        </TouchableOpacity>
-                      </View>
-                    ) : (
+                  {paymentProofImage ? (
+                    <View style={styles.selectedImageContainer}>
+                      <Image source={{ uri: paymentProofImage }} style={styles.selectedImage} />
                       <TouchableOpacity 
-                        style={styles.uploadButton} 
-                        onPress={pickPaymentProofImage}
+                        style={styles.removeImageButton} 
+                        onPress={removePaymentProofImage}
+                      >
+                        <MaterialIcons name="close" size={16} color="#FF3B30" />
+                      </TouchableOpacity>
+                      
+                      {/* Upload Button - Only show if image is selected but not uploaded yet */}
+                      <TouchableOpacity 
+                        style={styles.uploadConfirmButton}
+                        onPress={handleUploadPaymentProof}
                         disabled={uploadingProof}
                       >
-                        <MaterialIcons name="photo-library" size={24} color="#007AFF" />
-                        <Text style={styles.uploadButtonText}>
-                          Pilih Gambar dari Galeri
-                        </Text>
+                        {uploadingProof ? (
+                          <ActivityIndicator size="small" color="#007AFF" />
+                        ) : (
+                          <>
+                            <MaterialIcons name="cloud-upload" size={20} color="#007AFF" />
+                            <Text style={styles.uploadConfirmButtonText}>Unggah Sekarang</Text>
+                          </>
+                        )}
                       </TouchableOpacity>
-                    )}
-                  </View>
+                    </View>
+                  ) : (
+                    <TouchableOpacity 
+                      style={styles.uploadButton} 
+                      onPress={pickPaymentProofImage}
+                      disabled={uploadingProof}
+                    >
+                      <MaterialIcons name="photo-library" size={24} color="#007AFF" />
+                      <Text style={styles.uploadButtonText}>
+                        Pilih Gambar dari Galeri
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
-              )}
-            </TouchableOpacity>
+              </View>
+            )}
 
             {/* COD Option */}
             <TouchableOpacity
