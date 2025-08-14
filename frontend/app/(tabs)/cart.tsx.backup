@@ -18,11 +18,13 @@ import { useAuth } from '../../contexts/AuthContext';
 import { cartService } from '../../services/firestoreService';
 
 interface CartItem {
-  product_id: string;
+  id: string;
+  productId: string;
   nama: string;
   harga: number;
-  gambar: string;
   quantity: number;
+  gambar?: string;
+  stok?: number;
 }
 
 interface Cart {
@@ -30,6 +32,7 @@ interface Cart {
   user_id: string;
   items: CartItem[];
   total: number;
+  updated_at: string;
 }
 
 export default function CartScreen() {
@@ -79,17 +82,16 @@ export default function CartScreen() {
     if (!user) return;
 
     console.log('🔴 removeFromCart called with productId:', productId);
-    console.log('🔴 user:', user.uid);
-
+    
     try {
-      console.log('🔴 Calling cartService.removeFromCart...');
-      const updatedCart = await cartService.removeFromCart(user.uid, productId);
-      console.log('🔴 Updated cart received:', updatedCart);
+      await cartService.removeFromCart(user.uid, productId);
+      console.log('✅ Item removed from cart');
       
-      setCart(updatedCart);
+      // Refresh cart data
+      await fetchCart();
       Alert.alert('Berhasil', 'Item dihapus dari keranjang');
     } catch (error) {
-      console.error('🔴 Error removing from cart:', error);
+      console.error('❌ Error removing from cart:', error);
       Alert.alert('Error', 'Gagal menghapus item');
     }
   };
@@ -98,52 +100,17 @@ export default function CartScreen() {
     if (!user || newQuantity < 1) return;
 
     try {
-      // Find the current item
-      const currentItem = cart?.items.find(item => item.product_id === productId);
-      if (!currentItem) return;
-
-      // Calculate quantity difference
-      const quantityDiff = newQuantity - currentItem.quantity;
+      console.log('🔄 Updating quantity:', productId, 'to', newQuantity);
       
-      if (quantityDiff > 0) {
-        // Add more items
-        await cartService.addToCart(user.uid, {
-          id: productId,
-          nama: currentItem.nama,
-          harga: currentItem.harga,
-          gambar: currentItem.gambar,
-        }, quantityDiff);
-      } else if (quantityDiff < 0) {
-        // This would require a new service method, let's implement it differently
-        // We'll update the cart directly
-        const updatedItems = cart.items.map(item => 
-          item.product_id === productId 
-            ? { ...item, quantity: newQuantity }
-            : item
-        );
-        
-        const updatedTotal = updatedItems.reduce((total, item) => 
-          total + (item.harga * item.quantity), 0
-        );
-
-        setCart({
-          ...cart,
-          items: updatedItems,
-          total: updatedTotal
-        });
-
-        // Update in Firebase (we'll need to update the service)
-        await cartService.updateCartItemQuantity(user.uid, productId, newQuantity);
-      }
+      // Use the service to update quantity directly
+      await cartService.updateCartItemQuantity(user.uid, productId, newQuantity);
       
-      // Refresh cart to ensure consistency
+      // Refresh cart data
       await fetchCart();
-      
+      console.log('✅ Quantity updated successfully');
     } catch (error) {
-      console.error('Error updating quantity:', error);
+      console.error('❌ Error updating quantity:', error);
       Alert.alert('Error', 'Gagal mengupdate jumlah item');
-      // Refresh cart to revert any local changes
-      await fetchCart();
     }
   };
 
@@ -159,16 +126,28 @@ export default function CartScreen() {
 
   const confirmRemoveItem = (item: CartItem) => {
     console.log('🔴 confirmRemoveItem called for:', item.nama);
+    
     Alert.alert(
-      'Konfirmasi',
-      `Hapus ${item.nama} dari keranjang?`,
+      'Hapus Item',
+      `Apakah Anda yakin ingin menghapus "${item.nama}" dari keranjang?`,
       [
-        { text: 'Batal', style: 'cancel' },
-        { text: 'Hapus', style: 'destructive', onPress: () => {
-          console.log('🔴 User confirmed deletion');
-          removeFromCart(item.product_id);
-        }},
-      ]
+        {
+          text: 'Batal',
+          style: 'cancel',
+          onPress: () => {
+            console.log('❌ User cancelled item removal');
+          }
+        },
+        { 
+          text: 'Hapus', 
+          style: 'destructive',
+          onPress: () => {
+            console.log('✅ User confirmed item removal for:', item.nama);
+            removeFromCart(item.productId);
+          }
+        }
+      ],
+      { cancelable: true }
     );
   };
 
@@ -206,7 +185,10 @@ export default function CartScreen() {
                 styles.quantityButton,
                 item.quantity <= 1 && styles.quantityButtonDisabled
               ]}
-              onPress={() => decrementQuantity(item.product_id, item.quantity)}
+              onPress={() => {
+                console.log('➖ Decrement button pressed for:', item.nama);
+                updateQuantity(item.productId, item.quantity - 1);
+              }}
               disabled={item.quantity <= 1}
             >
               <MaterialIcons 
@@ -222,7 +204,10 @@ export default function CartScreen() {
             
             <TouchableOpacity
               style={styles.quantityButton}
-              onPress={() => incrementQuantity(item.product_id, item.quantity)}
+              onPress={() => {
+                console.log('➕ Increment button pressed for:', item.nama);
+                updateQuantity(item.productId, item.quantity + 1);
+              }}
             >
               <MaterialIcons name="add" size={20} color="#007AFF" />
             </TouchableOpacity>
@@ -234,16 +219,16 @@ export default function CartScreen() {
         </View>
       </View>
       
-      <TouchableOpacity
-        style={styles.removeButton}
+      {/* React Native Delete Button */}
+      <TouchableOpacity 
+        style={styles.deleteButton}
         onPress={() => {
-          console.log('🔴 Delete TouchableOpacity pressed for item:', item.nama);
+          console.log('🗑️ Delete button pressed for:', item.nama);
           confirmRemoveItem(item);
         }}
-        activeOpacity={0.6}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        activeOpacity={0.7}
       >
-        <MaterialIcons name="delete" size={24} color="#FF3B30" />
+        <MaterialIcons name="delete" size={18} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -263,6 +248,7 @@ export default function CartScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
+          <Text style={styles.loadingText}>Memuat keranjang...</Text>
         </View>
       </SafeAreaView>
     );
@@ -284,7 +270,7 @@ export default function CartScreen() {
           <FlatList
             data={cart.items}
             renderItem={renderCartItem}
-            keyExtractor={(item) => item.product_id}
+            keyExtractor={(item) => item.productId}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -321,6 +307,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#666',
   },
   header: {
     flexDirection: 'row',
@@ -405,6 +396,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 40,
     height: 40,
+  },
+  removeButtonEnhanced: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 48,
+    height: 48,
+    backgroundColor: '#FF3B30',
+    borderRadius: 24,
+    marginLeft: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   emptyContainer: {
     flex: 1,
@@ -502,5 +510,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#1a1a1a',
+  },
+  deleteButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 48,
+    height: 48,
+    backgroundColor: '#FF3B30',
+    borderRadius: 24,
+    marginLeft: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
 });
