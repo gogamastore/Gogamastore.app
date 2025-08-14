@@ -95,7 +95,7 @@ export default function ProfileScreen() {
     }
   };
 
-const handleLogout = async () => {
+  const handleLogout = async () => {
     Alert.alert(
       'Keluar dari Akun',
       'Apakah Anda yakin ingin keluar dari akun?',
