@@ -111,8 +111,18 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
+      console.log('🚪 Starting logout process...');
       await signOut(auth);
+      console.log('✅ Logout successful');
+      
+      // Force redirect to login after logout
+      setTimeout(() => {
+        console.log('🔄 Redirecting to login screen...');
+        // This will be handled by the auth state change listener
+      }, 100);
+      
     } catch (error) {
+      console.error('❌ Logout error:', error);
       throw error;
     }
   };
