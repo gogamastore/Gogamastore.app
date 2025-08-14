@@ -123,10 +123,9 @@ export default function AddressManagementScreen() {
         ...addr,
         isDefault: addr.id === addressId
       })));
-      Alert.alert('Berhasil', 'Alamat utama berhasil diperbarui');
+      console.log('✅ Default address updated successfully');
     } catch (error) {
       console.error('Error setting default address:', error);
-      Alert.alert('Error', 'Gagal mengatur alamat utama: ' + error.message);
     }
   };
 
