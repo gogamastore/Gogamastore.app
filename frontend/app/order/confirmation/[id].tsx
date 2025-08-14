@@ -575,7 +575,7 @@ export default function OrderConfirmationScreen() {
             )}
             
             {/* Show upload section if payment status is pending OR undefined/null (default to pending) */}
-            {(order.paymentStatus === 'pending' || !order.paymentStatus || order.paymentStatus === '') && (
+            {(order.paymentStatus === 'pending' || order.paymentStatus === 'proof_uploaded' || !order.paymentStatus || order.paymentStatus === '') && (
               <View style={styles.uploadSection}>
                 <Text style={styles.uploadSectionTitle}>Unggah Bukti Pembayaran</Text>
                 <Text style={styles.uploadSectionSubtitle}>
