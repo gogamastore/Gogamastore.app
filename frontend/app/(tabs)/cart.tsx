@@ -134,31 +134,35 @@ export default function CartScreen() {
     }
   };
 
-  const confirmRemoveItem = (item: CartItem) => {
-    console.log('🔴 confirmRemoveItem called for:', item.nama);
+  const confirmRemoveItem = (productName: string, productId: string) => {
+    console.log('🔴 confirmRemoveItem called for:', productName);
     
-    Alert.alert(
-      'Hapus Item',
-      `Apakah Anda yakin ingin menghapus "${item.nama}" dari keranjang?`,
-      [
-        {
-          text: 'Batal',
-          style: 'cancel',
-          onPress: () => {
-            console.log('❌ User cancelled item removal');
-          }
-        },
-        { 
-          text: 'Hapus', 
-          style: 'destructive',
-          onPress: () => {
-            console.log('✅ User confirmed item removal for:', item.nama);
-            removeFromCart(item.productId);
-          }
-        }
-      ],
-      { cancelable: true }
-    );
+    // Set item to delete and show modal
+    setItemToDelete({ name: productName, id: productId });
+    setDeleteModalVisible(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!itemToDelete) return;
+    
+    try {
+      console.log('🗑️ Confirmed delete for:', itemToDelete.name);
+      setDeleteModalVisible(false);
+      
+      // Remove from cart
+      await removeFromCart(itemToDelete.id);
+      
+      console.log('✅ Item deleted successfully');
+    } catch (error) {
+      console.error('❌ Error deleting item:', error);
+      setDeleteModalVisible(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    console.log('❌ Delete cancelled by user');
+    setDeleteModalVisible(false);
+    setItemToDelete(null);
   };
 
   const formatPrice = (price: number) => {
