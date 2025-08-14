@@ -946,6 +946,16 @@ const styles = StyleSheet.create({
     borderTopColor: '#E5E5EA',
     width: '100%',
   },
+  bankAccountsSection: {
+    marginTop: 12,
+    paddingHorizontal: 0,
+    width: '100%',
+  },
+  bankAccountsGrid: {
+    flexDirection: 'column',
+    gap: 12,
+    marginTop: 12,
+  },
   bankAccountsTitle: {
     fontSize: 14,
     fontWeight: '600',
