@@ -10,9 +10,13 @@ export default function Index() {
   useEffect(() => {
     console.log('🔍 Index.tsx - Auth state:', { user: !!user, loading });
     
-    // TEMPORARY: Skip auth for testing
-    console.log('🔧 TEMPORARY: Bypassing auth for testing purposes');
-    router.replace('/(tabs)');
+    // TEMPORARY: FORCE redirect to tabs for testing
+    console.log('🔧 TEMPORARY: FORCE redirecting to tabs');
+    setTimeout(() => {
+      router.replace('/(tabs)');
+    }, 100);
+    
+    return; // Skip all auth logic
     
     // Original auth logic (commented out for testing)
     /*
@@ -27,7 +31,7 @@ export default function Index() {
       }
     }
     */
-  }, [user, loading]);
+  }, []);
 
   // Timeout fallback - if loading takes too long, force redirect to login
   useEffect(() => {
