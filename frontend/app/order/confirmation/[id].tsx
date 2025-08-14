@@ -549,6 +549,7 @@ export default function OrderConfirmationScreen() {
                 Status Pembayaran: {
                   order.paymentStatus === 'paid' ? 'Dibayar' : 
                   order.paymentStatus === 'pending' ? 'Belum Dibayar' : 
+                  order.paymentStatus === 'proof_uploaded' ? 'Menunggu Konfirmasi' :
                   !order.paymentStatus ? 'Belum Dibayar' : 'Menunggu Konfirmasi'
                 }
               </Text>
