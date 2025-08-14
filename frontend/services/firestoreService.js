@@ -142,7 +142,13 @@ export const cartService = {
       let total = 0;
       
       cartSnap.forEach(doc => {
-        const item = { id: doc.id, ...doc.data() };
+        const itemData = doc.data();
+        const item = { 
+          id: doc.id, 
+          productId: doc.id, // Use document ID as productId for consistency
+          product_id: itemData.product_id, // Original field for backward compatibility
+          ...itemData 
+        };
         items.push(item);
         total += item.harga * item.quantity;
       });
