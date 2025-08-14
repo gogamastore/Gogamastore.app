@@ -34,6 +34,8 @@ export default function AddressManagementScreen() {
   
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
 
   useEffect(() => {
     if (user) {
