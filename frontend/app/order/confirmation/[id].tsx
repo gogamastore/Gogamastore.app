@@ -686,8 +686,8 @@ export default function OrderConfirmationScreen() {
           </View>
         )}
 
-        {/* Cancel Order Section - For Orders that can be cancelled */}
-        {(order.status === 'pending' || order.paymentStatus === 'Unpaid' || !order.paymentStatus || order.paymentStatus === '') && order.paymentStatus !== 'Paid' && order.paymentStatus !== 'paid' && (
+        {/* Cancel Order Section - Only for orders that haven't been processed yet */}
+        {(order.status === 'pending' || order.status === 'Pending' || !order.status || order.status === '') && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Batalkan Pesanan</Text>
             <TouchableOpacity 
