@@ -64,7 +64,6 @@ export default function AddressManagementScreen() {
     } catch (error) {
       console.error('Error loading addresses:', error);
       setAddresses([]);
-      Alert.alert('Error', 'Gagal memuat alamat: ' + error.message);
     } finally {
       setLoading(false);
     }
