@@ -329,6 +329,39 @@ export default function CartScreen() {
           {renderEmptyCart()}
         </View>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={deleteModalVisible}
+        onRequestClose={handleDeleteCancel}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Hapus Item</Text>
+            <Text style={styles.modalMessage}>
+              Apakah Anda yakin ingin menghapus "{itemToDelete?.name}" dari keranjang?
+            </Text>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]} 
+                onPress={handleDeleteCancel}
+              >
+                <Text style={styles.cancelButtonText}>Batal</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.confirmButton]} 
+                onPress={handleDeleteConfirm}
+              >
+                <Text style={styles.confirmButtonText}>Hapus</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
