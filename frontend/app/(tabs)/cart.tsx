@@ -170,6 +170,16 @@ export default function CartScreen() {
     setItemToDelete(null);
   };
 
+  const handleQuantityInputChange = async (productId: string, newQuantityText: string) => {
+    // Allow only numbers and reasonable range
+    const newQuantity = parseInt(newQuantityText) || 1;
+    
+    if (newQuantity >= 1 && newQuantity <= 99) {
+      console.log('🔢 Direct quantity input:', productId, 'to', newQuantity);
+      await updateQuantity(productId, newQuantity);
+    }
+  };
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
