@@ -37,6 +37,11 @@ interface Cart {
   updated_at: string;
 }
 
+interface DeleteItem {
+  name: string;
+  id: string;
+}
+
 export default function CartScreen() {
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
