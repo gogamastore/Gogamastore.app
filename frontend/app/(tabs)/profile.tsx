@@ -95,20 +95,29 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleLogout = () => {
+const handleLogout = async () => {
     Alert.alert(
-      'Konfirmasi Logout',
-      'Apakah Anda yakin ingin keluar?',
+      'Keluar dari Akun',
+      'Apakah Anda yakin ingin keluar dari akun?',
       [
-        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Batal',
+          style: 'cancel',
+        },
         {
           text: 'Keluar',
           style: 'destructive',
           onPress: async () => {
             try {
+              console.log('🚪 User initiated logout...');
               await logout();
+              console.log('✅ Logout completed, redirecting to login...');
+              
+              // Force navigation to login screen
+              router.replace('/(auth)/login');
             } catch (error) {
-              console.error('Logout error:', error);
+              console.error('❌ Logout error:', error);
+              Alert.alert('Error', 'Gagal keluar dari akun. Silakan coba lagi.');
             }
           },
         },
