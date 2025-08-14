@@ -720,6 +720,16 @@ export const paymentProofService = {
     try {
       console.log('📤 Starting payment proof upload:', { orderId, fileName });
       
+      // Check authentication first
+      const { auth } = await import('../lib/firebase');
+      const currentUser = auth.currentUser;
+      
+      if (!currentUser) {
+        throw new Error('User not authenticated. Please login first.');
+      }
+      
+      console.log('🔐 User authenticated:', currentUser.uid);
+      
       if (!imageUri || !orderId || !fileName) {
         throw new Error('Missing required parameters for upload');
       }
@@ -734,13 +744,23 @@ export const paymentProofService = {
       const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
       const { storage } = await import('../lib/firebase');
       
-      // Upload path: /payment_proofs/{fileName}
-      const storageRef = ref(storage, `payment_proofs/${fileName}`);
+      // Upload path: /payment_proofs/{fileName} with user context
+      const safeFileName = `${currentUser.uid}_${orderId}_${fileName}`;
+      const storageRef = ref(storage, `payment_proofs/${safeFileName}`);
       
-      console.log('🔄 Uploading to Firebase Storage...');
+      console.log('🔄 Uploading to Firebase Storage with path:', `payment_proofs/${safeFileName}`);
       
-      // Upload file to Firebase Storage
-      const snapshot = await uploadBytes(storageRef, blob);
+      // Upload file to Firebase Storage with metadata
+      const metadata = {
+        contentType: blob.type || 'image/jpeg',
+        customMetadata: {
+          'orderId': orderId,
+          'userId': currentUser.uid,
+          'uploadedAt': new Date().toISOString()
+        }
+      };
+      
+      const snapshot = await uploadBytes(storageRef, blob, metadata);
       console.log('✅ File uploaded successfully:', snapshot.metadata.name);
       
       // Get download URL
@@ -750,8 +770,10 @@ export const paymentProofService = {
       // Save upload record to Firestore /payment_proofs collection
       const uploadData = {
         orderId: orderId,
-        fileName: fileName,
-        uploadPath: `payment_proofs/${fileName}`,
+        userId: currentUser.uid,
+        fileName: safeFileName,
+        originalFileName: fileName,
+        uploadPath: `payment_proofs/${safeFileName}`,
         storageUrl: downloadURL,
         uploadedAt: new Date().toISOString(),
         status: 'uploaded',
@@ -768,7 +790,7 @@ export const paymentProofService = {
         paymentProofId: proofRef.id,
         paymentProofUrl: downloadURL,
         paymentProofUploaded: true,
-        paymentProofFileName: fileName,
+        paymentProofFileName: safeFileName,
         paymentStatus: 'proof_uploaded',
         updated_at: new Date().toISOString()
       });
