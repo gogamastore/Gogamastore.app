@@ -252,7 +252,12 @@ export default function OrderConfirmationScreen() {
   };
 
   const getSuccessMessage = (status: string) => {
-    switch (status) {
+    console.log('🎯 getSuccessMessage called with status:', status);
+    
+    const statusLower = status ? status.toLowerCase() : '';
+    console.log('🎯 statusLower:', statusLower);
+    
+    switch (statusLower) {
       case 'pending':
         return {
           title: 'Pesanan Berhasil Dibuat!',
@@ -260,29 +265,34 @@ export default function OrderConfirmationScreen() {
         };
       case 'processing':
       case 'proses':
+        console.log('🎯 Returning processing message');
         return {
           title: 'Pesanan Berhasil di Proses',
           subtitle: 'Terima kasih atas pesanan Anda. Kami akan segera mengirim pesanan ini.'
         };
       case 'shipped':
       case 'dikirim':
+        console.log('🎯 Returning shipped message');
         return {
           title: 'Pesanan Berhasil di Kirim',
           subtitle: 'Terima kasih atas pesanan Anda.'
         };
       case 'delivered':
       case 'selesai':
+        console.log('🎯 Returning delivered message');
         return {
           title: 'Pesanan Berhasil di Terima',
           subtitle: 'Terima kasih atas pesanan Anda.'
         };
       case 'cancelled':
       case 'dibatalkan':
+        console.log('🎯 Returning cancelled message');
         return {
           title: 'Pesanan Berhasil di Batalkan',
           subtitle: 'Silahkan membuat pesanan baru.'
         };
       default:
+        console.log('🎯 Using default message for status:', status);
         return {
           title: 'Pesanan Berhasil Dibuat!',
           subtitle: 'Terima kasih atas pesanan Anda. Kami akan segera memproses pesanan ini.'
