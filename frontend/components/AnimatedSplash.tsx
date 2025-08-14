@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import LottieView from 'lottie-react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Dimensions, Image } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 const { width, height } = Dimensions.get('window');
@@ -10,16 +9,18 @@ interface AnimatedSplashProps {
 }
 
 export default function AnimatedSplash({ onAnimationFinish }: AnimatedSplashProps) {
-  const animationRef = useRef<LottieView>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     // Keep splash screen visible while loading
     SplashScreen.preventAutoHideAsync();
     
-    // Start animation
-    if (animationRef.current) {
-      animationRef.current.play();
-    }
+    // Auto hide after animation duration
+    const timer = setTimeout(() => {
+      handleAnimationFinish();
+    }, 3000); // 3 seconds - adjust based on your GIF duration
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleAnimationFinish = () => {
@@ -30,28 +31,21 @@ export default function AnimatedSplash({ onAnimationFinish }: AnimatedSplashProp
 
   return (
     <View style={styles.container}>
-      {/* You can use either Lottie animation OR simple animated logo */}
-      
-      {/* Option 1: Lottie Animation (if you have .json file) */}
-      {/* 
-      <LottieView
-        ref={animationRef}
-        source={require('../assets/animations/splash-animation.json')}
+      {/* GOGAMA GIF Animation */}
+      <Image
+        source={require('../assets/splash-animation.gif')}
         style={styles.animation}
-        autoPlay
-        loop={false}
-        onAnimationFinish={handleAnimationFinish}
         resizeMode="contain"
+        onLoad={() => setIsLoaded(true)}
       />
-      */}
       
-      {/* Option 2: Simple Logo with React Native Animation (fallback) */}
-      <View style={styles.logoContainer}>
-        {/* Your logo here with React Native Animated */}
-        <View style={styles.placeholder}>
-          {/* Placeholder for logo - you can replace with actual logo */}
-        </View>
+      {/* Optional: Add brand text or tagline below GIF */}
+      {/* 
+      <View style={styles.brandContainer}>
+        <Text style={styles.brandText}>GOGAMA STORE</Text>
+        <Text style={styles.tagline}>Your Shopping Destination</Text>
       </View>
+      */}
     </View>
   );
 }
@@ -59,23 +53,30 @@ export default function AnimatedSplash({ onAnimationFinish }: AnimatedSplashProp
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // Your brand color
+    backgroundColor: '#FFFFFF', // White background to match GIF
     justifyContent: 'center',
     alignItems: 'center',
   },
   animation: {
-    width: width * 0.8,
-    height: height * 0.4,
+    width: width * 0.6, // 60% of screen width
+    height: width * 0.6, // Square aspect ratio
+    maxWidth: 300,
+    maxHeight: 300,
   },
-  logoContainer: {
-    justifyContent: 'center',
+  brandContainer: {
+    marginTop: 40,
     alignItems: 'center',
   },
-  placeholder: {
-    width: 150,
-    height: 150,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 75,
-    // Add your logo styling here
+  brandText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FF3333', // Red color matching your GIF
+    marginBottom: 8,
+    letterSpacing: 2,
+  },
+  tagline: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   },
 });
