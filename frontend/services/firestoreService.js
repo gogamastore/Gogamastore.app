@@ -813,34 +813,16 @@ export const paymentProofService = {
       const downloadURL = await getDownloadURL(snapshot.ref);
       console.log('🔗 Download URL obtained:', downloadURL);
       
-      // Save upload record to Firestore /payment_proofs collection FIRST
-      const uploadData = {
+      // Update order document with paymentProofUrl DIRECTLY (no separate collection)
+      console.log('📝 Updating order document directly with paymentProofUrl:', {
         orderId: orderId,
-        userId: currentUser.uid,
-        fileName: safeFileName,
-        originalFileName: fileName,
-        uploadPath: `payment_proofs/${safeFileName}`,
-        storageUrl: downloadURL,
-        uploadedAt: new Date().toISOString(),
-        status: 'uploaded',
-        fileSize: blob.size,
-        contentType: blob.type || 'image/jpeg'
-      };
-
-      const proofRef = await addDoc(collection(db, 'payment_proofs'), uploadData);
-      console.log('💾 Upload record saved to Firestore:', proofRef.id);
-      
-      // Try multiple approaches to update order document
-      console.log('📝 Attempting to update order document:', {
-        orderId: orderId,
-        downloadURL: downloadURL,
-        paymentProofId: proofRef.id
+        downloadURL: downloadURL
       });
       
       let updateSuccess = false;
       let updateError = null;
       
-      // Approach 1: Update only allowed fields according to Firestore Rules
+      // Direct update to order document only
       try {
         const orderRef = doc(db, 'orders', orderId);
         
@@ -870,16 +852,16 @@ export const paymentProofService = {
         console.log('✅ User access verified: customerId matches current user');
         
         // ONLY UPDATE paymentProofUrl as per Firestore Rules
-        // Rules allow: paymentProofUrl != resource.data.paymentProofUrl
-        console.log('🔄 Attempting order update with minimal data:', {
+        console.log('🔄 Attempting order update with paymentProofUrl:', {
           orderId: orderId,
           paymentProofUrl: downloadURL
         });
+        
         await updateDoc(orderRef, {
-          paymentProofUrl: downloadURL  // Only this field is allowed by rules
+          paymentProofUrl: downloadURL  // Only this field - directly in order document
         });
         
-        console.log('✅ Order updated successfully - paymentProofUrl only');
+        console.log('✅ Order updated successfully - paymentProofUrl saved directly');
         updateSuccess = true;
         
         // Verify the update
@@ -888,17 +870,16 @@ export const paymentProofService = {
           const updatedData = updatedOrderSnap.data();
           console.log('🔍 Verification - Updated order data:', {
             paymentProofUrl: updatedData.paymentProofUrl,
-            paymentStatus: updatedData.paymentStatus,
-            paymentProofUploaded: updatedData.paymentProofUploaded
+            paymentStatus: updatedData.paymentStatus
           });
           
           // Double check that paymentProofUrl is actually set
           if (updatedData.paymentProofUrl && updatedData.paymentProofUrl !== '') {
-            console.log('✅ CONFIRMED: paymentProofUrl successfully saved to database');
+            console.log('✅ CONFIRMED: paymentProofUrl successfully saved directly to order document');
           } else {
-            console.error('❌ FAILED: paymentProofUrl is still empty in database');
+            console.error('❌ FAILED: paymentProofUrl is still empty in order document');
             updateSuccess = false;
-            updateError = 'paymentProofUrl not saved to database';
+            updateError = 'paymentProofUrl not saved to order document';
           }
         }
         
