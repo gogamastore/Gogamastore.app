@@ -24,6 +24,25 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // TEMPORARY: Mock user for testing
+    console.log('🔧 TEMPORARY: Using mock user for testing');
+    const mockUser = {
+      uid: 'test-user-123',
+      email: 'test@gogama.com',
+      displayName: 'Test User',
+      name: 'Test User',
+      whatsapp: '08123456789',
+      role: 'reseller'
+    };
+    
+    setTimeout(() => {
+      setUser(mockUser);
+      setLoading(false);
+      console.log('✅ Mock user set, loading complete');
+    }, 1000);
+    
+    // Original auth logic (commented out for testing)
+    /*
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         // Get additional user data from Firestore
@@ -43,6 +62,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     return unsubscribe;
+    */
   }, []);
 
   const register = async (nama_lengkap, email, nomor_whatsapp, password) => {
