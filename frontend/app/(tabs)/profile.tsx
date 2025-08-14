@@ -96,6 +96,8 @@ export default function ProfileScreen() {
   };
 
   const handleLogout = async () => {
+    console.log('🚪 handleLogout called');
+    
     Alert.alert(
       'Keluar dari Akun',
       'Apakah Anda yakin ingin keluar dari akun?',
@@ -103,25 +105,32 @@ export default function ProfileScreen() {
         {
           text: 'Batal',
           style: 'cancel',
+          onPress: () => console.log('❌ Logout cancelled by user')
         },
         {
           text: 'Keluar',
           style: 'destructive',
           onPress: async () => {
             try {
-              console.log('🚪 User initiated logout...');
+              console.log('🚪 User confirmed logout, starting process...');
+              
+              // Call logout from AuthContext
               await logout();
-              console.log('✅ Logout completed, redirecting to login...');
+              console.log('✅ AuthContext logout completed');
               
               // Force navigation to login screen
+              console.log('🔄 Attempting navigation to login screen...');
               router.replace('/(auth)/login');
+              console.log('✅ Navigation command executed');
+              
             } catch (error) {
               console.error('❌ Logout error:', error);
               Alert.alert('Error', 'Gagal keluar dari akun. Silakan coba lagi.');
             }
           },
         },
-      ]
+      ],
+      { cancelable: true }
     );
   };
 
