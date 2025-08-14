@@ -846,8 +846,9 @@ export const paymentProofService = {
       return {
         success: true,
         proofId: proofRef.id,
-        storageUrl: downloadURL,
-        fileName: fileName
+        downloadURL: downloadURL, // Menggunakan downloadURL bukan storageUrl untuk konsistensi
+        fileName: safeFileName,
+        originalFileName: fileName
       };
       
     } catch (error) {
