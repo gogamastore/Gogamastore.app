@@ -200,17 +200,22 @@ export default function OrderConfirmationScreen() {
   };
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
+    console.log('🎯 getStatusIcon called with status:', status);
+    
+    const statusLower = status ? status.toLowerCase() : '';
+    console.log('🎯 statusLower:', statusLower);
+    
+    switch (statusLower) {
       case 'pending':
-        return { name: 'hourglass-empty', color: '#FF9500' };
+        return { name: 'schedule', color: '#FF9500' };
       case 'confirmed':
-        return { name: 'check-circle', color: '#34C759' };
+        return { name: 'check-circle', color: '#34C759' }; 
       case 'processing':
       case 'proses':
-        return { name: 'autorenew', color: '#007AFF' };
+        return { name: 'sync', color: '#007AFF' };
       case 'shipped':
       case 'dikirim':
-        return { name: 'local-shipping', color: '#5856D6' };
+        return { name: 'local-shipping', color: '#5856D6' };  
       case 'delivered':
       case 'selesai':
         return { name: 'done-all', color: '#34C759' };
@@ -218,6 +223,7 @@ export default function OrderConfirmationScreen() {
       case 'dibatalkan':
         return { name: 'cancel', color: '#FF3B30' };
       default:
+        console.log('🎯 Using default icon for status:', status);
         return { name: 'info', color: '#666' };
     }
   };
