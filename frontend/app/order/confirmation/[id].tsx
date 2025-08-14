@@ -78,7 +78,6 @@ export default function OrderConfirmationScreen() {
       setOrder(orderData);
     } catch (error) {
       console.error('Error fetching order:', error);
-      Alert.alert('Error', 'Gagal memuat data pesanan');
     } finally {
       setLoading(false);
     }
