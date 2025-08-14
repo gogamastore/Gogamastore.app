@@ -96,12 +96,35 @@ export default function TrendingScreen() {
     }
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | string | undefined) => {
+    // Handle various price formats
+    if (price === undefined || price === null) {
+      return 'Harga tidak tersedia';
+    }
+    
+    let numPrice: number;
+    
+    if (typeof price === 'string') {
+      // Remove any existing currency formatting and parse
+      const cleanPrice = price.replace(/[Rp\s\.,]/g, '');
+      numPrice = parseInt(cleanPrice) || 0;
+    } else if (typeof price === 'number') {
+      numPrice = price;
+    } else {
+      console.warn('⚠️ Invalid price format:', price);
+      return 'Harga tidak valid';
+    }
+    
+    if (isNaN(numPrice) || numPrice <= 0) {
+      console.warn('⚠️ Invalid price value:', price);
+      return 'Harga tidak tersedia';
+    }
+    
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
       minimumFractionDigits: 0,
-    }).format(price);
+    }).format(numPrice);
   };
 
   const handleProductPress = (productId: string) => {
