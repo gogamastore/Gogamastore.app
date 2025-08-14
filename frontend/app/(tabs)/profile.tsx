@@ -280,7 +280,15 @@ export default function ProfileScreen() {
         </View>
         {/* Logout Button */}
         <View style={styles.logoutSection}>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <TouchableOpacity 
+          style={styles.logoutButton} 
+          onPress={() => {
+            console.log('🚪 Logout TouchableOpacity pressed');
+            console.log('🚪 handleLogout function:', typeof handleLogout);
+            handleLogout();
+          }}
+          activeOpacity={0.7}
+        >
             <MaterialIcons name="logout" size={20} color="#FF3B30" />
             <Text style={styles.logoutButtonText}>Keluar dari Akun</Text>
           </TouchableOpacity>
