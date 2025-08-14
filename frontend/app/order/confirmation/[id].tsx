@@ -144,9 +144,10 @@ export default function OrderConfirmationScreen() {
       
       if (result.success) {
         setHasExistingProof(true);
+        setPaymentProofImage(result.downloadURL); // Show uploaded image immediately
         console.log('✅ Payment proof uploaded successfully:', result.downloadURL);
         
-        // Refresh order data
+        // Refresh order data to get updated paymentProofUrl
         await fetchOrder();
       }
     } catch (error) {
