@@ -229,7 +229,13 @@ export default function CartScreen() {
             
             <TextInput
               style={styles.quantityInput}
-            </View>
+            value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
             
             <TouchableOpacity
               style={styles.quantityButton}
@@ -240,13 +246,31 @@ export default function CartScreen() {
             >
               <MaterialIcons name="add" size={20} color="#007AFF" />
             </TouchableOpacity>
-          </View>
+          value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
           
           <Text style={styles.subtotal}>
             {formatPrice(item.harga * item.quantity)}
           </Text>
-        </View>
-      </View>
+        value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
+      value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
       
       {/* React Native Delete Button */}
       <TouchableOpacity 
@@ -259,7 +283,13 @@ export default function CartScreen() {
       >
         <MaterialIcons name="delete" size={18} color="#fff" />
       </TouchableOpacity>
-    </View>
+    value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
   );
 
   const renderEmptyCart = () => (
@@ -269,7 +299,13 @@ export default function CartScreen() {
       <Text style={styles.emptyDescription}>
         Belum ada produk di keranjang Anda
       </Text>
-    </View>
+    value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
   );
 
   if (loading) {
@@ -278,7 +314,13 @@ export default function CartScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
           <Text style={styles.loadingText}>Memuat keranjang...</Text>
-        </View>
+        value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
       </SafeAreaView>
     );
   }
@@ -291,7 +333,13 @@ export default function CartScreen() {
         {cart && cart.items.length > 0 && (
           <Text style={styles.itemCount}>{cart.items.length} item</Text>
         )}
-      </View>
+      value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
 
       {/* Cart Items or Empty State */}
       {cart && cart.items.length > 0 ? (
@@ -312,16 +360,34 @@ export default function CartScreen() {
             <View style={styles.totalSection}>
               <Text style={styles.totalLabel}>Total Pembayaran:</Text>
               <Text style={styles.totalAmount}>{formatPrice(cart.total)}</Text>
-            </View>
+            value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
             <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
               <Text style={styles.checkoutButtonText}>Checkout</Text>
             </TouchableOpacity>
-          </View>
+          value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
         </>
       ) : (
         <View style={styles.contentContainer}>
           {renderEmptyCart()}
-        </View>
+        value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
       )}
     </SafeAreaView>
   );
