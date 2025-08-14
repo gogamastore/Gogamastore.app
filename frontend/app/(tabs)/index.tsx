@@ -645,20 +645,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '500',
   },
-  resetButton: {
-    position: 'absolute',
-    right: 16,
-    top: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: '#FF3B30',
-    borderRadius: 12,
-  },
-  resetButtonText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '500',
-  },
   productsSection: {
     flex: 1,
     paddingTop: 16,
