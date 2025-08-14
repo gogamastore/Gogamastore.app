@@ -4,7 +4,7 @@
     "slug": "gogama-store",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/app-icon.png",
     "scheme": "gogama-store",
     "userInterfaceStyle": "automatic",
     "description": "Gogama Store - Aplikasi e-commerce untuk reseller",
