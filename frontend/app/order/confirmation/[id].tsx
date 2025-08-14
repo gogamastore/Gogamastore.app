@@ -699,7 +699,7 @@ export default function OrderConfirmationScreen() {
 
       {/* Action Buttons */}
       <View style={styles.actionButtons}>
-        {(order.status === 'pending' || order.status === 'waiting_payment' || order.paymentStatus === 'pending') && (
+        {(order.status === 'pending' || order.paymentStatus === 'pending' || !order.paymentStatus || order.paymentStatus === '' || order.paymentStatus === 'proof_uploaded') && order.paymentStatus !== 'paid' && (
           <TouchableOpacity 
             style={styles.cancelButton}
             onPress={handleCancelOrder}
