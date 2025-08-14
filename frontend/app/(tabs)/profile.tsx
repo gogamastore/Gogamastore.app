@@ -286,15 +286,39 @@ export default function ProfileScreen() {
         >
             <MaterialIcons name="logout" size={20} color="#FF3B30" />
             <Text style={styles.logoutButtonText}>Keluar dari Akun</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Footer */}
-        <View style={styles.footerSection}>
-          <Text style={styles.appVersion}>Gogama Store v1.0.0</Text>
-          <Text style={styles.poweredBy}>Powered by Firebase & React Native</Text>
-        </View>
+        </TouchableOpacity>
       </ScrollView>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={logoutModalVisible}
+        onRequestClose={cancelLogout}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Keluar dari Akun</Text>
+            <Text style={styles.modalMessage}>Apakah Anda yakin ingin keluar dari akun?</Text>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]} 
+                onPress={cancelLogout}
+              >
+                <Text style={styles.cancelButtonText}>Batal</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.confirmButton]} 
+                onPress={confirmLogout}
+              >
+                <Text style={styles.confirmButtonText}>Keluar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
