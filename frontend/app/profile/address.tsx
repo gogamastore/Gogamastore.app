@@ -116,17 +116,6 @@ export default function AddressManagementScreen() {
     setAddressToDelete(null);
   };
 
-  const deleteAddress = async (addressId: string) => {
-    try {
-      await userService.deleteUserAddress(user!.uid, addressId);
-      setAddresses(prev => prev.filter(addr => addr.id !== addressId));
-      Alert.alert('Berhasil', 'Alamat berhasil dihapus');
-    } catch (error) {
-      console.error('Error deleting address:', error);
-      Alert.alert('Error', 'Gagal menghapus alamat: ' + error.message);
-    }
-  };
-
   const handleSetDefault = async (addressId: string) => {
     try {
       await userService.setDefaultAddress(user!.uid, addressId);
