@@ -10,16 +10,6 @@ export default function Index() {
   useEffect(() => {
     console.log('🔍 Index.tsx - Auth state:', { user: !!user, loading });
     
-    // TEMPORARY: FORCE redirect to tabs for testing
-    console.log('🔧 TEMPORARY: FORCE redirecting to tabs');
-    setTimeout(() => {
-      router.replace('/(tabs)');
-    }, 100);
-    
-    return; // Skip all auth logic
-    
-    // Original auth logic (commented out for testing)
-    /*
     if (!loading) {
       console.log('🔄 Auth loading complete, routing...');
       if (user) {
@@ -30,8 +20,7 @@ export default function Index() {
         router.replace('/(auth)/login');
       }
     }
-    */
-  }, []);
+  }, [user, loading]);
 
   // Timeout fallback - if loading takes too long, force redirect to login
   useEffect(() => {
