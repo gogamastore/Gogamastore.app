@@ -206,12 +206,16 @@ export default function OrderConfirmationScreen() {
       case 'confirmed':
         return { name: 'check-circle', color: '#34C759' };
       case 'processing':
+      case 'proses':
         return { name: 'autorenew', color: '#007AFF' };
       case 'shipped':
+      case 'dikirim':
         return { name: 'local-shipping', color: '#5856D6' };
       case 'delivered':
+      case 'selesai':
         return { name: 'done-all', color: '#34C759' };
       case 'cancelled':
+      case 'dibatalkan':
         return { name: 'cancel', color: '#FF3B30' };
       default:
         return { name: 'info', color: '#666' };
@@ -225,12 +229,16 @@ export default function OrderConfirmationScreen() {
       case 'confirmed':
         return 'Dikonfirmasi';
       case 'processing':
+      case 'proses':
         return 'Diproses';
       case 'shipped':
+      case 'dikirim':
         return 'Dikirim';
       case 'delivered':
+      case 'selesai':
         return 'Selesai';
       case 'cancelled':
+      case 'dibatalkan':
         return 'Dibatalkan';
       default:
         return status;
@@ -245,21 +253,25 @@ export default function OrderConfirmationScreen() {
           subtitle: 'Terima kasih atas pesanan Anda. Kami akan segera memproses pesanan ini.'
         };
       case 'processing':
+      case 'proses':
         return {
           title: 'Pesanan Berhasil di Proses',
           subtitle: 'Terima kasih atas pesanan Anda. Kami akan segera mengirim pesanan ini.'
         };
       case 'shipped':
+      case 'dikirim':
         return {
           title: 'Pesanan Berhasil di Kirim',
           subtitle: 'Terima kasih atas pesanan Anda.'
         };
       case 'delivered':
+      case 'selesai':
         return {
           title: 'Pesanan Berhasil di Terima',
           subtitle: 'Terima kasih atas pesanan Anda.'
         };
       case 'cancelled':
+      case 'dibatalkan':
         return {
           title: 'Pesanan Berhasil di Batalkan',
           subtitle: 'Silahkan membuat pesanan baru.'
