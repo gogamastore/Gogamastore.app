@@ -10,6 +10,8 @@ import {
   ActivityIndicator,
   Alert,
   RefreshControl,
+  TextInput,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
