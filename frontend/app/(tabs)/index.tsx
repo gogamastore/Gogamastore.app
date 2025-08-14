@@ -432,38 +432,40 @@ export default function HomeScreen() {
 
       {/* Categories */}
       <View style={styles.categoriesSection}>
-        <TouchableOpacity
-          style={[
-            styles.categoryChip,
-            !selectedCategory && styles.categoryChipSelected,
-          ]}
-          onPress={() => setSelectedCategory('')}
-        >
-          <Text
-            style={[
-              styles.categoryChipText,
-              !selectedCategory && styles.categoryChipTextSelected,
-            ]}
-          >
-            Semua Kategori
-          </Text>
-        </TouchableOpacity>
-        
         <FlatList
-          data={categories}
-          renderItem={renderCategory}
+          data={[{ id: 'all', nama: 'Semua Kategori' }, ...categories]}
+          renderItem={({ item }) => {
+            if (item.id === 'all') {
+              // Render "Semua Kategori" option
+              return (
+                <TouchableOpacity
+                  style={[
+                    styles.categoryChip,
+                    !selectedCategory && styles.categoryChipSelected,
+                  ]}
+                  onPress={() => setSelectedCategory('')}
+                >
+                  <Text
+                    style={[
+                      styles.categoryChipText,
+                      !selectedCategory && styles.categoryChipTextSelected,
+                    ]}
+                  >
+                    {item.nama}
+                  </Text>
+                </TouchableOpacity>
+              );
+            } else {
+              // Render normal category
+              return renderCategory({ item });
+            }
+          }}
           keyExtractor={(item) => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.categoriesContainer}
+          contentContainerStyle={styles.categoriesContentContainer}
         />
-        
-        <TouchableOpacity
-          style={styles.resetButton}
-          onPress={() => setSelectedCategory('')}
-        >
-          <Text style={styles.resetButtonText}>Reset</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Products */}
