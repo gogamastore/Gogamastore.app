@@ -20,8 +20,6 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-
-
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Mohon isi email dan password');
@@ -127,8 +125,6 @@ export default function LoginScreen() {
             <TouchableOpacity style={styles.forgotPassword}>
               <Text style={styles.forgotPasswordText}>Lupa password?</Text>
             </TouchableOpacity>
-
-
             
             <TouchableOpacity
               style={[styles.loginButton, loading && styles.loginButtonDisabled]}
