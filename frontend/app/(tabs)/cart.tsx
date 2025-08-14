@@ -97,20 +97,26 @@ export default function CartScreen() {
   };
 
   const updateQuantity = async (productId: string, newQuantity: number) => {
-    if (!user || newQuantity < 1) return;
+    if (!user || newQuantity < 1) {
+      console.log('❌ updateQuantity failed:', { user: !!user, newQuantity });
+      return;
+    }
 
     try {
       console.log('🔄 Updating quantity:', productId, 'to', newQuantity);
+      console.log('🔄 User context:', { uid: user.uid, email: user.email });
       
       // Use the service to update quantity directly
       await cartService.updateCartItemQuantity(user.uid, productId, newQuantity);
+      console.log('✅ cartService.updateCartItemQuantity completed');
       
       // Refresh cart data
       await fetchCart();
-      console.log('✅ Quantity updated successfully');
+      console.log('✅ Quantity updated and cart refreshed successfully');
     } catch (error) {
       console.error('❌ Error updating quantity:', error);
-      Alert.alert('Error', 'Gagal mengupdate jumlah item');
+      console.error('❌ Error details:', { message: error.message, code: error.code });
+      Alert.alert('Error', 'Gagal mengupdate jumlah item: ' + error.message);
     }
   };
 
