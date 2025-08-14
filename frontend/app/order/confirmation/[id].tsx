@@ -200,37 +200,30 @@ export default function OrderConfirmationScreen() {
   };
 
   const getStatusIcon = (status: string) => {
-    // Normalize status to lowercase for consistent comparison
-    const normalizedStatus = status ? status.toLowerCase() : '';
-    
-    switch (normalizedStatus) {
+    switch (status) {
       case 'pending':
-        return { name: 'schedule', color: '#FF9500' };
-      case 'processing':
-        return { name: 'autorenew', color: '#007AFF' };
-      case 'shipped':
-        return { name: 'local-shipping', color: '#5856D6' };
-      case 'delivered':
-        return { name: 'check-circle', color: '#34C759' };
-      case 'cancelled':
-        return { name: 'cancel', color: '#FF3B30' };
-      // Legacy status support
+        return 'hourglass-empty';
       case 'confirmed':
-        return { name: 'autorenew', color: '#007AFF' };
-      case 'completed':
-        return { name: 'check-circle', color: '#34C759' };
+        return 'check-circle';
+      case 'processing':
+        return 'autorenew';
+      case 'shipped':
+        return 'local-shipping';
+      case 'delivered':
+        return 'done-all';
+      case 'cancelled':
+        return 'cancel';
       default:
-        return { name: 'schedule', color: '#FF9500' }; // Default to pending
+        return 'info';
     }
   };
 
   const getStatusText = (status: string) => {
-    // Normalize status to lowercase for consistent comparison
-    const normalizedStatus = status ? status.toLowerCase() : '';
-    
-    switch (normalizedStatus) {
+    switch (status) {
       case 'pending':
-        return 'Belum Proses';
+        return 'Menunggu Konfirmasi';
+      case 'confirmed':
+        return 'Dikonfirmasi';
       case 'processing':
         return 'Diproses';
       case 'shipped':
@@ -239,13 +232,43 @@ export default function OrderConfirmationScreen() {
         return 'Selesai';
       case 'cancelled':
         return 'Dibatalkan';
-      // Legacy status support
-      case 'confirmed':
-        return 'Diproses';
-      case 'completed':
-        return 'Selesai';
       default:
-        return 'Belum Proses'; // Default to pending instead of unknown
+        return status;
+    }
+  };
+
+  const getSuccessMessage = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return {
+          title: 'Pesanan Berhasil Dibuat!',
+          subtitle: 'Terima kasih atas pesanan Anda. Kami akan segera memproses pesanan ini.'
+        };
+      case 'processing':
+        return {
+          title: 'Pesanan Berhasil di Proses',
+          subtitle: 'Terima kasih atas pesanan Anda. Kami akan segera mengirim pesanan ini.'
+        };
+      case 'shipped':
+        return {
+          title: 'Pesanan Berhasil di Kirim',
+          subtitle: 'Terima kasih atas pesanan Anda.'
+        };
+      case 'delivered':
+        return {
+          title: 'Pesanan Berhasil di Terima',
+          subtitle: 'Terima kasih atas pesanan Anda.'
+        };
+      case 'cancelled':
+        return {
+          title: 'Pesanan Berhasil di Batalkan',
+          subtitle: 'Silahkan membuat pesanan baru.'
+        };
+      default:
+        return {
+          title: 'Pesanan Berhasil Dibuat!',
+          subtitle: 'Terima kasih atas pesanan Anda. Kami akan segera memproses pesanan ini.'
+        };
     }
   };
 
