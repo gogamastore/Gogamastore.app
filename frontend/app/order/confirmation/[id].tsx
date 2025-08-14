@@ -267,8 +267,8 @@ export default function OrderConfirmationScreen() {
   };
 
   const handleCancelOrder = () => {
-    if (order?.status !== 'pending') {
-      console.log('❌ Cannot cancel non-pending order');
+    if (!(order?.status === 'pending' || order?.status === 'waiting_payment' || order?.paymentStatus === 'pending')) {
+      console.log('❌ Cannot cancel order with current status:', order?.status, order?.paymentStatus);
       return;
     }
 
