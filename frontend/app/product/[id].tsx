@@ -232,37 +232,28 @@ export default function ProductDetailScreen() {
           </View>
 
           {/* Add to Cart Button */}
-          {/* Native HTML Add to Cart Button */}
-          <div 
-            style={{
-              backgroundColor: '#007AFF',
-              padding: '16px',
-              borderRadius: '8px',
-              margin: '16px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-            onClick={async () => {
-              console.log('🛒 Native add to cart clicked!');
+          <TouchableOpacity
+            style={styles.addToCartButton}
+            onPress={async () => {
+              console.log('🛒 Add to cart pressed!');
               try {
                 await addToCart();
                 // Force refresh cart by triggering a small delay then success message
                 setTimeout(() => {
-                  alert(`✅ ${quantity} ${product.nama} berhasil ditambahkan ke keranjang!`);
+                  Alert.alert('Berhasil', `✅ ${quantity} ${product.nama} berhasil ditambahkan ke keranjang!`);
                 }, 100);
               } catch (error) {
                 console.error('Add to cart error:', error);
-                alert('Error: ' + error.message);
+                Alert.alert('Error', error.message);
               }
             }}
+            activeOpacity={0.8}
           >
-            <span style={{ color: 'white', fontSize: '18px', fontWeight: '600' }}>
-              🛒 Tambah ke Keranjang - {formatPrice(product.harga * quantity)}
-            </span>
-          </div>
+            <MaterialIcons name="shopping-cart" size={20} color="white" />
+            <Text style={styles.addToCartButtonText}>
+              Tambah ke Keranjang - {formatPrice(product.harga * quantity)}
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
