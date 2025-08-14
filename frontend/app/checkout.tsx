@@ -987,6 +987,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
   },
+  accountHolder: {
+    fontSize: 11,
+    color: '#666',
+    marginTop: 1,
+  },
   // Payment Proof Styles
   paymentProofSection: {
     marginTop: 16,
