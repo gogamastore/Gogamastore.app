@@ -18,11 +18,13 @@ import { useAuth } from '../../contexts/AuthContext';
 import { cartService } from '../../services/firestoreService';
 
 interface CartItem {
-  product_id: string;
+  id: string;
+  productId: string;
   nama: string;
   harga: number;
-  gambar: string;
   quantity: number;
+  gambar?: string;
+  stok?: number;
 }
 
 interface Cart {
