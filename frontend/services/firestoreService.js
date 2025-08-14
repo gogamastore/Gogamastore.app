@@ -903,7 +903,6 @@ export const paymentProofService = {
         return {
           success: true,
           downloadURL: downloadURL,
-          proofId: proofRef.id,
           fileName: safeFileName,
           originalFileName: fileName,
           warning: 'File uploaded successfully but order database update failed',
@@ -914,7 +913,6 @@ export const paymentProofService = {
       return {
         success: true,
         downloadURL: downloadURL,
-        proofId: proofRef.id,
         fileName: safeFileName,
         originalFileName: fileName
       };
