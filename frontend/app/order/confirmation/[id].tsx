@@ -387,7 +387,18 @@ export default function OrderConfirmationScreen() {
     status: order.status,
     paymentStatus: order.paymentStatus,
     paymentProofUrl: order.paymentProofUrl,
+    hasPaymentStatus: !!order.paymentStatus,
     canCancel: (order.status === 'pending' || order.status === 'waiting_payment' || order.paymentStatus === 'pending')
+  });
+
+  // Debug payment status specifically
+  console.log('💳 PAYMENT STATUS DEBUG:', {
+    paymentStatus: order.paymentStatus,
+    typeOfPaymentStatus: typeof order.paymentStatus,
+    isUndefined: order.paymentStatus === undefined,
+    isNull: order.paymentStatus === null,
+    isEmpty: order.paymentStatus === '',
+    shouldShowUpload: order.paymentStatus === 'pending' || !order.paymentStatus
   });
 
   const statusIcon = getStatusIcon(order.status);
