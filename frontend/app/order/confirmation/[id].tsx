@@ -179,9 +179,16 @@ export default function OrderConfirmationScreen() {
         
         // Refresh order data to get updated paymentProofUrl from Firebase
         setTimeout(async () => {
-          console.log('🔄 Refreshing order data...');
+          console.log('🔄 Refreshing order data to verify paymentProofUrl...');
           await fetchOrder();
-        }, 1000); // Give Firebase a moment to update
+          
+          // Additional verification - check if paymentProofUrl is set
+          if (order?.paymentProofUrl && order.paymentProofUrl !== '') {
+            console.log('✅ SUCCESS: paymentProofUrl verified in database:', order.paymentProofUrl);
+          } else {
+            console.warn('⚠️  WARNING: paymentProofUrl still empty in database after refresh');
+          }
+        }, 2000); // Give Firebase more time to update
       } else {
         throw new Error('Upload tidak berhasil');
       }
