@@ -852,14 +852,29 @@ export const paymentProofService = {
         
         const orderData = orderSnap.data();
         console.log('📋 Found order data:', {
+          orderId: orderId,
           userId: orderData.userId,
           customerId: orderData.customerId,
           currentUser: currentUser.uid,
-          hasAccess: orderData.userId === currentUser.uid || orderData.customerId === currentUser.uid
+          hasAccess: orderData.userId === currentUser.uid || orderData.customerId === currentUser.uid,
+          currentPaymentProofUrl: orderData.paymentProofUrl,
+          newPaymentProofUrl: downloadURL,
+          paymentProofUrlWillChange: orderData.paymentProofUrl !== downloadURL
         });
+        
+        // Check if user matches customerId (required by rules)
+        if (orderData.customerId !== currentUser.uid) {
+          throw new Error(`User ${currentUser.uid} is not the customerId (${orderData.customerId}) for this order`);
+        }
+        
+        console.log('✅ User access verified: customerId matches current user');
         
         // ONLY UPDATE paymentProofUrl as per Firestore Rules
         // Rules allow: paymentProofUrl != resource.data.paymentProofUrl
+        console.log('🔄 Attempting order update with minimal data:', {
+          orderId: orderId,
+          paymentProofUrl: downloadURL
+        });
         await updateDoc(orderRef, {
           paymentProofUrl: downloadURL  // Only this field is allowed by rules
         });
