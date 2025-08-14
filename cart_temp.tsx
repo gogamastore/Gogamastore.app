@@ -238,7 +238,7 @@ export default function CartScreen() {
         style={styles.deleteButton}
         onPress={() => {
           console.log('🗑️ Delete button pressed for:', item.nama);
-          confirmRemoveItem(item);
+          confirmRemoveItem(item.nama, item.productId);
         }}
         activeOpacity={0.7}
       >
