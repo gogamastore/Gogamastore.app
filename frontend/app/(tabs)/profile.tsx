@@ -287,6 +287,7 @@ export default function ProfileScreen() {
             <MaterialIcons name="logout" size={20} color="#FF3B30" />
             <Text style={styles.logoutButtonText}>Keluar dari Akun</Text>
         </TouchableOpacity>
+        </View>
       </ScrollView>
 
       {/* Logout Confirmation Modal */}
