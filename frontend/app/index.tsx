@@ -35,7 +35,8 @@ export default function Index() {
       if (loading) {
         console.log('⏰ Loading timeout reached, forcing redirect to login');
         setTimeoutReached(true);
-        router.replace('/(auth)/login');
+        // TEMPORARY: Disabled timeout redirect for testing
+        // router.replace('/(auth)/login');
       }
     }, 8000); // 8 second timeout
 
