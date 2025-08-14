@@ -269,6 +269,48 @@ export default function AddressManagementScreen() {
           </View>
         </>
       )}
+
+      {/* Delete Address Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={deleteModalVisible}
+        onRequestClose={handleDeleteCancel}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>
+              {addressToDelete?.isDefault ? 'Tidak Dapat Menghapus' : 'Hapus Alamat'}
+            </Text>
+            <Text style={styles.modalMessage}>
+              {addressToDelete?.isDefault 
+                ? 'Alamat utama tidak dapat dihapus. Silakan pilih alamat utama yang lain terlebih dahulu.'
+                : `Apakah Anda yakin ingin menghapus alamat "${addressToDelete?.name}"?\n\nTindakan ini tidak dapat dibatalkan.`
+              }
+            </Text>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]} 
+                onPress={handleDeleteCancel}
+              >
+                <Text style={styles.cancelButtonText}>
+                  {addressToDelete?.isDefault ? 'OK' : 'Batal'}
+                </Text>
+              </TouchableOpacity>
+              
+              {!addressToDelete?.isDefault && (
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.confirmButton]} 
+                  onPress={handleDeleteConfirm}
+                >
+                  <Text style={styles.confirmButtonText}>Hapus</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
