@@ -376,7 +376,11 @@ export default function OrderConfirmationScreen() {
         {/* Success Message */}
         <View style={styles.successSection}>
           <View style={styles.successIcon}>
-            <MaterialIcons name="check-circle" size={64} color="#34C759" />
+            <MaterialIcons 
+              name={getStatusIcon(order.status).name} 
+              size={64} 
+              color={getStatusIcon(order.status).color} 
+            />
           </View>
           <Text style={styles.successTitle}>{getSuccessMessage(order.status).title}</Text>
           <Text style={styles.successSubtitle}>
