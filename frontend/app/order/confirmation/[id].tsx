@@ -202,19 +202,19 @@ export default function OrderConfirmationScreen() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'hourglass-empty';
+        return { name: 'hourglass-empty', color: '#FF9500' };
       case 'confirmed':
-        return 'check-circle';
+        return { name: 'check-circle', color: '#34C759' };
       case 'processing':
-        return 'autorenew';
+        return { name: 'autorenew', color: '#007AFF' };
       case 'shipped':
-        return 'local-shipping';
+        return { name: 'local-shipping', color: '#5856D6' };
       case 'delivered':
-        return 'done-all';
+        return { name: 'done-all', color: '#34C759' };
       case 'cancelled':
-        return 'cancel';
+        return { name: 'cancel', color: '#FF3B30' };
       default:
-        return 'info';
+        return { name: 'info', color: '#666' };
     }
   };
 
