@@ -128,15 +128,6 @@ export default function LoginScreen() {
               <Text style={styles.forgotPasswordText}>Lupa password?</Text>
             </TouchableOpacity>
 
-            {/* Test Credentials Button */}
-            <TouchableOpacity
-              style={[styles.loginButton, { backgroundColor: '#FF9500', marginBottom: 16 }]}
-              onPress={fillTestCredentials}
-            >
-              <Text style={styles.loginButtonText}>
-                Fill Test Credentials
-              </Text>
-            </TouchableOpacity>
 
             {/* Native HTML Button for Emergency Testing */}
             <div 
