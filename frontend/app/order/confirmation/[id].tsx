@@ -103,7 +103,7 @@ export default function OrderConfirmationScreen() {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       
       if (permissionResult.granted === false) {
-        Alert.alert('Permission Required', 'Izin akses galeri diperlukan untuk mengunggah bukti pembayaran');
+        console.log('❌ Permission denied for image picker');
         return;
       }
 
