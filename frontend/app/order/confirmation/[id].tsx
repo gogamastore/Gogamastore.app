@@ -511,8 +511,8 @@ export default function OrderConfirmationScreen() {
           </View>
         )}
 
-        {/* Cancel Order Section - Only for Pending Orders */}
-        {order.status === 'pending' && (
+        {/* Cancel Order Section - For Orders that can be cancelled */}
+        {(order.status === 'pending' || order.status === 'waiting_payment' || order.paymentStatus === 'pending') && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Batalkan Pesanan</Text>
             <TouchableOpacity 
@@ -527,8 +527,8 @@ export default function OrderConfirmationScreen() {
           </View>
         )}
 
-        {/* Next Steps - Only for Non-Pending Orders */}
-        {order.status !== 'pending' && (
+        {/* Next Steps - Only for Orders that cannot be cancelled */}
+        {!(order.status === 'pending' || order.status === 'waiting_payment' || order.paymentStatus === 'pending') && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Langkah Selanjutnya</Text>
             <View style={styles.nextStep}>
