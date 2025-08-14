@@ -535,15 +535,19 @@ export default function OrderConfirmationScreen() {
             {/* Payment Status Indicator */}
             <View style={styles.paymentStatusContainer}>
               <MaterialIcons 
-                name={order.paymentStatus === 'paid' ? 'check-circle' : 'schedule'} 
+                name={(order.paymentStatus === 'paid') ? 'check-circle' : 'schedule'} 
                 size={20} 
-                color={order.paymentStatus === 'paid' ? '#34C759' : '#FF9500'} 
+                color={(order.paymentStatus === 'paid') ? '#34C759' : '#FF9500'} 
               />
               <Text style={[
                 styles.paymentStatusText, 
-                { color: order.paymentStatus === 'paid' ? '#34C759' : '#FF9500' }
+                { color: (order.paymentStatus === 'paid') ? '#34C759' : '#FF9500' }
               ]}>
-                Status Pembayaran: {order.paymentStatus === 'paid' ? 'Dibayar' : order.paymentStatus === 'pending' ? 'Belum Dibayar' : 'Menunggu Konfirmasi'}
+                Status Pembayaran: {
+                  order.paymentStatus === 'paid' ? 'Dibayar' : 
+                  order.paymentStatus === 'pending' ? 'Belum Dibayar' : 
+                  !order.paymentStatus ? 'Belum Dibayar' : 'Menunggu Konfirmasi'
+                }
               </Text>
             </View>
             
@@ -555,20 +559,20 @@ export default function OrderConfirmationScreen() {
                   <Image source={{ uri: order.paymentProofUrl }} style={styles.existingProofImage} />
                   <View style={styles.proofStatusBadge}>
                     <MaterialIcons 
-                      name={order.paymentStatus === 'paid' ? 'verified' : 'pending'} 
+                      name={(order.paymentStatus === 'paid') ? 'verified' : 'pending'} 
                       size={16} 
                       color="#fff" 
                     />
                     <Text style={styles.proofStatusBadgeText}>
-                      {order.paymentStatus === 'paid' ? 'Diterima' : 'Menunggu Verifikasi'}
+                      {(order.paymentStatus === 'paid') ? 'Diterima' : 'Menunggu Verifikasi'}
                     </Text>
                   </View>
                 </View>
               </View>
             )}
             
-            {/* Show upload section only if payment status is pending */}
-            {order.paymentStatus === 'pending' && (
+            {/* Show upload section if payment status is pending OR undefined/null (default to pending) */}
+            {(order.paymentStatus === 'pending' || !order.paymentStatus || order.paymentStatus === '') && (
               <View style={styles.uploadSection}>
                 <Text style={styles.uploadSectionTitle}>Unggah Bukti Pembayaran</Text>
                 <Text style={styles.uploadSectionSubtitle}>
