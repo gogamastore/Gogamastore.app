@@ -18,6 +18,11 @@
         "buildType": "apk"
       }
     },
+    "production-aab": {
+      "android": {
+        "buildType": "app-bundle"
+      }
+    },
     "apk": {
       "android": {
         "buildType": "apk",
