@@ -147,6 +147,8 @@ export default function OrderConfirmationScreen() {
     
     try {
       setUploadingProof(true);
+      console.log('🔄 Starting payment proof upload for order:', order.id);
+      
       const fileName = `payment_proof_${order.id}_${Date.now()}.jpg`;
       
       const result = await paymentProofService.uploadPaymentProof(
@@ -155,16 +157,47 @@ export default function OrderConfirmationScreen() {
         fileName
       );
       
+      console.log('📤 Upload result:', result);
+      
       if (result.success) {
+        // Update local state immediately
         setHasExistingProof(true);
-        setPaymentProofImage(result.downloadURL); // Show uploaded image immediately
-        console.log('✅ Payment proof uploaded successfully:', result.downloadURL);
+        setPaymentProofImage(result.downloadURL);
         
-        // Refresh order data to get updated paymentProofUrl
-        await fetchOrder();
+        console.log('✅ Payment proof uploaded successfully:', {
+          downloadURL: result.downloadURL,
+          proofId: result.proofId,
+          fileName: result.fileName
+        });
+        
+        // Show success notification
+        Alert.alert(
+          'Upload Berhasil!',
+          'Bukti pembayaran berhasil diunggah. Silakan menunggu konfirmasi dari admin.',
+          [{ text: 'OK' }]
+        );
+        
+        // Refresh order data to get updated paymentProofUrl from Firebase
+        setTimeout(async () => {
+          console.log('🔄 Refreshing order data...');
+          await fetchOrder();
+        }, 1000); // Give Firebase a moment to update
+      } else {
+        throw new Error('Upload tidak berhasil');
       }
     } catch (error) {
       console.error('❌ Error uploading payment proof:', error);
+      
+      // Show error notification
+      Alert.alert(
+        'Upload Gagal',
+        error.message || 'Gagal mengunggah bukti pembayaran. Silakan coba lagi.',
+        [{ text: 'OK' }]
+      );
+      
+      // Reset image if upload failed
+      setPaymentProofImage(null);
+      setHasExistingProof(false);
     } finally {
       setUploadingProof(false);
     }
