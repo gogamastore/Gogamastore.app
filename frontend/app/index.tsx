@@ -10,6 +10,12 @@ export default function Index() {
   useEffect(() => {
     console.log('🔍 Index.tsx - Auth state:', { user: !!user, loading });
     
+    // TEMPORARY: Skip auth for testing
+    console.log('🔧 TEMPORARY: Bypassing auth for testing purposes');
+    router.replace('/(tabs)');
+    
+    // Original auth logic (commented out for testing)
+    /*
     if (!loading) {
       console.log('🔄 Auth loading complete, routing...');
       if (user) {
@@ -20,6 +26,7 @@ export default function Index() {
         router.replace('/(auth)/login');
       }
     }
+    */
   }, [user, loading]);
 
   // Timeout fallback - if loading takes too long, force redirect to login
