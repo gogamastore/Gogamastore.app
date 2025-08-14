@@ -227,15 +227,9 @@ export default function CartScreen() {
               />
             </TouchableOpacity>
             
-            <TextInput
-              style={styles.quantityInput}
-            value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+            <View style={styles.quantityDisplay}>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+            </View>
             
             <TouchableOpacity
               style={styles.quantityButton}
@@ -246,31 +240,13 @@ export default function CartScreen() {
             >
               <MaterialIcons name="add" size={20} color="#007AFF" />
             </TouchableOpacity>
-          value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+          </View>
           
           <Text style={styles.subtotal}>
             {formatPrice(item.harga * item.quantity)}
           </Text>
-        value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
-      value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+        </View>
+      </View>
       
       {/* React Native Delete Button */}
       <TouchableOpacity 
@@ -283,13 +259,7 @@ export default function CartScreen() {
       >
         <MaterialIcons name="delete" size={18} color="#fff" />
       </TouchableOpacity>
-    value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+    </View>
   );
 
   const renderEmptyCart = () => (
@@ -299,13 +269,7 @@ export default function CartScreen() {
       <Text style={styles.emptyDescription}>
         Belum ada produk di keranjang Anda
       </Text>
-    value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+    </View>
   );
 
   if (loading) {
@@ -314,13 +278,7 @@ export default function CartScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
           <Text style={styles.loadingText}>Memuat keranjang...</Text>
-        value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+        </View>
       </SafeAreaView>
     );
   }
@@ -333,13 +291,7 @@ export default function CartScreen() {
         {cart && cart.items.length > 0 && (
           <Text style={styles.itemCount}>{cart.items.length} item</Text>
         )}
-      value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+      </View>
 
       {/* Cart Items or Empty State */}
       {cart && cart.items.length > 0 ? (
@@ -360,34 +312,16 @@ export default function CartScreen() {
             <View style={styles.totalSection}>
               <Text style={styles.totalLabel}>Total Pembayaran:</Text>
               <Text style={styles.totalAmount}>{formatPrice(cart.total)}</Text>
-            value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+            </View>
             <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
               <Text style={styles.checkoutButtonText}>Checkout</Text>
             </TouchableOpacity>
-          value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+          </View>
         </>
       ) : (
         <View style={styles.contentContainer}>
           {renderEmptyCart()}
-        value={item.quantity.toString()}
-              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
-              keyboardType="numeric"
-              maxLength={2}
-              textAlign="center"
-              selectTextOnFocus={true}
-            />
+        </View>
       )}
     </SafeAreaView>
   );
