@@ -185,7 +185,10 @@ export default function CartScreen() {
                 styles.quantityButton,
                 item.quantity <= 1 && styles.quantityButtonDisabled
               ]}
-              onPress={() => decrementQuantity(item.productId, item.quantity)}
+              onPress={() => {
+                console.log('➖ Decrement button pressed for:', item.nama);
+                updateQuantity(item.productId, item.quantity - 1);
+              }}
               disabled={item.quantity <= 1}
             >
               <MaterialIcons 
@@ -201,7 +204,10 @@ export default function CartScreen() {
             
             <TouchableOpacity
               style={styles.quantityButton}
-              onPress={() => incrementQuantity(item.productId, item.quantity)}
+              onPress={() => {
+                console.log('➕ Increment button pressed for:', item.nama);
+                updateQuantity(item.productId, item.quantity + 1);
+              }}
             >
               <MaterialIcons name="add" size={20} color="#007AFF" />
             </TouchableOpacity>
