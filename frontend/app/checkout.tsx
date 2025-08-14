@@ -214,9 +214,9 @@ export default function CheckoutScreen() {
         },
         customerId: user.uid,
         date: new Date(),
-        paymentMethod: "", // Will be set in payment screen
+        paymentMethod: selectedPayment, // Set payment method: "bank_transfer" or "cod"
         paymentProofUrl: "",
-        paymentStatus: "Pending",
+        paymentStatus: "Unpaid", // Default payment status (changed from "Pending")
         productIds: cart.items.map(item => item.product_id || item.id),
         products: cart.items.map(item => ({
           productId: item.product_id || item.id,
