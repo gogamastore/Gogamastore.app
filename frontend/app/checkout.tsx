@@ -635,37 +635,30 @@ export default function CheckoutScreen() {
             <Text style={styles.totalValue}>{formatPrice(calculateGrandTotal())}</Text>
           </View>
 
-          {/* Buat Pesanan Button - Native HTML */}
-          <div 
-            style={{
-              backgroundColor: '#007AFF',
-              padding: '16px',
-              borderRadius: '8px',
-              margin: '16px 0',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-            onClick={async () => {
+          {/* Buat Pesanan Button */}
+          <TouchableOpacity 
+            style={styles.createOrderButton}
+            onPress={async () => {
               console.log('🛒 Buat Pesanan clicked from checkout!');
               try {
                 await processOrder();
               } catch (error) {
                 console.error('Order creation error:', error);
-                alert('Error: ' + error.message);
+                Alert.alert('Error', error.message);
               }
             }}
+            disabled={processing}
+            activeOpacity={0.8}
           >
-            <span style={{ 
-              color: 'white', 
-              fontSize: '18px', 
-              fontWeight: '600' 
-            }}>
-              {processing ? '⏳ Memproses...' : '🛒 Buat Pesanan'}
-            </span>
-          </div>
+            <MaterialIcons 
+              name={processing ? "hourglass-empty" : "shopping-cart"} 
+              size={20} 
+              color="white" 
+            />
+            <Text style={styles.createOrderButtonText}>
+              {processing ? 'Memproses...' : 'Buat Pesanan'}
+            </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
