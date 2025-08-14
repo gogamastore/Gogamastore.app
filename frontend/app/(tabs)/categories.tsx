@@ -157,10 +157,18 @@ export default function TrendingScreen() {
       {/* Product Image */}
       <View style={styles.productImageContainer}>
         {item.gambar ? (
-          <Image source={{ uri: item.gambar }} style={styles.productImage} />
+          <Image 
+            source={{ uri: item.gambar }} 
+            style={styles.productImage} 
+            onLoad={() => console.log('✅ Image loaded successfully:', item.gambar)}
+            onError={(error) => console.log('❌ Image load error:', error, 'URL:', item.gambar)}
+          />
         ) : (
           <View style={styles.placeholderImage}>
             <MaterialIcons name="image" size={40} color="#C7C7CC" />
+            <Text style={{ fontSize: 10, color: '#999', textAlign: 'center', marginTop: 4 }}>
+              No Image
+            </Text>
           </View>
         )}
       </View>
