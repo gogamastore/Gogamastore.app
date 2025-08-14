@@ -160,7 +160,7 @@ export default function OrderConfirmationScreen() {
     if (!hasExistingProof) {
       setPaymentProofImage(null);
     } else {
-      Alert.alert('Info', 'Bukti pembayaran yang sudah diunggah tidak dapat dihapus.');
+      console.log('ℹ️ Cannot remove already uploaded payment proof');
     }
   };
 
