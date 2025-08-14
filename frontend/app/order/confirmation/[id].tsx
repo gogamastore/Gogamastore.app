@@ -151,7 +151,6 @@ export default function OrderConfirmationScreen() {
       }
     } catch (error) {
       console.error('❌ Error uploading payment proof:', error);
-      Alert.alert('Error', 'Gagal mengunggah bukti pembayaran. Silakan coba lagi.');
     } finally {
       setUploadingProof(false);
     }
