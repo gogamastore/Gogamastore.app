@@ -398,7 +398,10 @@ export default function OrderConfirmationScreen() {
     isUndefined: order.paymentStatus === undefined,
     isNull: order.paymentStatus === null,
     isEmpty: order.paymentStatus === '',
-    shouldShowUpload: order.paymentStatus === 'pending' || !order.paymentStatus
+    shouldShowUpload: order.paymentStatus === 'pending' || !order.paymentStatus,
+    actualFirebasePaymentStatus: order.paymentStatus,
+    paymentProofUrl: order.paymentProofUrl,
+    hasPaymentProofUrl: !!order.paymentProofUrl
   });
 
   const statusIcon = getStatusIcon(order.status);
