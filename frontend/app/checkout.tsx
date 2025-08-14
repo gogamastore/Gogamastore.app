@@ -1046,4 +1046,19 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontWeight: '600',
   },
+  createOrderButton: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 8,
+    marginVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  createOrderButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+  },
 });
