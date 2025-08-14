@@ -41,42 +41,6 @@
         }
       }
     },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:954515661623:android:71013b004d2bd17f2ef0b2",
-        "android_client_info": {
-          "package_name": "store.gogama.app.gogamastore_app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "954515661623-07ct8dg1rnu6lj9j8fh2u66lmm42sdma.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAUU71TYtfCIqTKwj1SHlbVhqqgbfEHx6U"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "954515661623-07ct8dg1rnu6lj9j8fh2u66lmm42sdma.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "954515661623-p92qcvi8q1a3u8ko4hbvq8v3k8f4nuoe.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "store.gogama.app"
-              }
-            }
-          ]
-        }
-      }
-    }
   ],
   "configuration_version": "1"
 }
