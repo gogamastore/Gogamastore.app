@@ -899,33 +899,7 @@ export const paymentProofService = {
       }
       
       if (!updateSuccess) {
-        // If direct update failed, try alternative approach - update via paymentProofUrl only
-        console.log('🔄 Trying alternative update approach...');
-        try {
-          // Simpler update - only essential fields
-          await updateDoc(orderRef, {
-            paymentProofUrl: downloadURL,
-            updated_at: new Date().toISOString()
-          });
-          
-          console.log('✅ Alternative order update successful');
-          updateSuccess = true;
-          
-          // Verify this simpler update
-          const verifySnap = await getDoc(orderRef);
-          if (verifySnap.exists()) {
-            const verifyData = verifySnap.data();
-            if (verifyData.paymentProofUrl && verifyData.paymentProofUrl !== '') {
-              console.log('✅ CONFIRMED: paymentProofUrl saved via alternative method');
-            }
-          }
-        } catch (altError) {
-          console.error('❌ Alternative update also failed:', altError);
-        }
-      }
-      
-      if (!updateSuccess) {
-        // If both approaches failed, still return success for storage upload
+        // If update failed, still return success for storage upload
         // but indicate the database update issue
         console.warn('⚠️  Storage upload successful but database update failed');
         console.warn('⚠️  Error:', updateError?.message || updateError);
