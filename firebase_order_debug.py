@@ -18,7 +18,7 @@ def test_firebase_order_debug():
     print("=" * 50)
     
     # Check if the frontend is accessible
-    frontend_url = "https://firebase-cart-app.preview.emergentagent.com"
+    frontend_url = "https://gogama-shop.preview.emergentagent.com"
     
     print(f"\n1. Testing Frontend Accessibility:")
     print(f"   Frontend URL: {frontend_url}")
