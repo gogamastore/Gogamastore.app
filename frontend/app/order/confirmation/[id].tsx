@@ -144,7 +144,7 @@ export default function OrderConfirmationScreen() {
       
       if (result.success) {
         setHasExistingProof(true);
-        Alert.alert('Berhasil', 'Bukti pembayaran berhasil diunggah');
+        console.log('✅ Payment proof uploaded successfully:', result.downloadURL);
         
         // Refresh order data
         await fetchOrder();
