@@ -325,6 +325,15 @@ export default function OrderConfirmationScreen() {
     );
   }
 
+  // Debug logging for order status
+  console.log('🎯 ORDER DEBUG INFO:', {
+    orderId: order.id,
+    status: order.status,
+    paymentStatus: order.paymentStatus,
+    paymentProofUrl: order.paymentProofUrl,
+    canCancel: (order.status === 'pending' || order.status === 'waiting_payment' || order.paymentStatus === 'pending')
+  });
+
   const statusIcon = getStatusIcon(order.status);
 
   return (
