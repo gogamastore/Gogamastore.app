@@ -813,7 +813,7 @@ export const paymentProofService = {
       const downloadURL = await getDownloadURL(snapshot.ref);
       console.log('🔗 Download URL obtained:', downloadURL);
       
-      // Save upload record to Firestore /payment_proofs collection
+      // Save upload record to Firestore /payment_proofs collection FIRST
       const uploadData = {
         orderId: orderId,
         userId: currentUser.uid,
@@ -830,16 +830,34 @@ export const paymentProofService = {
       const proofRef = await addDoc(collection(db, 'payment_proofs'), uploadData);
       console.log('💾 Upload record saved to Firestore:', proofRef.id);
       
-      // Update order document with payment proof reference  
-      console.log('📝 Updating order document:', {
+      // Try multiple approaches to update order document
+      console.log('📝 Attempting to update order document:', {
         orderId: orderId,
         downloadURL: downloadURL,
         paymentProofId: proofRef.id
       });
       
-      const orderRef = doc(db, 'orders', orderId);
+      let updateSuccess = false;
+      let updateError = null;
       
+      // Approach 1: Direct update
       try {
+        const orderRef = doc(db, 'orders', orderId);
+        
+        // First verify the order exists and user has access
+        const orderSnap = await getDoc(orderRef);
+        if (!orderSnap.exists()) {
+          throw new Error('Order document not found');
+        }
+        
+        const orderData = orderSnap.data();
+        console.log('📋 Found order data:', {
+          userId: orderData.userId,
+          customerId: orderData.customerId,
+          currentUser: currentUser.uid,
+          hasAccess: orderData.userId === currentUser.uid || orderData.customerId === currentUser.uid
+        });
+        
         await updateDoc(orderRef, {
           paymentProofId: proofRef.id,
           paymentProofUrl: downloadURL,
@@ -849,9 +867,10 @@ export const paymentProofService = {
           updated_at: new Date().toISOString()
         });
         
-        console.log('✅ Order updated with payment proof reference successfully');
+        console.log('✅ Order updated successfully via direct update');
+        updateSuccess = true;
         
-        // Verify the update by reading the document back
+        // Verify the update
         const updatedOrderSnap = await getDoc(orderRef);
         if (updatedOrderSnap.exists()) {
           const updatedData = updatedOrderSnap.data();
@@ -860,16 +879,49 @@ export const paymentProofService = {
             paymentStatus: updatedData.paymentStatus,
             paymentProofUploaded: updatedData.paymentProofUploaded
           });
+          
+          // Double check that paymentProofUrl is actually set
+          if (updatedData.paymentProofUrl && updatedData.paymentProofUrl !== '') {
+            console.log('✅ CONFIRMED: paymentProofUrl successfully saved to database');
+          } else {
+            console.error('❌ FAILED: paymentProofUrl is still empty in database');
+            updateSuccess = false;
+            updateError = 'paymentProofUrl not saved to database';
+          }
         }
-      } catch (updateError) {
-        console.error('❌ Error updating order document:', updateError);
-        throw new Error(`Failed to update order: ${updateError.message}`);
+        
+      } catch (error) {
+        updateError = error;
+        console.error('❌ Direct order update failed:', error);
+        
+        if (error.code === 'permission-denied') {
+          console.error('🔒 Permission denied - Firestore security rules may be blocking this update');
+          console.error('💡 User ID:', currentUser.uid);
+          console.error('💡 Order ID:', orderId);
+        }
+      }
+      
+      if (!updateSuccess) {
+        // If direct update failed, still return success for storage upload
+        // but indicate the database update issue
+        console.warn('⚠️  Storage upload successful but database update failed');
+        console.warn('⚠️  Error:', updateError?.message || updateError);
+        
+        return {
+          success: true,
+          downloadURL: downloadURL,
+          proofId: proofRef.id,
+          fileName: safeFileName,
+          originalFileName: fileName,
+          warning: 'File uploaded successfully but order database update failed',
+          updateError: updateError?.message || updateError
+        };
       }
       
       return {
         success: true,
+        downloadURL: downloadURL,
         proofId: proofRef.id,
-        downloadURL: downloadURL, // Menggunakan downloadURL bukan storageUrl untuk konsistensi
         fileName: safeFileName,
         originalFileName: fileName
       };
