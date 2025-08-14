@@ -157,16 +157,16 @@ export default function TrendingScreen() {
       {/* Product Info */}
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={2}>
-          {item.nama}
+          {item.nama || item.name || 'Nama produk tidak tersedia'}
         </Text>
         
         <Text style={styles.productPrice}>
-          {formatPrice(item.harga)}
+          {formatPrice(item.harga || item.price)}
         </Text>
         
-        {item.stok !== undefined && (
+        {(item.stok !== undefined || item.stock !== undefined) && (
           <Text style={styles.productStock}>
-            Stok: {item.stok}
+            Stok: {item.stok || item.stock || 0}
           </Text>
         )}
         
