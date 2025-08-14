@@ -32,6 +32,7 @@ interface Cart {
   user_id: string;
   items: CartItem[];
   total: number;
+  updated_at: string;
 }
 
 export default function CartScreen() {
@@ -101,7 +102,7 @@ export default function CartScreen() {
 
     try {
       // Find the current item
-      const currentItem = cart?.items.find(item => item.product_id === productId);
+      const currentItem = cart?.items.find(item => item.productId === productId);
       if (!currentItem) return;
 
       // Calculate quantity difference
@@ -119,7 +120,7 @@ export default function CartScreen() {
         // This would require a new service method, let's implement it differently
         // We'll update the cart directly
         const updatedItems = cart.items.map(item => 
-          item.product_id === productId 
+          item.productId === productId 
             ? { ...item, quantity: newQuantity }
             : item
         );
@@ -178,7 +179,7 @@ export default function CartScreen() {
           style: 'destructive',
           onPress: () => {
             console.log('✅ User confirmed item removal for:', item.nama);
-            removeFromCart(item.product_id);
+            removeFromCart(item.productId);
           }
         }
       ],
@@ -220,7 +221,7 @@ export default function CartScreen() {
                 styles.quantityButton,
                 item.quantity <= 1 && styles.quantityButtonDisabled
               ]}
-              onPress={() => decrementQuantity(item.product_id, item.quantity)}
+              onPress={() => decrementQuantity(item.productId, item.quantity)}
               disabled={item.quantity <= 1}
             >
               <MaterialIcons 
@@ -236,7 +237,7 @@ export default function CartScreen() {
             
             <TouchableOpacity
               style={styles.quantityButton}
-              onPress={() => incrementQuantity(item.product_id, item.quantity)}
+              onPress={() => incrementQuantity(item.productId, item.quantity)}
             >
               <MaterialIcons name="add" size={20} color="#007AFF" />
             </TouchableOpacity>
@@ -298,7 +299,7 @@ export default function CartScreen() {
           <FlatList
             data={cart.items}
             renderItem={renderCartItem}
-            keyExtractor={(item) => item.product_id}
+            keyExtractor={(item) => item.productId}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
