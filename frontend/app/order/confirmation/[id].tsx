@@ -593,10 +593,11 @@ export default function OrderConfirmationScreen() {
                 { color: (order.paymentStatus === 'paid') ? '#34C759' : '#FF9500' }
               ]}>
                 Status Pembayaran: {
-                  order.paymentStatus === 'paid' ? 'Dibayar' : 
-                  order.paymentStatus === 'pending' ? 'Belum Dibayar' : 
-                  order.paymentStatus === 'proof_uploaded' ? 'Menunggu Konfirmasi' :
-                  !order.paymentStatus ? 'Belum Dibayar' : 'Menunggu Konfirmasi'
+                  order.paymentStatus === 'Paid' ? 'Lunas' : 
+                  order.paymentStatus === 'Unpaid' ? 'Belum Bayar' :
+                  order.paymentStatus === 'paid' ? 'Lunas' :  // Legacy support
+                  order.paymentStatus === 'pending' ? 'Belum Bayar' :  // Legacy support
+                  !order.paymentStatus ? 'Belum Bayar' : 'Belum Bayar'
                 }
               </Text>
             </View>
