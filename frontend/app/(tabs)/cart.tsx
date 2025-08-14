@@ -227,7 +227,7 @@ export default function CartScreen() {
               />
             </TouchableOpacity>
             
-            <View style={styles.quantityDisplay}>
+            <TextInput
               <Text style={styles.quantityText}>{item.quantity}</Text>
             </View>
             
