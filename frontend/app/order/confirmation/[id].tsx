@@ -74,8 +74,20 @@ export default function OrderConfirmationScreen() {
     if (!id || !user) return;
     
     try {
+      console.log('📋 Fetching order data for ID:', id);
       const orderData = await orderService.getOrderById(id as string);
       setOrder(orderData);
+      
+      // Check if order has payment proof URL and set states accordingly
+      if (orderData.paymentProofUrl) {
+        console.log('🖼️ Found existing payment proof URL:', orderData.paymentProofUrl);
+        setPaymentProofImage(orderData.paymentProofUrl);
+        setHasExistingProof(true);
+      } else {
+        console.log('🔍 No payment proof URL found for this order');
+        setPaymentProofImage(null);
+        setHasExistingProof(false);
+      }
     } catch (error) {
       console.error('Error fetching order:', error);
     } finally {
