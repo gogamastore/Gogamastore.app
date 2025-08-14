@@ -685,22 +685,6 @@ export default function OrderConfirmationScreen() {
             )}
           </View>
         )}
-
-        {/* Cancel Order Section - Only for orders that haven't been processed yet */}
-        {(order.status === 'pending' || order.status === 'Pending' || !order.status || order.status === '') && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Batalkan Pesanan</Text>
-            <TouchableOpacity 
-              style={styles.cancelOrderSection}
-              onPress={handleCancelOrder}
-            >
-              <MaterialIcons name="cancel" size={20} color="#FF3B30" />
-              <Text style={styles.cancelOrderSectionText}>
-                Batalkan pesanan ini jika Anda sudah tidak memerlukan produk ini lagi.
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </ScrollView>
 
       {/* Action Buttons */}
