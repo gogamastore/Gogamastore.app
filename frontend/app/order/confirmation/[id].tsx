@@ -556,6 +556,39 @@ export default function OrderConfirmationScreen() {
           <Text style={styles.primaryButtonText}>Kembali Belanja</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Cancel Order Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={cancelModalVisible}  
+        onRequestClose={cancelCancelOrder}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Batalkan Pesanan</Text>
+            <Text style={styles.modalMessage}>
+              Apakah Anda yakin ingin membatalkan pesanan ini? Tindakan ini tidak dapat dibatalkan.
+            </Text>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]} 
+                onPress={cancelCancelOrder}
+              >
+                <Text style={styles.cancelButtonText}>Batal</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.confirmButton]} 
+                onPress={confirmCancelOrder}
+              >
+                <Text style={styles.confirmButtonText}>Ya, Batalkan</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
