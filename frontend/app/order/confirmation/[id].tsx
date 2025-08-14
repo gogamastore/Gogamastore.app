@@ -621,26 +621,6 @@ export default function OrderConfirmationScreen() {
             )}
           </View>
         )}
-            ) : (
-              <View style={styles.paymentProofContainer}>
-                <Text style={styles.paymentProofDescription}>
-                  Silakan unggah bukti pembayaran Anda untuk mempercepat proses verifikasi
-                </Text>
-                
-                <TouchableOpacity 
-                  style={styles.uploadButton} 
-                  onPress={pickPaymentProofImage}
-                  disabled={uploadingProof}
-                >
-                  <MaterialIcons name="photo-library" size={24} color="#007AFF" />
-                  <Text style={styles.uploadButtonText}>
-                    {uploadingProof ? 'Mengunggah...' : 'Pilih Gambar dari Galeri'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        )}
 
         {/* Cancel Order Section - For Orders that can be cancelled */}
         {(order.status === 'pending' || order.status === 'waiting_payment' || order.paymentStatus === 'pending') && (
