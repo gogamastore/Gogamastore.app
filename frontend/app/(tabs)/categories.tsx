@@ -59,29 +59,21 @@ export default function TrendingScreen() {
       
       console.log('📋 Found trending product IDs:', trendingData);
       
-      // Step 2: Get product details for each trending product ID
+      // Step 2: Get product details for each trending product ID using productService
       const productPromises = trendingData.map(async (trending) => {
         try {
-          const productRef = doc(db, 'products', trending.productId);
-          const productSnap = await getDoc(productRef);
+          console.log('🔍 Fetching product data for ID:', trending.productId);
+          const productData = await productService.getProductById(trending.productId);
           
-          if (productSnap.exists()) {
-            const productData = productSnap.data();
-            console.log('📦 Product data for', trending.productId, ':', {
-              nama: productData.nama,
-              harga: productData.harga,
-              gambar: productData.gambar,
-              hasImage: !!productData.gambar
-            });
-            
-            return {
-              id: productSnap.id,
-              ...productData
-            } as Product;
-          } else {
-            console.warn(`⚠️ Product not found: ${trending.productId}`);
-          }
-          return null;
+          console.log('📦 Product data from service:', {
+            id: productData.id,
+            nama: productData.nama,
+            harga: productData.harga,
+            gambar: productData.gambar,
+            hasImage: !!productData.gambar
+          });
+          
+          return productData;
         } catch (error) {
           console.error(`❌ Error fetching product ${trending.productId}:`, error);
           return null;
