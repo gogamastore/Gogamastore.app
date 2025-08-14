@@ -378,9 +378,9 @@ export default function OrderConfirmationScreen() {
           <View style={styles.successIcon}>
             <MaterialIcons name="check-circle" size={64} color="#34C759" />
           </View>
-          <Text style={styles.successTitle}>Pesanan Berhasil Dibuat!</Text>
+          <Text style={styles.successTitle}>{getSuccessMessage(order.status).title}</Text>
           <Text style={styles.successSubtitle}>
-            Terima kasih atas pesanan Anda. Kami akan segera memproses pesanan ini.
+            {getSuccessMessage(order.status).subtitle}
           </Text>
         </View>
 
