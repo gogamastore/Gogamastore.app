@@ -831,17 +831,40 @@ export const paymentProofService = {
       console.log('💾 Upload record saved to Firestore:', proofRef.id);
       
       // Update order document with payment proof reference  
-      const orderRef = doc(db, 'orders', orderId);
-      await updateDoc(orderRef, {
-        paymentProofId: proofRef.id,
-        paymentProofUrl: downloadURL,
-        paymentProofUploaded: true,
-        paymentProofFileName: safeFileName,
-        paymentStatus: 'proof_uploaded',
-        updated_at: new Date().toISOString()
+      console.log('📝 Updating order document:', {
+        orderId: orderId,
+        downloadURL: downloadURL,
+        paymentProofId: proofRef.id
       });
-
-      console.log('✅ Order updated with payment proof reference');
+      
+      const orderRef = doc(db, 'orders', orderId);
+      
+      try {
+        await updateDoc(orderRef, {
+          paymentProofId: proofRef.id,
+          paymentProofUrl: downloadURL,
+          paymentProofUploaded: true,
+          paymentProofFileName: safeFileName,
+          paymentStatus: 'proof_uploaded',
+          updated_at: new Date().toISOString()
+        });
+        
+        console.log('✅ Order updated with payment proof reference successfully');
+        
+        // Verify the update by reading the document back
+        const updatedOrderSnap = await getDoc(orderRef);
+        if (updatedOrderSnap.exists()) {
+          const updatedData = updatedOrderSnap.data();
+          console.log('🔍 Verification - Updated order data:', {
+            paymentProofUrl: updatedData.paymentProofUrl,
+            paymentStatus: updatedData.paymentStatus,
+            paymentProofUploaded: updatedData.paymentProofUploaded
+          });
+        }
+      } catch (updateError) {
+        console.error('❌ Error updating order document:', updateError);
+        throw new Error(`Failed to update order: ${updateError.message}`);
+      }
       
       return {
         success: true,
