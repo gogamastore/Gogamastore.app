@@ -480,15 +480,30 @@ export const orderService = {
   // Create new order
   async createOrder(orderData) {
     try {
-      const orderRef = await addDoc(collection(db, 'orders'), {
+      console.log('📦 Creating new order with data:', orderData);
+      
+      // Enhanced order data dengan payment status
+      const enhancedOrderData = {
         ...orderData,
+        paymentStatus: 'pending', // Default payment status
+        paymentProofUrl: '', // Empty until uploaded
+        paymentProofId: '', // Reference to payment_proofs collection
+        paymentProofUploaded: false,
+        paymentProofFileName: '',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      });
+      };
       
-      return orderRef.id;
+      const docRef = await addDoc(collection(db, 'orders'), enhancedOrderData);
+      console.log('✅ Order created successfully with ID:', docRef.id);
+      
+      return {
+        success: true,
+        orderId: docRef.id,
+        ...enhancedOrderData
+      };
     } catch (error) {
-      console.error('Error creating order:', error);
+      console.error('❌ Error creating order:', error);
       throw error;
     }
   },
