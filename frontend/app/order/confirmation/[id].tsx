@@ -515,14 +515,55 @@ export default function OrderConfirmationScreen() {
           </View>
         </View>
 
-        {/* Payment Proof Section - Show for bank transfer and not completed/delivered/cancelled */}
-        {order.paymentMethod === 'bank_transfer' && !['delivered', 'completed', 'cancelled'].includes(order.status?.toLowerCase()) && (
+        {/* Enhanced Payment Proof Section - Show for relevant order statuses */}
+        {(['pending', 'belum_proses', 'processing', 'diproses', 'shipped', 'dikirim', 'delivered', 'selesai'].includes(order.status?.toLowerCase())) && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Bukti Pembayaran</Text>
             
-            {paymentProofImage || hasExistingProof ? (
-              <View style={styles.paymentProofContainer}>
-                {paymentProofImage && (
+            {/* Payment Status Indicator */}
+            <View style={styles.paymentStatusContainer}>
+              <MaterialIcons 
+                name={order.paymentStatus === 'paid' ? 'check-circle' : 'schedule'} 
+                size={20} 
+                color={order.paymentStatus === 'paid' ? '#34C759' : '#FF9500'} 
+              />
+              <Text style={[
+                styles.paymentStatusText, 
+                { color: order.paymentStatus === 'paid' ? '#34C759' : '#FF9500' }
+              ]}>
+                Status Pembayaran: {order.paymentStatus === 'paid' ? 'Dibayar' : order.paymentStatus === 'pending' ? 'Belum Dibayar' : 'Menunggu Konfirmasi'}
+              </Text>
+            </View>
+            
+            {/* Show existing payment proof if already uploaded */}
+            {(order.paymentProofUrl && order.paymentProofUrl !== '') && (
+              <View style={styles.existingProofContainer}>
+                <Text style={styles.existingProofTitle}>Bukti Pembayaran yang Sudah Diunggah:</Text>
+                <View style={styles.existingProofImageContainer}>
+                  <Image source={{ uri: order.paymentProofUrl }} style={styles.existingProofImage} />
+                  <View style={styles.proofStatusBadge}>
+                    <MaterialIcons 
+                      name={order.paymentStatus === 'paid' ? 'verified' : 'pending'} 
+                      size={16} 
+                      color="#fff" 
+                    />
+                    <Text style={styles.proofStatusBadgeText}>
+                      {order.paymentStatus === 'paid' ? 'Diterima' : 'Menunggu Verifikasi'}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            )}
+            
+            {/* Show upload section only if payment status is pending */}
+            {order.paymentStatus === 'pending' && (
+              <View style={styles.uploadSection}>
+                <Text style={styles.uploadSectionTitle}>Unggah Bukti Pembayaran</Text>
+                <Text style={styles.uploadSectionSubtitle}>
+                  Silakan unggah bukti transfer pembayaran Anda untuk mempercepat proses verifikasi pesanan
+                </Text>
+                
+                {paymentProofImage ? (
                   <View style={styles.selectedImageContainer}>
                     <Image source={{ uri: paymentProofImage }} style={styles.selectedImage} />
                     {!hasExistingProof && (
@@ -533,20 +574,9 @@ export default function OrderConfirmationScreen() {
                         <MaterialIcons name="close" size={16} color="#FF3B30" />
                       </TouchableOpacity>
                     )}
-                  </View>
-                )}
-                
-                {hasExistingProof ? (
-                  <View style={styles.proofStatusContainer}>
-                    <MaterialIcons name="check-circle" size={20} color="#34C759" />
-                    <Text style={styles.proofStatusText}>Bukti pembayaran berhasil diunggah</Text>
-                  </View>
-                ) : (
-                  <>
-                    <Text style={styles.paymentProofSubtitle}>
-                      Bukti pembayaran akan segera diverifikasi oleh tim kami
-                    </Text>
-                    {paymentProofImage && !uploadingProof && (
+                    
+                    {/* Upload Button */}
+                    {!uploadingProof && !hasExistingProof && (
                       <TouchableOpacity 
                         style={styles.uploadConfirmButton}
                         onPress={() => uploadPaymentProof(paymentProofImage)}
@@ -555,9 +585,41 @@ export default function OrderConfirmationScreen() {
                         <Text style={styles.uploadConfirmButtonText}>Unggah Sekarang</Text>
                       </TouchableOpacity>
                     )}
-                  </>
+                    
+                    {/* Uploading Indicator */}
+                    {uploadingProof && (
+                      <View style={styles.uploadingContainer}>
+                        <ActivityIndicator size="small" color="#007AFF" />
+                        <Text style={styles.uploadingText}>Mengunggah bukti pembayaran...</Text>
+                      </View>
+                    )}
+                  </View>
+                ) : (
+                  <TouchableOpacity 
+                    style={styles.selectImageButton} 
+                    onPress={pickPaymentProofImage}
+                    disabled={uploadingProof}
+                  >
+                    <MaterialIcons name="photo-library" size={24} color="#007AFF" />
+                    <Text style={styles.selectImageButtonText}>
+                      Pilih Gambar dari Galeri
+                    </Text>
+                  </TouchableOpacity>
                 )}
               </View>
+            )}
+            
+            {/* Information for paid status */}
+            {order.paymentStatus === 'paid' && (
+              <View style={styles.paidStatusInfo}>
+                <MaterialIcons name="info" size={20} color="#007AFF" />
+                <Text style={styles.paidStatusInfoText}>
+                  Pembayaran Anda telah dikonfirmasi. Pesanan sedang diproses.
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
             ) : (
               <View style={styles.paymentProofContainer}>
                 <Text style={styles.paymentProofDescription}>
