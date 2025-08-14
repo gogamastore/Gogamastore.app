@@ -840,7 +840,7 @@ export const paymentProofService = {
       let updateSuccess = false;
       let updateError = null;
       
-      // Approach 1: Direct update
+      // Approach 1: Update only allowed fields according to Firestore Rules
       try {
         const orderRef = doc(db, 'orders', orderId);
         
@@ -858,16 +858,13 @@ export const paymentProofService = {
           hasAccess: orderData.userId === currentUser.uid || orderData.customerId === currentUser.uid
         });
         
+        // ONLY UPDATE paymentProofUrl as per Firestore Rules
+        // Rules allow: paymentProofUrl != resource.data.paymentProofUrl
         await updateDoc(orderRef, {
-          paymentProofId: proofRef.id,
-          paymentProofUrl: downloadURL,
-          paymentProofUploaded: true,
-          paymentProofFileName: safeFileName,
-          paymentStatus: 'proof_uploaded',
-          updated_at: new Date().toISOString()
+          paymentProofUrl: downloadURL  // Only this field is allowed by rules
         });
         
-        console.log('✅ Order updated successfully via direct update');
+        console.log('✅ Order updated successfully - paymentProofUrl only');
         updateSuccess = true;
         
         // Verify the update
