@@ -129,27 +129,6 @@ export default function LoginScreen() {
             </TouchableOpacity>
 
 
-            {/* Native HTML Button for Emergency Testing */}
-            <div 
-              style={{
-                width: '100%',
-                marginTop: 16,
-                padding: 16,
-                backgroundColor: '#FF3B30',
-                borderRadius: 8,
-                cursor: 'pointer'
-              }}
-              onClick={() => {
-                console.log('🟦 NATIVE HTML BUTTON CLICKED!!!');
-                alert('Native button works! Now testing login...');
-                // Call login function directly
-                handleLogin();
-              }}
-            >
-              <span style={{ color: 'white', fontSize: 18, fontWeight: 600, textAlign: 'center', display: 'block' }}>
-                EMERGENCY LOGIN (HTML)
-              </span>
-            </div>
             
             <TouchableOpacity
               style={[styles.loginButton, loading && styles.loginButtonDisabled]}
