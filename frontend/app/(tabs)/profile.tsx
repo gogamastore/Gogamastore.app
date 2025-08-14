@@ -29,6 +29,7 @@ export default function ProfileScreen() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [activeOrdersCount, setActiveOrdersCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const { user, logout } = useAuth();
 
   useEffect(() => {
