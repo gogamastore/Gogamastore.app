@@ -227,9 +227,15 @@ export default function CartScreen() {
               />
             </TouchableOpacity>
             
-            <View style={styles.quantityDisplay}>
-              <Text style={styles.quantityText}>{item.quantity}</Text>
-            </View>
+            <TextInput
+              style={styles.quantityInput}
+              value={item.quantity.toString()}
+              onChangeText={(text) => handleQuantityInputChange(item.productId, text)}
+              keyboardType="numeric"
+              maxLength={2}
+              textAlign="center"
+              selectTextOnFocus={true}
+            />
             
             <TouchableOpacity
               style={styles.quantityButton}
