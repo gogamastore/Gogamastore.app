@@ -20,7 +20,11 @@
     },
     "production-aab": {
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "app-bundle",
+        "gradleCommand": ":app:bundleRelease"
+      },
+      "env": {
+        "EXPO_OPTIMIZE": "1"
       }
     },
     "apk": {
