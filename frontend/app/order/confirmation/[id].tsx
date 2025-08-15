@@ -363,11 +363,13 @@ export default function OrderConfirmationScreen() {
   };
 
   const handleCancelOrder = () => {
-    if (!(order?.status === 'pending' || order?.status === 'waiting_payment' || order?.paymentStatus === 'pending')) {
-      console.log('❌ Cannot cancel order with current status:', order?.status, order?.paymentStatus);
+    // Match the same condition as the button display
+    if (!(order?.status === 'pending' || order?.status === 'Pending' || !order?.status || order?.status === '')) {
+      console.log('❌ Cannot cancel order with current status:', order?.status);
       return;
     }
 
+    console.log('🔄 Showing cancel confirmation modal for order:', order?.id);
     // Show custom cancel modal
     setCancelModalVisible(true);
   };
