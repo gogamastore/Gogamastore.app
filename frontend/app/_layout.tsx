@@ -10,26 +10,38 @@ export default function RootLayout() {
   useEffect(() => {
     // Prepare app resources here if needed
     const prepareApp = async () => {
-      // Add any app initialization logic here
-      // For example: preload fonts, check auth state, etc.
-      setIsReady(true);
+      try {
+        // Add any app initialization logic here
+        // For example: preload fonts, check auth state, etc.
+        console.log('🚀 App initialization started');
+        
+        // Simulate initialization time
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        setIsReady(true);
+        console.log('✅ App initialization completed');
+      } catch (error) {
+        console.error('❌ App initialization error:', error);
+        setIsReady(true); // Still set ready to prevent infinite loading
+      }
     };
 
     prepareApp();
   }, []);
 
   const onAnimationFinish = () => {
+    console.log('🎬 Splash animation finished, showing main app');
     setShowSplash(false);
   };
 
-  // Show splash screen
+  // Show splash screen (only in development or if explicitly enabled)
   if (showSplash && isReady) {
     return <AnimatedSplash onAnimationFinish={onAnimationFinish} />;
   }
 
   // Show loading if app is not ready
   if (!isReady) {
-    return null; // or a simple loading view
+    return null; // Native splash will show during this time
   }
 
   // Show main app
