@@ -363,9 +363,21 @@ export default function OrderConfirmationScreen() {
   };
 
   const handleCancelOrder = () => {
+    console.log('🔄 handleCancelOrder called');
+    console.log('📋 Order details:', {
+      orderId: order?.id,
+      status: order?.status,
+      paymentStatus: order?.paymentStatus
+    });
+    
     // Match the same condition as the button display
     if (!(order?.status === 'pending' || order?.status === 'Pending' || !order?.status || order?.status === '')) {
       console.log('❌ Cannot cancel order with current status:', order?.status);
+      Alert.alert(
+        'Tidak Dapat Dibatalkan',
+        'Pesanan dengan status saat ini tidak dapat dibatalkan.',
+        [{ text: 'OK' }]
+      );
       return;
     }
 
