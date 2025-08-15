@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Dimensions, Image, Platform } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 const { width, height } = Dimensions.get('window');
@@ -12,15 +12,22 @@ export default function AnimatedSplash({ onAnimationFinish }: AnimatedSplashProp
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Keep splash screen visible while loading
+    // Keep native splash screen visible while loading
     SplashScreen.preventAutoHideAsync();
     
-    // Auto hide after animation duration
-    const timer = setTimeout(() => {
-      handleAnimationFinish();
-    }, 3000); // 3 seconds - adjust based on your GIF duration
+    // Start animation after a short delay
+    const initTimer = setTimeout(() => {
+      setIsLoaded(true);
+      
+      // Auto finish animation after GIF duration
+      const animationTimer = setTimeout(() => {
+        handleAnimationFinish();
+      }, 3000); // 3 seconds for GIF animation
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(animationTimer);
+    }, Platform.OS === 'android' ? 500 : 100); // Longer delay for Android APK
+
+    return () => clearTimeout(initTimer);
   }, []);
 
   const handleAnimationFinish = () => {
@@ -29,6 +36,20 @@ export default function AnimatedSplash({ onAnimationFinish }: AnimatedSplashProp
     onAnimationFinish();
   };
 
+  if (!isLoaded) {
+    // Return empty view while waiting for initialization
+    return (
+      <View style={[styles.container, { backgroundColor: '#FFFFFF' }]}>
+        {/* Optional: Show static logo while loading */}
+        <Image
+          source={require('../assets/images/app-icon.png')}
+          style={styles.staticLogo}
+          resizeMode="contain"
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {/* GOGAMA GIF Animation */}
@@ -36,16 +57,9 @@ export default function AnimatedSplash({ onAnimationFinish }: AnimatedSplashProp
         source={require('../assets/splash-animation.gif')}
         style={styles.animation}
         resizeMode="contain"
-        onLoad={() => setIsLoaded(true)}
+        onLoad={() => console.log('✅ Animated splash GIF loaded')}
+        onError={(error) => console.error('❌ Error loading animated splash:', error)}
       />
-      
-      {/* Optional: Add brand text or tagline below GIF */}
-      {/* 
-      <View style={styles.brandContainer}>
-        <Text style={styles.brandText}>GOGAMA STORE</Text>
-        <Text style={styles.tagline}>Your Shopping Destination</Text>
-      </View>
-      */}
     </View>
   );
 }
@@ -53,30 +67,20 @@ export default function AnimatedSplash({ onAnimationFinish }: AnimatedSplashProp
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // White background to match GIF
+    backgroundColor: '#FFFFFF', // White background to match native splash
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  staticLogo: {
+    width: width * 0.4, // 40% of screen width
+    height: width * 0.4, // Square aspect ratio
+    maxWidth: 200,
+    maxHeight: 200,
   },
   animation: {
     width: width * 0.6, // 60% of screen width
     height: width * 0.6, // Square aspect ratio
     maxWidth: 300,
     maxHeight: 300,
-  },
-  brandContainer: {
-    marginTop: 40,
-    alignItems: 'center',
-  },
-  brandText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FF3333', // Red color matching your GIF
-    marginBottom: 8,
-    letterSpacing: 2,
-  },
-  tagline: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
   },
 });
