@@ -379,15 +379,40 @@ export default function OrderConfirmationScreen() {
     
     try {
       console.log('🚫 Cancelling order:', order.id);
+      console.log('🔄 Current order status:', order.status);
+      
       setCancelModalVisible(false);
       
-      await orderService.updateOrderStatus(order.id, 'cancelled');
+      // Update order status to 'Cancelled' (matching Firebase data structure)
+      await orderService.updateOrderStatus(order.id, 'Cancelled');
       
       console.log('✅ Order cancelled successfully');
-      router.replace('/order/history');
+      
+      // Show success feedback
+      Alert.alert(
+        'Pesanan Dibatalkan',
+        'Pesanan Anda telah berhasil dibatalkan.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Navigate back to order history
+              router.replace('/order/history');
+            }
+          }
+        ]
+      );
+      
     } catch (error) {
       console.error('❌ Error cancelling order:', error);
       setCancelModalVisible(false);
+      
+      // Show error feedback
+      Alert.alert(
+        'Gagal Membatalkan',
+        'Terjadi kesalahan saat membatalkan pesanan. Silakan coba lagi.',
+        [{ text: 'OK' }]
+      );
     }
   };
 
