@@ -10,9 +10,10 @@
     "description": "Gogama Store - Aplikasi e-commerce untuk reseller",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-animation.gif",
+      "image": "./assets/images/static-splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#FFFFFF",
+      "hideExpoSplash": false
     },
     "ios": {
       "supportsTablet": true,
