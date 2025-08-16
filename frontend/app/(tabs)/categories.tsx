@@ -7,18 +7,23 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
+import { 
+  collection, 
+  getDocs, 
+  query, 
+  orderBy, 
+  limit, 
+  startAfter, 
+  endBefore,
+  limitToLast 
+} from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { productService } from '../../services/firestoreService';
-
-interface TrendingProduct {
-  id: string;
-  productId: string;
-}
 
 interface Product {
   id: string;
@@ -29,182 +34,242 @@ interface Product {
   deskripsi?: string;
 }
 
-export default function TrendingScreen() {
-  const [trendingProducts, setTrendingProducts] = useState<Product[]>([]);
+export default function KatalogScreen() {
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [lastDoc, setLastDoc] = useState(null);
+  const [firstDoc, setFirstDoc] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  const PRODUCTS_PER_PAGE = 100;
 
   useEffect(() => {
-    fetchTrendingProducts();
+    loadInitialProducts();
   }, []);
 
-  const fetchTrendingProducts = async () => {
+  const loadInitialProducts = async () => {
+    setLoading(true);
     try {
-      console.log('🔥 Fetching trending products...');
+      console.log('📋 Loading initial products for catalog...');
       
-      // Step 1: Get trending product IDs from /trending_products collection
-      const trendingRef = collection(db, 'trending_products');
-      const trendingSnapshot = await getDocs(trendingRef);
+      // Query: Order by nama (alphabetical), then by stock (out of stock last)
+      // For now, we'll do client-side sorting since Firestore has limitations on multiple orderBy
+      const q = query(
+        collection(db, 'products'),
+        orderBy('nama', 'asc'),
+        limit(PRODUCTS_PER_PAGE)
+      );
       
-      if (trendingSnapshot.empty) {
-        console.log('⚠️ No trending products found in Firebase');
-        setLoading(false);
-        return;
-      }
+      const querySnapshot = await getDocs(q);
+      const productsList = [];
       
-      const trendingData: TrendingProduct[] = trendingSnapshot.docs.map(doc => ({
-        id: doc.id,
-        productId: doc.data().productId,
-        ...doc.data()
-      }));
-      
-      console.log('📋 Found trending product IDs:', trendingData);
-      
-      // Step 2: Get product details for each trending product ID using productService
-      const productPromises = trendingData.map(async (trending) => {
-        try {
-          console.log('🔍 Fetching product data for ID:', trending.productId);
-          const productData = await productService.getProductById(trending.productId);
-          
-          console.log('📦 Product data from service:', {
-            id: productData.id,
-            nama: productData.nama,
-            harga: productData.harga,
-            gambar: productData.gambar,
-            hasImage: !!productData.gambar
-          });
-          
-          return productData;
-        } catch (error) {
-          console.error(`❌ Error fetching product ${trending.productId}:`, error);
-          return null;
-        }
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        productsList.push({
+          id: doc.id,
+          nama: data.name || data.nama || '',
+          harga: data.price || data.harga || 0,
+          gambar: data.image || data.gambar || '',
+          stok: data.stock || data.stok || 0,
+          deskripsi: data.description || data.deskripsi || '',
+        });
       });
       
-      const products = await Promise.all(productPromises);
-      const validProducts = products.filter(product => product !== null) as Product[];
+      // Client-side sort: Products with stock first, then alphabetical
+      const sortedProducts = sortProducts(productsList);
       
-      console.log('✅ Loaded trending products:', validProducts.length);
-      console.log('📋 Products with images:', validProducts.filter(p => p.gambar).length);
-      console.log('📋 Products details:', validProducts.map(p => ({ 
-        id: p.id, 
-        nama: p.nama, 
-        harga: p.harga,
-        hasImage: !!p.gambar
-      })));
-      setTrendingProducts(validProducts);
+      setProducts(sortedProducts);
+      
+      // Set pagination markers
+      const docs = querySnapshot.docs;
+      if (docs.length > 0) {
+        setFirstDoc(docs[0]);
+        setLastDoc(docs[docs.length - 1]);
+        setHasMore(docs.length === PRODUCTS_PER_PAGE);
+      } else {
+        setHasMore(false);
+      }
+      
+      console.log('✅ Initial products loaded:', sortedProducts.length);
       
     } catch (error) {
-      console.error('❌ Error fetching trending products:', error);
+      console.error('❌ Error loading products:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const formatPrice = (price: number | string | undefined) => {
-    // Handle various price formats
-    if (price === undefined || price === null) {
-      return 'Harga tidak tersedia';
+  const loadNextPage = async () => {
+    if (!hasMore || loadingMore || !lastDoc) return;
+    
+    setLoadingMore(true);
+    try {
+      console.log('📋 Loading next page...');
+      
+      const q = query(
+        collection(db, 'products'),
+        orderBy('nama', 'asc'),
+        startAfter(lastDoc),
+        limit(PRODUCTS_PER_PAGE)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const newProducts = [];
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        newProducts.push({
+          id: doc.id,
+          nama: data.name || data.nama || '',
+          harga: data.price || data.harga || 0,
+          gambar: data.image || data.gambar || '',
+          stok: data.stock || data.stok || 0,
+          deskripsi: data.description || data.deskripsi || '',
+        });
+      });
+      
+      // Sort new products and append
+      const sortedNewProducts = sortProducts(newProducts);
+      setProducts(prev => [...prev, ...sortedNewProducts]);
+      
+      // Update pagination markers
+      const docs = querySnapshot.docs;
+      if (docs.length > 0) {
+        setLastDoc(docs[docs.length - 1]);
+        setHasMore(docs.length === PRODUCTS_PER_PAGE);
+        setCurrentPage(prev => prev + 1);
+      } else {
+        setHasMore(false);
+      }
+      
+      console.log('✅ Next page loaded:', sortedNewProducts.length);
+      
+    } catch (error) {
+      console.error('❌ Error loading next page:', error);
+    } finally {
+      setLoadingMore(false);
     }
+  };
+
+  const loadPreviousPage = async () => {
+    if (currentPage <= 1 || loadingMore || !firstDoc) return;
     
-    let numPrice: number;
-    
-    if (typeof price === 'string') {
-      // Remove any existing currency formatting and parse
-      const cleanPrice = price.replace(/[Rp\s\.,]/g, '');
-      numPrice = parseInt(cleanPrice) || 0;
-    } else if (typeof price === 'number') {
-      numPrice = price;
-    } else {
-      console.warn('⚠️ Invalid price format:', price);
-      return 'Harga tidak valid';
+    setLoadingMore(true);
+    try {
+      console.log('📋 Loading previous page...');
+      
+      const q = query(
+        collection(db, 'products'),
+        orderBy('nama', 'asc'),
+        endBefore(firstDoc),
+        limitToLast(PRODUCTS_PER_PAGE)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const previousProducts = [];
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        previousProducts.push({
+          id: doc.id,
+          nama: data.name || data.nama || '',
+          harga: data.price || data.harga || 0,
+          gambar: data.image || data.gambar || '',
+          stok: data.stock || data.stok || 0,
+          deskripsi: data.description || data.deskripsi || '',
+        });
+      });
+      
+      // Sort and replace current products
+      const sortedPreviousProducts = sortProducts(previousProducts);
+      setProducts(sortedPreviousProducts);
+      
+      // Update pagination markers
+      const docs = querySnapshot.docs;
+      if (docs.length > 0) {
+        setFirstDoc(docs[0]);
+        setLastDoc(docs[docs.length - 1]);
+        setCurrentPage(prev => prev - 1);
+      }
+      
+      console.log('✅ Previous page loaded:', sortedPreviousProducts.length);
+      
+    } catch (error) {
+      console.error('❌ Error loading previous page:', error);
+    } finally {
+      setLoadingMore(false);
     }
-    
-    if (isNaN(numPrice) || numPrice <= 0) {
-      console.warn('⚠️ Invalid price value:', price);
-      return 'Harga tidak tersedia';
-    }
-    
+  };
+
+  const sortProducts = (productsList: Product[]) => {
+    return productsList.sort((a, b) => {
+      const aStock = a.stok || 0;
+      const bStock = b.stok || 0;
+      
+      // If both have stock or both are out of stock, sort by name
+      if ((aStock > 0 && bStock > 0) || (aStock === 0 && bStock === 0)) {
+        return (a.nama || '').localeCompare(b.nama || '');
+      }
+      
+      // Products with stock come first
+      return bStock - aStock;
+    });
+  };
+
+  const navigateToProduct = (productId: string) => {
+    router.push(`/product/${productId}`);
+  };
+
+  const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
       minimumFractionDigits: 0,
-    }).format(numPrice);
+      maximumFractionDigits: 0,
+    }).format(price);
   };
 
-  const handleProductPress = (productId: string) => {
-    router.push(`/product/${productId}`);
-  };
+  const filteredProducts = products.filter(product =>
+    (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (product.deskripsi || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const renderTrendingProduct = ({ item, index }: { item: Product; index: number }) => (
-    <TouchableOpacity
-      style={styles.productCard}
-      onPress={() => handleProductPress(item.id)}
-      activeOpacity={0.7}
-    >
-      {/* Trending Badge */}
-      <View style={styles.trendingBadge}>
-        <MaterialIcons name="trending-up" size={16} color="#fff" />
-        <Text style={styles.trendingRank}>#{index + 1}</Text>
-      </View>
-
-      {/* Product Image */}
-      <View style={styles.productImageContainer}>
+  const renderProduct = ({ item }: { item: Product }) => (
+    <TouchableOpacity style={styles.productCard} onPress={() => navigateToProduct(item.id)}>
+      <View style={styles.imageContainer}>
         {item.gambar ? (
-          <Image 
-            source={{ uri: item.gambar }} 
-            style={styles.productImage} 
-            onLoad={() => console.log('✅ Image loaded successfully:', item.gambar)}
-            onError={(error) => console.log('❌ Image load error:', error, 'URL:', item.gambar)}
+          <Image
+            source={{ uri: item.gambar }}
+            style={styles.productImage}
+            defaultSource={require('../../assets/images/placeholder.png')}
           />
         ) : (
           <View style={styles.placeholderImage}>
             <MaterialIcons name="image" size={40} color="#C7C7CC" />
-            <Text style={{ fontSize: 10, color: '#999', textAlign: 'center', marginTop: 4 }}>
-              No Image
-            </Text>
+          </View>
+        )}
+        {item.stok === 0 && (
+          <View style={styles.outOfStockBadge}>
+            <Text style={styles.outOfStockText}>Habis</Text>
           </View>
         )}
       </View>
-
-      {/* Product Info */}
+      
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={2}>
-          {item.nama || item.name || 'Nama produk tidak tersedia'}
+          {item.nama}
         </Text>
-        
         <Text style={styles.productPrice}>
-          {formatPrice(item.harga || item.price)}
+          {formatPrice(item.harga)}
         </Text>
-        
-        {(item.stok !== undefined || item.stock !== undefined) && (
-          <Text style={styles.productStock}>
-            Stok: {item.stok || item.stock || 0}
-          </Text>
-        )}
-        
-        <View style={styles.trendingIndicator}>
-          <MaterialIcons name="local-fire-department" size={14} color="#FF6B35" />
-          <Text style={styles.trendingText}>Produk Trending</Text>
-        </View>
+        <Text style={styles.stockInfo}>
+          Stok: {item.stok || 0}
+        </Text>
       </View>
     </TouchableOpacity>
-  );
-
-  const renderEmptyState = () => (
-    <View style={styles.emptyContainer}>
-      <MaterialIcons name="trending-up" size={64} color="#C7C7CC" />
-      <Text style={styles.emptyTitle}>Belum Ada Produk Trending</Text>
-      <Text style={styles.emptySubtitle}>
-        Produk trending akan muncul di sini berdasarkan popularitas dan penjualan
-      </Text>
-      <TouchableOpacity 
-        style={styles.refreshButton}
-        onPress={fetchTrendingProducts}
-      >
-        <MaterialIcons name="refresh" size={20} color="#007AFF" />
-        <Text style={styles.refreshButtonText}>Refresh</Text>
-      </TouchableOpacity>
-    </View>
   );
 
   if (loading) {
@@ -212,7 +277,7 @@ export default function TrendingScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
-          <Text style={styles.loadingText}>Memuat produk trending...</Text>
+          <Text style={styles.loadingText}>Memuat katalog produk...</Text>
         </View>
       </SafeAreaView>
     );
@@ -220,210 +285,86 @@ export default function TrendingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* Header with Search */}
       <View style={styles.header}>
-        <MaterialIcons name="trending-up" size={24} color="#FF6B35" />
-        <Text style={styles.headerTitle}>Produk Trending</Text>
-        <TouchableOpacity onPress={fetchTrendingProducts} style={styles.refreshHeaderButton}>
-          <MaterialIcons name="refresh" size={20} color="#007AFF" />
-        </TouchableOpacity>
+        <Text style={styles.title}>Katalog Produk</Text>
+        <View style={styles.searchContainer}>
+          <MaterialIcons name="search" size={20} color="#8E8E93" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Cari produk..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholderTextColor="#8E8E93"
+          />
+        </View>
+        <Text style={styles.productCount}>
+          Menampilkan {filteredProducts.length} produk (halaman {currentPage})
+        </Text>
       </View>
 
-      {/* Trending Products List */}
-      {trendingProducts.length > 0 ? (
-        <>
-          <View style={styles.statsContainer}>
-            <Text style={styles.statsText}>
-              {trendingProducts.length} produk sedang trending saat ini
-            </Text>
-          </View>
-          
-          <FlatList
-            data={trendingProducts}
-            renderItem={renderTrendingProduct}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.productsContainer}
-            columnWrapperStyle={styles.productRow}
+      {/* Products Grid */}
+      <FlatList
+        data={filteredProducts}
+        renderItem={renderProduct}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.productsContainer}
+        onEndReached={loadNextPage}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={() => (
+          loadingMore ? (
+            <View style={styles.loadingMore}>
+              <ActivityIndicator size="small" color="#007AFF" />
+              <Text style={styles.loadingMoreText}>Memuat produk lainnya...</Text>
+            </View>
+          ) : null
+        )}
+      />
+
+      {/* Pagination Controls */}
+      <View style={styles.paginationContainer}>
+        <TouchableOpacity
+          style={[styles.paginationButton, currentPage === 1 && styles.paginationButtonDisabled]}
+          onPress={loadPreviousPage}
+          disabled={currentPage === 1 || loadingMore}
+        >
+          <MaterialIcons 
+            name="arrow-back" 
+            size={20} 
+            color={currentPage === 1 ? "#C7C7CC" : "#007AFF"} 
           />
-        </>
-      ) : (
-        renderEmptyState()
-      )}
+          <Text style={[
+            styles.paginationText, 
+            currentPage === 1 && styles.paginationTextDisabled
+          ]}>
+            Sebelumnya
+          </Text>
+        </TouchableOpacity>
+        
+        <Text style={styles.pageIndicator}>
+          Halaman {currentPage}
+        </Text>
+        
+        <TouchableOpacity
+          style={[styles.paginationButton, !hasMore && styles.paginationButtonDisabled]}
+          onPress={loadNextPage}
+          disabled={!hasMore || loadingMore}
+        >
+          <Text style={[
+            styles.paginationText, 
+            !hasMore && styles.paginationTextDisabled
+          ]}>
+            Selanjutnya
+          </Text>
+          <MaterialIcons 
+            name="arrow-forward" 
+            size={20} 
+            color={!hasMore ? "#C7C7CC" : "#007AFF"} 
+          />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: '#8E8E93',
-    textAlign: 'center',
-  },
-  header: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-    flex: 1,
-    marginLeft: 12,
-  },
-  refreshHeaderButton: {
-    padding: 4,
-  },
-  statsContainer: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-  },
-  statsText: {
-    fontSize: 14,
-    color: '#8E8E93',
-    textAlign: 'center',
-  },
-  productsContainer: {
-    padding: 16,
-  },
-  productRow: {
-    justifyContent: 'space-between',
-  },
-  productCard: {
-    width: '48%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    overflow: 'hidden',
-  },
-  trendingBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FF6B35',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    zIndex: 1,
-  },
-  trendingRank: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginLeft: 4,
-  },
-  productImageContainer: {
-    height: 120,
-    backgroundColor: '#f8f9fa',
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    overflow: 'hidden',
-  },
-  productImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  placeholderImage: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-  },
-  productInfo: {
-    padding: 12,
-  },
-  productName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 4,
-    lineHeight: 18,
-  },
-  productPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007AFF',
-    marginBottom: 4,
-  },
-  productStock: {
-    fontSize: 12,
-    color: '#8E8E93',
-    marginBottom: 8,
-  },
-  trendingIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  trendingText: {
-    fontSize: 10,
-    color: '#FF6B35',
-    fontWeight: '600',
-    marginLeft: 4,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginTop: 16,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    color: '#8E8E93',
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 24,
-  },
-  refreshButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  refreshButtonText: {
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-});
