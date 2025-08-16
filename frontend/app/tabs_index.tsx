@@ -910,4 +910,28 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
+  trendingSection: {
+    paddingVertical: 16,
+    backgroundColor: '#fff',
+    marginBottom: 8,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  seeAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'transparent',
+  },
+  seeAllText: {
+    fontSize: 14,
+    color: '#007AFF',
+    fontWeight: '500',
+    marginRight: 4,
+  },
 });
