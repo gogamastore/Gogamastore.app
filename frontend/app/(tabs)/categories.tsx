@@ -244,7 +244,7 @@ export default function KatalogScreen() {
           <Image
             source={{ uri: item.gambar }}
             style={styles.productImage}
-            defaultSource={require('../../assets/images/placeholder.png')}
+            
           />
         ) : (
           <View style={styles.placeholderImage}>
