@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
   },
   productStock: {
     fontSize: 12,
-    color: '#666',
+    color: '#8E8E93',
     marginBottom: 8,
   },
   trendingIndicator: {
