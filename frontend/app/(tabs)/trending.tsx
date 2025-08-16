@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   refreshHeaderButton: {
-    padding: 8,
+    padding: 4,
   },
   statsContainer: {
     backgroundColor: '#fff',
