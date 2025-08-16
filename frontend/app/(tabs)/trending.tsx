@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   },
   refreshButtonText: {
     fontSize: 14,
-    color: '#007AFF',
+    color: '#fff',
     fontWeight: '600',
     marginLeft: 12,
   },
