@@ -259,24 +259,7 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
-  const renderCategory = ({ item }: { item: Category }) => (
-    <TouchableOpacity
-      style={[
-        styles.categoryChip,
-        selectedCategory === item.nama && styles.categoryChipSelected,
-      ]}
-      onPress={() => handleCategorySelect(item.nama)}
-    >
-      <Text
-        style={[
-          styles.categoryChipText,
-          selectedCategory === item.nama && styles.categoryChipTextSelected,
-        ]}
-      >
-        {item.nama}
-      </Text>
-    </TouchableOpacity>
-  );
+
 
   useEffect(() => {
     fetchProducts();
