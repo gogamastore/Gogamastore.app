@@ -437,39 +437,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1a1a1a',
   },
-  categoriesSection: {
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-    backgroundColor: '#fff',
-  },
-  categoriesContainer: {
-    paddingHorizontal: 16,
-  },
-  categoriesContentContainer: {
-    paddingRight: 16,
-  },
-  categoryChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 37.5, // Half of 75 for circular shape
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  categoryChipSelected: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  categoryChipText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  categoryChipTextSelected: {
-    color: '#fff',
-    fontWeight: '500',
-  },
+
   productsSection: {
     flex: 1,
     paddingTop: 16,
