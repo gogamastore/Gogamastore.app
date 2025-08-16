@@ -23,7 +23,6 @@ import {
   limitToLast 
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { productService } from '../../services/firestoreService';
 
 interface Product {
   id: string;
