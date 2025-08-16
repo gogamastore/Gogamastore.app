@@ -99,7 +99,7 @@ export default function KatalogScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const loadNextPage = async () => {
     if (!hasMore || loadingMore || !lastDoc) return;
