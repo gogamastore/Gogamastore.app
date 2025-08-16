@@ -344,6 +344,12 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   productImageContainer: {
+    height: 120,
+    backgroundColor: '#f8f9fa',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    overflow: 'hidden',
+  },
     backgroundColor: '#f8f9fa',
     backgroundColor: '#f8f9fa',
     borderTopLeftRadius: 12,
