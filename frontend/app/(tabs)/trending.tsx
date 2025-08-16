@@ -386,11 +386,7 @@ const styles = StyleSheet.create({
   trendingIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF3E0',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
+  },
   },
   trendingText: {
     fontSize: 10,
