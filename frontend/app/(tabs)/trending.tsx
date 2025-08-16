@@ -344,9 +344,9 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   productImageContainer: {
-    width: '100%',
-    height: 120,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f8f9fa',
+    borderTopLeftRadius: 12,
   },
   productImage: {
     width: '100%',
