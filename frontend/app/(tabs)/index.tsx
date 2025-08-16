@@ -437,39 +437,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1a1a1a',
   },
-  categoriesSection: {
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-    backgroundColor: '#fff',
-  },
-  categoriesContainer: {
-    paddingHorizontal: 16,
-  },
-  categoriesContentContainer: {
-    paddingRight: 16,
-  },
-  categoryChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 37.5, // Half of 75 for circular shape
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  categoryChipSelected: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  categoryChipText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  categoryChipTextSelected: {
-    color: '#fff',
-    fontWeight: '500',
-  },
+
   productsSection: {
     flex: 1,
     paddingTop: 16,
@@ -666,78 +634,7 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     textAlign: 'center',
   },
-  productsSectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  productsCount: {
-    fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
-  },
-  paginationContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-  pageInfo: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  paginationControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  paginationButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f8f9fa',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 8,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-  },
-  paginationButtonDisabled: {
-    backgroundColor: '#f0f0f0',
-    borderColor: '#E5E5EA',
-  },
-  pageNumbers: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 8,
-  },
-  pageNumberButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#f8f9fa',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 4,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-  },
-  pageNumberButtonActive: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  pageNumberText: {
-    fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
-  },
-  pageNumberTextActive: {
-    color: '#fff',
-    fontWeight: '600',
-  },
+
   trendingSection: {
     paddingVertical: 16,
     backgroundColor: '#fff',
