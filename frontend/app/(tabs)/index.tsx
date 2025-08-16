@@ -114,11 +114,8 @@ export default function HomeScreen() {
       await fetchBanners();
       await fetchBrands();
       
-      // Load products and categories in parallel
-      await Promise.all([
-        fetchProducts(),
-        fetchCategories()
-      ]);
+      // Load trending products (replace products and categories)
+      await fetchTrendingProducts();
       
       console.log('✅ Home page data loaded successfully');
     } catch (error) {
@@ -166,6 +163,32 @@ export default function HomeScreen() {
     } catch (error) {
       console.error('Error fetching categories:', error);
       Alert.alert('Error', 'Gagal memuat kategori');
+    }
+  };
+
+  const fetchTrendingProducts = async () => {
+    try {
+      const data = await productService.getTrendingProducts();
+      console.log('Fetched trending products data:', data);
+      
+      // Sort products: available stock first, out of stock last
+      const sortedData = data.sort((a, b) => {
+        const aStock = a.stok || 0;
+        const bStock = b.stok || 0;
+        
+        // If both have stock or both are out of stock, sort by name
+        if ((aStock > 0 && bStock > 0) || (aStock === 0 && bStock === 0)) {
+          return (a.nama || '').localeCompare(b.nama || '');
+        }
+        
+        // Products with stock come first
+        return bStock - aStock;
+      });
+      
+      setTrendingProducts(sortedData);
+    } catch (error) {
+      console.error('Error fetching trending products:', error);
+      Alert.alert('Error', 'Gagal memuat produk trending');
     }
   };
 
