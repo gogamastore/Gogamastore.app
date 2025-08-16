@@ -125,46 +125,6 @@ export default function HomeScreen() {
     }
   };
 
-  const fetchProducts = async () => {
-    try {
-      let data;
-      if (selectedCategory) {
-        data = await productService.getProductsByCategory(selectedCategory);
-      } else {
-        data = await productService.getAllProducts();
-      }
-      
-      // Sort products: available stock first, out of stock last
-      const sortedData = data.sort((a, b) => {
-        const aStock = a.stok || 0;
-        const bStock = b.stok || 0;
-        
-        // If both have stock or both are out of stock, sort by name
-        if ((aStock > 0 && bStock > 0) || (aStock === 0 && bStock === 0)) {
-          return (a.nama || '').localeCompare(b.nama || '');
-        }
-        
-        // Products with stock come first
-        return bStock - aStock;
-      });
-      
-      setProducts(sortedData);
-      setCurrentPage(1); // Reset to first page when products change
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      Alert.alert('Error', 'Gagal memuat produk');
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const data = await categoryService.getAllCategories();
-      setCategories(data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      Alert.alert('Error', 'Gagal memuat kategori');
-    }
-  };
 
   const fetchTrendingProducts = async () => {
     try {
@@ -220,43 +180,14 @@ export default function HomeScreen() {
     setRefreshing(false);
   }, []);
 
-  const handleCategorySelect = (categoryName: string) => {
-    setSelectedCategory(categoryName === selectedCategory ? '' : categoryName);
-  };
+
 
   const navigateToProduct = (productId: string) => {
     router.push(`/product/${productId}`);
   };
 
 
-  const filteredProducts = products.filter(product =>
-    (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (product.deskripsi || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
-  const endIndex = startIndex + PRODUCTS_PER_PAGE;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -301,28 +232,9 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
-  const renderCategory = ({ item }: { item: Category }) => (
-    <TouchableOpacity
-      style={[
-        styles.categoryChip,
-        selectedCategory === item.nama && styles.categoryChipSelected,
-      ]}
-      onPress={() => handleCategorySelect(item.nama)}
-    >
-      <Text
-        style={[
-          styles.categoryChipText,
-          selectedCategory === item.nama && styles.categoryChipTextSelected,
-        ]}
-      >
-        {item.nama}
-      </Text>
-    </TouchableOpacity>
-  );
 
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory]);
+
+
 
   if (loading) {
     return (
@@ -465,20 +377,10 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Products */}
+      {/* Trending Products */}
       <View style={styles.productsSection}>
-        <View style={styles.productsSectionHeader}>
-          <Text style={styles.sectionTitle}>
-            {selectedCategory ? `Produk ${selectedCategory}` : 'Semua Produk'}
-          </Text>
-          <Text style={styles.productsCount}>
-            {filteredProducts.length} produk
-          </Text>
-        </View>
-        
-        {/* Product Grid */}
         <FlatList
-          data={currentProducts}
+          data={trendingProducts}
           renderItem={renderProduct}
           keyExtractor={(item) => item.id}
           numColumns={2}
@@ -486,80 +388,6 @@ export default function HomeScreen() {
           contentContainerStyle={styles.productsContainer}
           scrollEnabled={false} // Disable FlatList scroll since we're in ScrollView
         />
-
-        {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <View style={styles.paginationContainer}>
-            {/* Page Info */}
-            <Text style={styles.pageInfo}>
-              Halaman {currentPage} dari {totalPages}
-            </Text>
-            
-            {/* Page Navigation */}
-            <View style={styles.paginationControls}>
-              <TouchableOpacity
-                style={[
-                  styles.paginationButton,
-                  currentPage === 1 && styles.paginationButtonDisabled
-                ]}
-                onPress={goToPreviousPage}
-                disabled={currentPage === 1}
-              >
-                <MaterialIcons 
-                  name="chevron-left" 
-                  size={20} 
-                  color={currentPage === 1 ? "#C7C7CC" : "#007AFF"} 
-                />
-              </TouchableOpacity>
-
-              {/* Page Numbers */}
-              <View style={styles.pageNumbers}>
-                {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
-                  let pageNumber;
-                  if (totalPages <= 5) {
-                    pageNumber = index + 1;
-                  } else {
-                    const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
-                    pageNumber = start + index;
-                  }
-                  
-                  return (
-                    <TouchableOpacity
-                      key={pageNumber}
-                      style={[
-                        styles.pageNumberButton,
-                        currentPage === pageNumber && styles.pageNumberButtonActive
-                      ]}
-                      onPress={() => goToPage(pageNumber)}
-                    >
-                      <Text style={[
-                        styles.pageNumberText,
-                        currentPage === pageNumber && styles.pageNumberTextActive
-                      ]}>
-                        {pageNumber}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-
-              <TouchableOpacity
-                style={[
-                  styles.paginationButton,
-                  currentPage === totalPages && styles.paginationButtonDisabled
-                ]}
-                onPress={goToNextPage}
-                disabled={currentPage === totalPages}
-              >
-                <MaterialIcons 
-                  name="chevron-right" 
-                  size={20} 
-                  color={currentPage === totalPages ? "#C7C7CC" : "#007AFF"} 
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
       </View>
       </ScrollView>
     </SafeAreaView>
