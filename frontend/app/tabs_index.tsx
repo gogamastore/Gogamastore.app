@@ -187,34 +187,7 @@ export default function HomeScreen() {
   };
 
 
-  const filteredProducts = products.filter(product =>
-    (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (product.deskripsi || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
-  const endIndex = startIndex + PRODUCTS_PER_PAGE;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
