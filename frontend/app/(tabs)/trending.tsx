@@ -407,8 +407,8 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#8E8E93',
+    fontWeight: 'bold',
+    color: '#1a1a1a',
     marginTop: 16,
     marginBottom: 8,
     textAlign: 'center',
