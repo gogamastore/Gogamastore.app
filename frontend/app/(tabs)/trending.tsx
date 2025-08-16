@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#007AFF',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderRadius: 8,
   },
   refreshButtonText: {
