@@ -451,42 +451,18 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* Categories */}
-      <View style={styles.categoriesSection}>
-        <FlatList
-          data={[{ id: 'all', nama: 'Semua Kategori' }, ...categories]}
-          renderItem={({ item }) => {
-            if (item.id === 'all') {
-              // Render "Semua Kategori" option
-              return (
-                <TouchableOpacity
-                  style={[
-                    styles.categoryChip,
-                    !selectedCategory && styles.categoryChipSelected,
-                  ]}
-                  onPress={() => setSelectedCategory('')}
-                >
-                  <Text
-                    style={[
-                      styles.categoryChipText,
-                      !selectedCategory && styles.categoryChipTextSelected,
-                    ]}
-                  >
-                    {item.nama}
-                  </Text>
-                </TouchableOpacity>
-              );
-            } else {
-              // Render normal category
-              return renderCategory({ item });
-            }
-          }}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.categoriesContainer}
-          contentContainerStyle={styles.categoriesContentContainer}
-        />
+      {/* Trending Products Section */}
+      <View style={styles.trendingSection}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Produk Trending</Text>
+          <TouchableOpacity 
+            style={styles.seeAllButton}
+            onPress={() => router.push('/(tabs)/categories')}
+          >
+            <Text style={styles.seeAllText}>Lihat Semua Produk</Text>
+            <MaterialIcons name="arrow-forward" size={16} color="#007AFF" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Products */}
