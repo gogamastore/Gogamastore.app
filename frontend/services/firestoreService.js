@@ -20,12 +20,43 @@ export const productService = {
   async getTrendingProducts() {
     try {
       console.log('📈 Fetching trending products from Firestore...');
-      const querySnapshot = await getDocs(
-        query(
-          collection(db, 'trending_products'), 
-          orderBy('order', 'asc') // Order by priority/order field
-        )
+      
+      // First try to get from trending_products collection
+      const trendingQuery = query(
+        collection(db, 'trending_products'), 
+        orderBy('order', 'asc') // Order by priority/order field
       );
+      
+      const querySnapshot = await getDocs(trendingQuery);
+      
+      if (querySnapshot.empty) {
+        console.log('⚠️  No trending_products collection found, using fallback from products...');
+        // Fallback: get first 10 products from products collection
+        const fallbackQuery = query(
+          collection(db, 'products'),
+          orderBy('nama', 'asc'),
+          limit(10)
+        );
+        
+        const fallbackSnapshot = await getDocs(fallbackQuery);
+        const fallbackProducts = [];
+        
+        fallbackSnapshot.forEach((doc) => {
+          const data = doc.data();
+          fallbackProducts.push({
+            id: doc.id,
+            nama: data.name || data.nama || '',
+            deskripsi: data.description || data.deskripsi || '',
+            harga: data.price || data.harga || 0,
+            gambar: data.image || data.gambar || '',
+            kategori: data.category || data.kategori || '',
+            stok: data.stock || data.stok || 0,
+          });
+        });
+        
+        console.log('✅ Fallback products loaded:', fallbackProducts.length);
+        return fallbackProducts;
+      }
       
       const trendingProducts = [];
       for (const docSnapshot of querySnapshot.docs) {
@@ -62,6 +93,8 @@ export const productService = {
       return trendingProducts;
     } catch (error) {
       console.error('❌ Error fetching trending products:', error);
+      
+      // Final fallback: return empty array
       return [];
     }
   },
