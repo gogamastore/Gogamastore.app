@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f0f0f0',
   },
   productInfo: {
     padding: 12,
