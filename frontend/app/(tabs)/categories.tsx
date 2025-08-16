@@ -49,7 +49,7 @@ export default function KatalogScreen() {
     loadInitialProducts();
   }, [loadInitialProducts]);
 
-  const loadInitialProducts = async () => {
+  const loadInitialProducts = useCallback(async () => {
     setLoading(true);
     try {
       console.log('📋 Loading initial products for catalog...');
