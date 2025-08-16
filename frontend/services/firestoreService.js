@@ -16,7 +16,56 @@ import { db } from '../lib/firebase';
 
 // Products Service
 export const productService = {
-  // Get all products
+  // Get trending products from trending_products collection
+  async getTrendingProducts() {
+    try {
+      console.log('📈 Fetching trending products from Firestore...');
+      const querySnapshot = await getDocs(
+        query(
+          collection(db, 'trending_products'), 
+          orderBy('order', 'asc') // Order by priority/order field
+        )
+      );
+      
+      const trendingProducts = [];
+      for (const doc of querySnapshot.docs) {
+        const trendingData = doc.data();
+        
+        // Get actual product data using productId
+        if (trendingData.productId) {
+          try {
+            const productDoc = await getDoc(doc(db, 'products', trendingData.productId));
+            if (productDoc.exists()) {
+              const productData = productDoc.data();
+              trendingProducts.push({
+                id: productDoc.id,
+                ...productData,
+                // Map fields to match our app expectations
+                nama: productData.name || productData.nama || '',
+                deskripsi: productData.description || productData.deskripsi || '',
+                harga: productData.price || productData.harga || 0,
+                gambar: productData.image || productData.gambar || '',
+                kategori: productData.category || productData.kategori || '',
+                stok: productData.stock || productData.stok || 0,
+                // Add trending metadata
+                trendingOrder: trendingData.order || 0
+              });
+            }
+          } catch (productError) {
+            console.warn('⚠️  Product not found for trending item:', trendingData.productId);
+          }
+        }
+      }
+      
+      console.log('✅ Trending products loaded:', trendingProducts.length);
+      return trendingProducts;
+    } catch (error) {
+      console.error('❌ Error fetching trending products:', error);
+      return [];
+    }
+  },
+
+  // Get all products with pagination (for katalog)
   async getAllProducts() {
     try {
       const querySnapshot = await getDocs(collection(db, 'products'));
