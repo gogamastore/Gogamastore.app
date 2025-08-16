@@ -261,9 +261,7 @@ export default function HomeScreen() {
 
 
 
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory]);
+
 
   if (loading) {
     return (
