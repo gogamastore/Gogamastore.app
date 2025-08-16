@@ -125,46 +125,6 @@ export default function HomeScreen() {
     }
   };
 
-  const fetchProducts = async () => {
-    try {
-      let data;
-      if (selectedCategory) {
-        data = await productService.getProductsByCategory(selectedCategory);
-      } else {
-        data = await productService.getAllProducts();
-      }
-      
-      // Sort products: available stock first, out of stock last
-      const sortedData = data.sort((a, b) => {
-        const aStock = a.stok || 0;
-        const bStock = b.stok || 0;
-        
-        // If both have stock or both are out of stock, sort by name
-        if ((aStock > 0 && bStock > 0) || (aStock === 0 && bStock === 0)) {
-          return (a.nama || '').localeCompare(b.nama || '');
-        }
-        
-        // Products with stock come first
-        return bStock - aStock;
-      });
-      
-      setProducts(sortedData);
-      setCurrentPage(1); // Reset to first page when products change
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      Alert.alert('Error', 'Gagal memuat produk');
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const data = await categoryService.getAllCategories();
-      setCategories(data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      Alert.alert('Error', 'Gagal memuat kategori');
-    }
-  };
 
   const fetchTrendingProducts = async () => {
     try {
