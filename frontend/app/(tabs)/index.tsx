@@ -438,6 +438,29 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
   },
 
+  trendingSection: {
+    paddingVertical: 16,
+    backgroundColor: '#fff',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  seeAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  seeAllText: {
+    fontSize: 14,
+    color: '#007AFF',
+    marginRight: 4,
+    fontWeight: '500',
+  },
   productsSection: {
     flex: 1,
     paddingTop: 16,
