@@ -1,60 +1,52 @@
 <analysis>
-The AI engineer's trajectory showcases an iterative development process driven by direct user feedback and detailed debugging. Initially, the AI struggled with environmental access and misdiagnosed UI issues, believing the code was correct when, in fact,  compatibility and data structure mismatches were causing problems. A turning point was the user providing specific console logs, which enabled the AI to accurately pinpoint and fix issues like undefined product IDs in the cart and missing image data on the trending page.
-
-Later, the focus shifted to APK builds, where the AI demonstrated strong troubleshooting by using a dedicated agent to identify and resolve critical crashes caused by embedded HTML elements and inefficient data loading. The process involved extensive component replacement, UI refactoring, and Firebase integration enhancements, including a comprehensive payment proof system and dynamic order status displays. Despite occasional build failures and queue limits, the AI persistently corrected issues and diligently applied user-requested features, always confirming the state of fixes. The final interaction highlights a key handoff in control over the build process, signaling a refined workflow based on user preference.
+The AI engineer's trajectory demonstrates an iterative and highly responsive development process, driven by direct user feedback. The journey started with resolving fundamental UI and data integration issues (e.g.,  compatibility, HTML element replacements, image loading, cart logic). A significant portion focused on debugging and refining payment proof upload functionality with Firebase, progressively tackling issues from incorrect  handling to nuanced Firebase Security Rules ( update restrictions). Troubleshooting included re-verifying data schemas, refactoring conditional logic, and implementing detailed logging. Later, the focus shifted to build processes (APK, AAB) and UI/UX improvements like animated splash screens and a major revamp of the homepage and product catalog for better performance and user experience, incorporating pagination and search. Throughout, the AI demonstrated methodical debugging, consistent communication, and a strong adherence to user-specified requirements, frequently confirming changes and offering next steps.
 </analysis>
 
 <product_requirements>
-The  project aims to replicate an e-commerce website as an Expo React Native mobile application. Core functionalities include user authentication, product browsing, cart management, and profile customization. The backend transitioned from FastAPI/MongoDB to Firebase (Auth, Firestore, Storage), necessitating strict data model alignment for collections like , , , , and .
-
-Key features implemented include auto-sliding banners, brand directories, in-cart quantity controls (including direct numerical input), product removal, stock validation, and a comprehensive checkout process supporting dynamic bank accounts and COD, with payment proof uploads. Order management, encompassing confirmation, history, and tracking, was crucial. Recent development focused on:
-1. Displaying order status, currency formatting, and an order cancellation option for Pending orders.
-2. Implementing payment proof upload on both checkout and order confirmation pages, with a visual display of the uploaded proof.
-3. Changing the Kategori tab to Trending to display trending products with images, names, and prices.
-4. Ensuring correct functionality of cart operations (add/remove/quantity controls).
-5. Fixing the Keluar dari Akun (logout) button.
-6. Addressing app crashes during navigation (product detail, checkout) and slow loading times.
-7. Fixing  compatibility issues by replacing them with custom modals.
-8. Building an Android APK with the custom GOGAMA logo.
+The  is an Expo React Native e-commerce mobile application aiming to replicate a website experience. It features user authentication, product browsing, cart management, and profile customization. The backend leverages Firebase for Auth, Firestore, and Storage. Key functionalities include auto-sliding banners, brand directories, in-cart quantity controls, product removal, stock validation, and a comprehensive checkout process with dynamic bank accounts, COD, and payment proof uploads. Order management covers confirmation, history, and tracking. Recent updates focused on displaying accurate order/payment statuses, enabling order cancellation for Pending orders, enhancing payment proof uploads/displays, transforming the Kategori tab to Trending (now Katalog), fixing cart operations, addressing app crashes, replacing  with custom modals, and building an Android APK with a custom GOGAMA logo. The current major revamp involves dedicating the homepage to Trending Products, eliminating category filters, and creating a new Katalog tab for all products with efficient pagination and sorting.
 </product_requirements>
 
 <key_technical_concepts>
-- **Frontend**: Expo, React Native, Expo Router (file-based routing), React Navigation.
-- **Backend**: Firebase (Authentication, Firestore, Storage) for data persistence and user management.
-- **UI/UX**: Flexbox for layout, , , custom  components (replacing ).
-- **Data Management**: Firebase Firestore  and , custom  for data operations,  for image uploads.
-- **Build System**: EAS Build for APK generation.
+- **Frontend**: Expo, React Native, Expo Router, React Navigation, Lottie (for animations).
+- **Backend**: Firebase (Authentication, Firestore, Storage).
+- **UI/UX**: Flexbox, , custom  components.
+- **Data Management**: Firebase Firestore queries (pagination, , ),  for uploads.
+- **Build System**: EAS Build (APK, AAB).
+- **Performance**: ProGuard, Hermes engine, client-side sorting.
 </key_technical_concepts>
 
 <code_architecture>
 
 
-- ****: Initializes Firebase SDK. Verified for correct  and platform-specific configurations, and managed re-installation after accidental removal.
-- ****: Centralized service for Firebase Firestore operations.
-  - **Changes**:  refined to return an object with an  array,  updated to set default  and initialize , , , .  logic was verified and implicitly enhanced for correct authentication context.
-- ****: Home screen.
-  - **Changes**: Optimized data fetching from parallel  to sequential loading (banners, then brands, then products/categories) to improve initial load performance.
-- ****: Shopping cart screen.
-  - **Changes**: Refactored  and  to correctly use  array and . Implemented , , and replaced  with a custom  for confirmation. Added a  for direct quantity input.
-- ****: Product detail screen.
-  - **Changes**: Replaced all HTML elements (, , ) with native React Native components (, , , ) to resolve app crashes. Added missing styles and  import.
-- ****: Checkout form.
-  - **Changes**: Replaced HTML elements in the Buat Pesanan button with native components to fix crashes. Refactored bank selection and payment proof upload sections to display vertically, resolving horizontal overflow and visibility issues.
-- ****: Order confirmation details.
-  - **Changes**:  replaced with custom  for Batalkan Pesanan confirmation.  updated to load .  re-added/enhanced with conditional logic: shows upload if  is  (or undefined/empty), shows uploaded image if . Implemented , ,  for dynamic status messages and icons based on order and payment status, with robust fallback and case-insensitive handling.
-- ****: User profile.
-  - **Changes**: The Keluar dari Akun (logout) button confirmed functional, but  replaced with a custom  for logout confirmation.
-- ****: Address management.
-  - **Changes**: Replaced  with a custom  for address deletion confirmation.
-- ** (formerly )**: Trending products screen.
-  - **Changes**: Modified to fetch product data using  for correct , ,  fields, resolving image display issues. Added / logging for images and No Image placeholder.
-- ****: Environment variables.
-  - **Changes**: Updated to use production-ready URLs and ensure  prefixes are correctly configured for APK builds.
-- ****: Expo configuration.
-  - **Changes**: Updated with the GOGAMA logo as the app icon and comprehensive metadata for APK builds (name, package, bundle ID, version, permissions).
-- ****: EAS Build configuration.
-  - **Changes**: Configured for Android APK builds, with specific build profiles (e.g.,  for internal distribution).
-- ** & **: Firebase configuration files for iOS/Android, verified for correctness.
+-   ****: Initializes Firebase SDK.
+-   ****: Centralized service for Firebase Firestore operations.
+    -   **Changes**: Refined ,  to set  and include .  was refactored to directly update  on the order document (instead of a separate collection), and enhanced with comprehensive logging and error handling.  and advanced product pagination (, , , ) were added.
+-   ****: Home screen.
+    -   **Changes**: Transformed to display products fetched from  collection. Removed category filter section and added a Lihat Semua Produk button to navigate to the new catalog. Optimized data fetching.
+-   ****: Shopping cart screen.
+    -   **Changes**: Refactored , , ,  to use  and  correctly. Replaced  with a custom .
+-   ****: Product detail screen.
+    -   **Changes**: Replaced all HTML elements with native React Native components to resolve app crashes.
+-   ****: Checkout form.
+    -   **Changes**: Replaced HTML elements in button. Refactored bank selection/payment proof upload UI. Updated to send  and default  to .
+-   ****: Order confirmation details.
+    -   **Changes**:  replaced with custom .  updated to load .  logic refined for conditional display (upload if Unpaid and no proof, display image if proof exists). , ,  functions created/enhanced for dynamic order and payment status display. Cancel button logic changed to depend on  (pending/Pending) rather than , and dupliate cancel button was removed. The Langkah Selanjutnya section was removed.  and  were updated to correctly update Firebase and handle state.
+-   ****: User profile.
+    -   **Changes**: Logout button  replaced with custom .
+-   ****: Address management.
+    -   **Changes**:  replaced with custom  for address deletion.
+-   ** (now  for new Katalog concept)**: Product catalog.
+    -   **Changes**: Renamed from  to  (for the Katalog tab). Completely rebuilt to implement advanced pagination (, ), client-side sorting (stock-available first, then alphabetical), search functionality, and a responsive 2-column grid.
+-   ****: Main app layout.
+    -   **Changes**: Integrated  component for a hybrid splash screen experience (native static splash + animated GIF). Tab bar  renamed to .
+-   ****: Expo configuration.
+    -   **Changes**: Updated with GOGAMA logo (GO.png) as app icon and adaptive icons. Splash screen configuration updated to support a hybrid static/animated splash. Android configurations updated for ProGuard.
+-   ****: EAS Build configuration.
+    -   **Changes**: Configured for Android APK and AAB builds, with specific build profiles (, ) and ProGuard enabled.
+-   ****: Newly added animated GIF for the splash screen.
+-   **, , **: Newly generated/updated app icons.
+-   ****: Newly created component for displaying the animated splash screen.
+-   ** & **: Firebase configuration files.  was cleaned by removing a duplicate, incorrect client entry to resolve AAB build issues.
 </code_architecture>
 
 <pending_tasks>
@@ -62,22 +54,28 @@ Key features implemented include auto-sliding banners, brand directories, in-car
 - Developing Advanced order tracking with delivery estimates.
 - Implementing Order cancellation and refund flows (partial implementation done for pending orders).
 - Building an Admin dashboard for order management.
-- Verify the fixes for payment proof upload and status display by performing comprehensive frontend testing.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was addressing the user's report that the Unggah Bukti Pembayaran (Upload Payment Proof) button and the display of the uploaded proof were not appearing correctly on the Order Confirmation page, especially based on . The user explicitly stated that the button should appear if  is Pending and the uploaded image should show if  is paid or confirmed.
+Immediately before this summary request, the AI engineer was undertaking a major revamp of the application's homepage and product catalog, following explicit user requests.
 
-The AI engineer's actions involved:
-1.  **Debugging **: The AI initially tried to locate the Enhanced Payment Proof Section but determined it was either missing or incorrectly merged in previous edits.
-2.  **Restoring **: The complete payment proof component logic, including conditional display for the upload interface (if  is pending/undefined/empty) and the image preview (if  exists), was re-added to .
-3.  **Refining Conditional Logic**: The display logic was made more robust to handle cases where  might be , , or an empty string, treating these as pending states to ensure the upload option appears.
-4.  **Confirming  Schema**: The AI re-verified that  correctly sets  as a default for new orders, ensuring the base data for the new logic is in place.
-5.  **Enhanced Debug Logging**: Additional console logs () were added to  to output the exact  value and the conditions being evaluated, aiding in future debugging.
+**Homepage ():**
+The primary task was to change the All Products section to display Trending Products fetched specifically from a Firestore collection named . The category filter section was to be removed, and a Lihat Semua Produk button added to navigate to the full catalog.
+-   **Work Done**: The AI has updated  to fetch and render products from . A  service was added/enhanced in  to correctly retrieve these. The category filter UI and related logic have been removed, and the Lihat Semua Produk button's navigation is implemented. Fallback logic was added for cases where  collection might be empty.
 
-After these code changes, the AI initiated a new APK build () to apply the fixes. The previous build () had just finished successfully before the new fixes were applied. The latest build was in progress and then the user issued the instruction to stop automatically creating APKs.
+**Catalog Page (New  tab, formerly ):**
+The existing Trending tab (file , which was renamed to  for the new concept) was to be transformed into a comprehensive Katalog page displaying all products with advanced features.
+-   **Work Done**: The file  has been completely rebuilt. It now features:
+    -   Pagination logic using  for efficient loading of 100 products per page.
+    -    and  are used for smooth Previous and Next navigation.
+    -   Client-side sorting ensures available products appear first, then alphabetically.
+    -   A real-time search bar has been integrated.
+    -   The initialization order error () has been fixed by restructuring the  and  hook usage.
+
+**Current State:**
+The AI engineer has completed the code changes for both the homepage trending products display and the advanced catalog pagination/search. The last action was restarting the frontend service (, ) and generating a summary of these latest fixes. The system is now ready for testing these new features.
 </current_work>
 
 <optional_next_step>
-Based on the user's latest instruction sobat tunggu perintahku lain kali jika ingin membuat apk, nanti di saat saya minta saja, the next step is to wait for the user's explicit command for any further APK builds or development tasks.
+Test the implemented changes in the web preview to verify trending products on the homepage and advanced catalog pagination.
 </optional_next_step>
