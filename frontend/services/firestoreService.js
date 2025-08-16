@@ -28,13 +28,14 @@ export const productService = {
       );
       
       const trendingProducts = [];
-      for (const doc of querySnapshot.docs) {
-        const trendingData = doc.data();
+      for (const docSnapshot of querySnapshot.docs) {
+        const trendingData = docSnapshot.data();
         
         // Get actual product data using productId
         if (trendingData.productId) {
           try {
-            const productDoc = await getDoc(doc(db, 'products', trendingData.productId));
+            const productRef = doc(db, 'products', trendingData.productId);
+            const productDoc = await getDoc(productRef);
             if (productDoc.exists()) {
               const productData = productDoc.data();
               trendingProducts.push({
