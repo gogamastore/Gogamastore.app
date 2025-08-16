@@ -350,10 +350,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     overflow: 'hidden',
   },
-    backgroundColor: '#f8f9fa',
-    backgroundColor: '#f8f9fa',
-    borderTopLeftRadius: 12,
-  },
   productImage: {
     width: '100%',
     height: '100%',
