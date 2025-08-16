@@ -45,10 +45,6 @@ export default function KatalogScreen() {
   
   const PRODUCTS_PER_PAGE = 100;
 
-  useEffect(() => {
-    loadInitialProducts();
-  }, [loadInitialProducts]);
-
   const loadInitialProducts = useCallback(async () => {
     setLoading(true);
     try {
@@ -100,6 +96,10 @@ export default function KatalogScreen() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    loadInitialProducts();
+  }, [loadInitialProducts]);
 
   const loadNextPage = async () => {
     if (!hasMore || loadingMore || !lastDoc) return;
