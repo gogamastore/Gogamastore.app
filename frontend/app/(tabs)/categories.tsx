@@ -47,7 +47,7 @@ export default function KatalogScreen() {
 
   useEffect(() => {
     loadInitialProducts();
-  }, []);
+  }, [loadInitialProducts]);
 
   const loadInitialProducts = async () => {
     setLoading(true);
