@@ -51,9 +51,11 @@ interface Banner {
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const [trendingProducts, setTrendingProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [banners, setBanners] = useState<Banner[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -114,8 +116,11 @@ export default function HomeScreen() {
       await fetchBanners();
       await fetchBrands();
       
-      // Load trending products (replace products and categories)
-      await fetchTrendingProducts();
+      // Load products and categories in parallel
+      await Promise.all([
+        fetchProducts(),
+        fetchCategories()
+      ]);
       
       console.log('✅ Home page data loaded successfully');
     } catch (error) {
@@ -125,11 +130,14 @@ export default function HomeScreen() {
     }
   };
 
-
-  const fetchTrendingProducts = async () => {
+  const fetchProducts = async () => {
     try {
-      const data = await productService.getTrendingProducts();
-      console.log('Fetched trending products data:', data);
+      let data;
+      if (selectedCategory) {
+        data = await productService.getProductsByCategory(selectedCategory);
+      } else {
+        data = await productService.getAllProducts();
+      }
       
       // Sort products: available stock first, out of stock last
       const sortedData = data.sort((a, b) => {
@@ -145,10 +153,21 @@ export default function HomeScreen() {
         return bStock - aStock;
       });
       
-      setTrendingProducts(sortedData);
+      setProducts(sortedData);
+      setCurrentPage(1); // Reset to first page when products change
     } catch (error) {
-      console.error('Error fetching trending products:', error);
-      Alert.alert('Error', 'Gagal memuat produk trending');
+      console.error('Error fetching products:', error);
+      Alert.alert('Error', 'Gagal memuat produk');
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const data = await categoryService.getAllCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      Alert.alert('Error', 'Gagal memuat kategori');
     }
   };
 
@@ -180,14 +199,43 @@ export default function HomeScreen() {
     setRefreshing(false);
   }, []);
 
-
+  const handleCategorySelect = (categoryName: string) => {
+    setSelectedCategory(categoryName === selectedCategory ? '' : categoryName);
+  };
 
   const navigateToProduct = (productId: string) => {
     router.push(`/product/${productId}`);
   };
 
 
+  const filteredProducts = products.filter(product =>
+    (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (product.deskripsi || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const endIndex = startIndex + PRODUCTS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -232,9 +280,28 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
+  const renderCategory = ({ item }: { item: Category }) => (
+    <TouchableOpacity
+      style={[
+        styles.categoryChip,
+        selectedCategory === item.nama && styles.categoryChipSelected,
+      ]}
+      onPress={() => handleCategorySelect(item.nama)}
+    >
+      <Text
+        style={[
+          styles.categoryChipText,
+          selectedCategory === item.nama && styles.categoryChipTextSelected,
+        ]}
+      >
+        {item.nama}
+      </Text>
+    </TouchableOpacity>
+  );
 
-
-
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory]);
 
   if (loading) {
     return (
@@ -363,24 +430,58 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* Trending Products Section */}
-      <View style={styles.trendingSection}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Produk Trending</Text>
-          <TouchableOpacity 
-            style={styles.seeAllButton}
-            onPress={() => router.push('/(tabs)/categories')}
-          >
-            <Text style={styles.seeAllText}>Lihat Semua Produk</Text>
-            <MaterialIcons name="arrow-forward" size={16} color="#007AFF" />
-          </TouchableOpacity>
-        </View>
+      {/* Categories */}
+      <View style={styles.categoriesSection}>
+        <FlatList
+          data={[{ id: 'all', nama: 'Semua Kategori' }, ...categories]}
+          renderItem={({ item }) => {
+            if (item.id === 'all') {
+              // Render "Semua Kategori" option
+              return (
+                <TouchableOpacity
+                  style={[
+                    styles.categoryChip,
+                    !selectedCategory && styles.categoryChipSelected,
+                  ]}
+                  onPress={() => setSelectedCategory('')}
+                >
+                  <Text
+                    style={[
+                      styles.categoryChipText,
+                      !selectedCategory && styles.categoryChipTextSelected,
+                    ]}
+                  >
+                    {item.nama}
+                  </Text>
+                </TouchableOpacity>
+              );
+            } else {
+              // Render normal category
+              return renderCategory({ item });
+            }
+          }}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoriesContainer}
+          contentContainerStyle={styles.categoriesContentContainer}
+        />
       </View>
 
-      {/* Trending Products */}
+      {/* Products */}
       <View style={styles.productsSection}>
+        <View style={styles.productsSectionHeader}>
+          <Text style={styles.sectionTitle}>
+            {selectedCategory ? `Produk ${selectedCategory}` : 'Semua Produk'}
+          </Text>
+          <Text style={styles.productsCount}>
+            {filteredProducts.length} produk
+          </Text>
+        </View>
+        
+        {/* Product Grid */}
         <FlatList
-          data={trendingProducts}
+          data={currentProducts}
           renderItem={renderProduct}
           keyExtractor={(item) => item.id}
           numColumns={2}
@@ -388,6 +489,80 @@ export default function HomeScreen() {
           contentContainerStyle={styles.productsContainer}
           scrollEnabled={false} // Disable FlatList scroll since we're in ScrollView
         />
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <View style={styles.paginationContainer}>
+            {/* Page Info */}
+            <Text style={styles.pageInfo}>
+              Halaman {currentPage} dari {totalPages}
+            </Text>
+            
+            {/* Page Navigation */}
+            <View style={styles.paginationControls}>
+              <TouchableOpacity
+                style={[
+                  styles.paginationButton,
+                  currentPage === 1 && styles.paginationButtonDisabled
+                ]}
+                onPress={goToPreviousPage}
+                disabled={currentPage === 1}
+              >
+                <MaterialIcons 
+                  name="chevron-left" 
+                  size={20} 
+                  color={currentPage === 1 ? "#C7C7CC" : "#007AFF"} 
+                />
+              </TouchableOpacity>
+
+              {/* Page Numbers */}
+              <View style={styles.pageNumbers}>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
+                  let pageNumber;
+                  if (totalPages <= 5) {
+                    pageNumber = index + 1;
+                  } else {
+                    const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+                    pageNumber = start + index;
+                  }
+                  
+                  return (
+                    <TouchableOpacity
+                      key={pageNumber}
+                      style={[
+                        styles.pageNumberButton,
+                        currentPage === pageNumber && styles.pageNumberButtonActive
+                      ]}
+                      onPress={() => goToPage(pageNumber)}
+                    >
+                      <Text style={[
+                        styles.pageNumberText,
+                        currentPage === pageNumber && styles.pageNumberTextActive
+                      ]}>
+                        {pageNumber}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <TouchableOpacity
+                style={[
+                  styles.paginationButton,
+                  currentPage === totalPages && styles.paginationButtonDisabled
+                ]}
+                onPress={goToNextPage}
+                disabled={currentPage === totalPages}
+              >
+                <MaterialIcons 
+                  name="chevron-right" 
+                  size={20} 
+                  color={currentPage === totalPages ? "#C7C7CC" : "#007AFF"} 
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </View>
       </ScrollView>
     </SafeAreaView>
@@ -437,28 +612,51 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1a1a1a',
   },
-
-  trendingSection: {
+  categoriesSection: {
     paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
     backgroundColor: '#fff',
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  categoriesContainer: {
     paddingHorizontal: 16,
-    marginBottom: 8,
   },
-  seeAllButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+  categoriesContentContainer: {
+    paddingRight: 16,
   },
-  seeAllText: {
+  categoryChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginRight: 8,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 37.5, // Half of 75 for circular shape
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  categoryChipSelected: {
+    backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
+  },
+  categoryChipText: {
     fontSize: 14,
-    color: '#007AFF',
-    marginRight: 4,
+    color: '#666',
+  },
+  categoryChipTextSelected: {
+    color: '#fff',
+    fontWeight: '500',
+  },
+  resetButton: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#FF3B30',
+    borderRadius: 12,
+  },
+  resetButtonText: {
+    color: '#fff',
+    fontSize: 12,
     fontWeight: '500',
   },
   productsSection: {
@@ -657,29 +855,76 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     textAlign: 'center',
   },
-
-  trendingSection: {
-    paddingVertical: 16,
-    backgroundColor: '#fff',
-    marginBottom: 8,
-  },
-  sectionHeader: {
+  productsSectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
-  seeAllButton: {
+  productsCount: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  paginationContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  pageInfo: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  paginationControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: 'transparent',
+    justifyContent: 'center',
   },
-  seeAllText: {
+  paginationButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f8f9fa',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  paginationButtonDisabled: {
+    backgroundColor: '#f0f0f0',
+    borderColor: '#E5E5EA',
+  },
+  pageNumbers: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  pageNumberButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#f8f9fa',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  pageNumberButtonActive: {
+    backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
+  },
+  pageNumberText: {
     fontSize: 14,
-    color: '#007AFF',
+    color: '#666',
     fontWeight: '500',
-    marginRight: 4,
+  },
+  pageNumberTextActive: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });
