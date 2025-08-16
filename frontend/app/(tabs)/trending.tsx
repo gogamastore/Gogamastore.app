@@ -426,6 +426,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
     fontWeight: '600',
-    marginLeft: 12,
+    marginLeft: 8,
   },
 });
