@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1a1a1a',
     flex: 1,
-    marginLeft: 8,
+    marginLeft: 12,
   },
   refreshHeaderButton: {
     padding: 8,
@@ -430,6 +430,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#007AFF',
     fontWeight: '600',
-    marginLeft: 8,
+    marginLeft: 12,
   },
 });
