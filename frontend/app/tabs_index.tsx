@@ -404,20 +404,10 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Products */}
+      {/* Trending Products */}
       <View style={styles.productsSection}>
-        <View style={styles.productsSectionHeader}>
-          <Text style={styles.sectionTitle}>
-            {selectedCategory ? `Produk ${selectedCategory}` : 'Semua Produk'}
-          </Text>
-          <Text style={styles.productsCount}>
-            {filteredProducts.length} produk
-          </Text>
-        </View>
-        
-        {/* Product Grid */}
         <FlatList
-          data={currentProducts}
+          data={trendingProducts}
           renderItem={renderProduct}
           keyExtractor={(item) => item.id}
           numColumns={2}
@@ -425,80 +415,6 @@ export default function HomeScreen() {
           contentContainerStyle={styles.productsContainer}
           scrollEnabled={false} // Disable FlatList scroll since we're in ScrollView
         />
-
-        {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <View style={styles.paginationContainer}>
-            {/* Page Info */}
-            <Text style={styles.pageInfo}>
-              Halaman {currentPage} dari {totalPages}
-            </Text>
-            
-            {/* Page Navigation */}
-            <View style={styles.paginationControls}>
-              <TouchableOpacity
-                style={[
-                  styles.paginationButton,
-                  currentPage === 1 && styles.paginationButtonDisabled
-                ]}
-                onPress={goToPreviousPage}
-                disabled={currentPage === 1}
-              >
-                <MaterialIcons 
-                  name="chevron-left" 
-                  size={20} 
-                  color={currentPage === 1 ? "#C7C7CC" : "#007AFF"} 
-                />
-              </TouchableOpacity>
-
-              {/* Page Numbers */}
-              <View style={styles.pageNumbers}>
-                {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
-                  let pageNumber;
-                  if (totalPages <= 5) {
-                    pageNumber = index + 1;
-                  } else {
-                    const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
-                    pageNumber = start + index;
-                  }
-                  
-                  return (
-                    <TouchableOpacity
-                      key={pageNumber}
-                      style={[
-                        styles.pageNumberButton,
-                        currentPage === pageNumber && styles.pageNumberButtonActive
-                      ]}
-                      onPress={() => goToPage(pageNumber)}
-                    >
-                      <Text style={[
-                        styles.pageNumberText,
-                        currentPage === pageNumber && styles.pageNumberTextActive
-                      ]}>
-                        {pageNumber}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-
-              <TouchableOpacity
-                style={[
-                  styles.paginationButton,
-                  currentPage === totalPages && styles.paginationButtonDisabled
-                ]}
-                onPress={goToNextPage}
-                disabled={currentPage === totalPages}
-              >
-                <MaterialIcons 
-                  name="chevron-right" 
-                  size={20} 
-                  color={currentPage === totalPages ? "#C7C7CC" : "#007AFF"} 
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
       </View>
       </ScrollView>
     </SafeAreaView>
