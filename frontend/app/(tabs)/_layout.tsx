@@ -29,7 +29,7 @@ export default function TabLayout() {
         options={{
           title: 'Katalog',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="trending-up" size={size} color={color} />
+            <MaterialIcons name="view-list" size={size} color={color} />
           ),
         }}
       />
