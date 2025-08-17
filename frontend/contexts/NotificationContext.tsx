@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { useAuth } from './AuthContext';
+import pushNotificationService from '../services/pushNotificationService';
+import orderNotificationService from '../services/orderNotificationService';
 
 interface Notification {
   id: string;
