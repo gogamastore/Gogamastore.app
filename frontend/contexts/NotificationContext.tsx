@@ -195,6 +195,41 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     setNotifications(prev => [notification, ...prev]);
   };
 
+  // Add some demo notifications when user logs in
+  useEffect(() => {
+    if (user) {
+      // Add sample notifications for demo purposes
+      const demoNotifications: Notification[] = [
+        {
+          id: 'demo1',
+          title: 'Pesanan Dikonfirmasi',
+          body: 'Pesanan #12345 telah dikonfirmasi dan sedang diproses',
+          data: { orderId: '12345', type: 'order_update' },
+          timestamp: Date.now() - 1800000, // 30 minutes ago
+          read: false,
+          type: 'order_update',
+        },
+        {
+          id: 'demo2',
+          title: 'Promo Spesial!',
+          body: 'Diskon 20% untuk semua kategori elektronik sampai akhir bulan',
+          data: { type: 'general' },
+          timestamp: Date.now() - 3600000, // 1 hour ago
+          read: true,
+          type: 'general',
+        },
+      ];
+      
+      // Add notifications with a slight delay to show the effect
+      setTimeout(() => {
+        setNotifications(demoNotifications);
+      }, 1000);
+    } else {
+      // Clear notifications when user logs out
+      setNotifications([]);
+    }
+  }, [user]);
+
   const markAsRead = (notificationId: string) => {
     setNotifications(prev =>
       prev.map(notification =>
