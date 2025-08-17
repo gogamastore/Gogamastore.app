@@ -16,7 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { productService, categoryService, bannerService, brandService } from '../../services/firestoreService';
+import { productService, bannerService, brandService } from '../../services/firestoreService';
 import { useRouter } from 'expo-router';
 
 interface Product {
@@ -28,12 +28,6 @@ interface Product {
   kategori: string;
   stok: number;
 }
-
-interface Category {
-  id: string;
-  nama: string;
-}
-
 interface Brand {
   id: string;
   nama: string;
@@ -52,10 +46,8 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [banners, setBanners] = useState<Banner[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -206,8 +198,6 @@ export default function HomeScreen() {
   const navigateToProduct = (productId: string) => {
     router.push(`/product/${productId}`);
   };
-
-
   const filteredProducts = products.filter(product =>
     (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     (product.deskripsi || '').toLowerCase().includes(searchQuery.toLowerCase())
@@ -331,8 +321,6 @@ export default function HomeScreen() {
           onChangeText={setSearchQuery}
         />
       </View>
-
-
       <ScrollView 
         showsVerticalScrollIndicator={false}
         refreshControl={
