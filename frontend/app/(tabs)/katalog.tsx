@@ -488,6 +488,57 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   bottomSpace: {
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    marginBottom: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  paginationButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#F0F8FF',
+  },
+  paginationButtonDisabled: {
+    backgroundColor: '#F8F9FA',
+  },
+  pageNumbersContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 12,
+  },
+  pageNumberButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginHorizontal: 2,
+    borderRadius: 8,
+    backgroundColor: '#F0F8FF',
+  },
+  pageNumberButtonActive: {
+    backgroundColor: '#007AFF',
+  },
+  pageNumberButtonDisabled: {
+    backgroundColor: 'transparent',
+  },
+  pageNumberText: {
+    fontSize: 14,
+    color: '#007AFF',
+    fontWeight: '500',
+  },
+  pageNumberTextActive: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  pageNumberTextDisabled: {
+    color: '#C7C7CC',
+    fontWeight: '400',
     height: 20,
   },
 });
