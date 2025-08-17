@@ -857,7 +857,5 @@ const styles = StyleSheet.create({
     color: "#666",
     textAlign: "center",
     lineHeight: 16,
-    color: '#fff',
-    fontWeight: '600',
   },
 });
