@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { AuthProvider } from '../contexts/AuthContext';
+import { NotificationProvider } from '../contexts/NotificationContext';
 import AnimatedSplash from '../components/AnimatedSplash';
 
 export default function RootLayout() {
