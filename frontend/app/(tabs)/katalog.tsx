@@ -488,6 +488,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   bottomSpace: {
+    height: 20
   },
   paginationContainer: {
     flexDirection: 'row',
