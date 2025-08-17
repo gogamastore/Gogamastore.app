@@ -267,6 +267,30 @@ export default function CheckoutScreen() {
     }));
   };
 
+  const handleAddressSelect = (address: SavedAddress) => {
+    console.log('📍 Address selected for checkout:', address);
+    
+    setSelectedAddress(address);
+    
+    // Auto-fill delivery info with selected address
+    setDeliveryInfo({
+      recipientName: address.name,
+      phoneNumber: address.phone,
+      address: address.address,
+      city: address.city,
+      postalCode: address.postalCode,
+      specialInstructions: '' // Keep current special instructions
+    });
+    
+    console.log('✅ Delivery info auto-filled from saved address');
+  };
+
+  const clearSelectedAddress = () => {
+    setSelectedAddress(null);
+    // Don't clear the form automatically to prevent data loss
+    console.log('🗑️ Selected address cleared');
+  };
+
   const pickPaymentProofImage = async () => {
     try {
       // Request permission to access media library
