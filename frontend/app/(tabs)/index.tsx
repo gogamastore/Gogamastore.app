@@ -380,6 +380,7 @@ export default function HomeScreen() {
           <Text style={styles.sectionTitle}>
             Produk Terlaris
           </Text>
+          <Text style={styles.sectionSubtitle}>200 produk yang paling banyak dipesan</Text>
           <Text style={styles.productsCount}>
             {filteredProducts.length} produk
           </Text>
