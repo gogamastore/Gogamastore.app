@@ -378,7 +378,7 @@ export default function HomeScreen() {
       <View style={styles.productsSection}>
         <View style={styles.productsSectionHeader}>
           <Text style={styles.sectionTitle}>
-            Semua Produk
+            Produk Terlaris
           </Text>
           <Text style={styles.productsCount}>
             {filteredProducts.length} produk
