@@ -470,6 +470,22 @@ export default function HomeScreen() {
             </View>
           </View>
         )}
+
+        {/* View All Products Button */}
+        <View style={styles.viewAllContainer}>
+          <TouchableOpacity
+            style={styles.viewAllButton}
+            onPress={handleViewAllProducts}
+            activeOpacity={0.7}
+          >
+            <MaterialIcons name="apps" size={24} color="#007AFF" />
+            <Text style={styles.viewAllText}>Lihat Semua Produk</Text>
+            <MaterialIcons name="arrow-forward" size={20} color="#007AFF" />
+          </TouchableOpacity>
+          <Text style={styles.viewAllDescription}>
+            Jelajahi seluruh koleksi produk di katalog lengkap
+          </Text>
+        </View>
       </View>
       </ScrollView>
     </View>
