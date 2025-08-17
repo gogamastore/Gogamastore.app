@@ -165,6 +165,20 @@ export default function HomeScreen() {
   }, []);
 
 
+  const handleViewAllProducts = () => {
+    setShowWarningModal(true);
+  };
+
+  const handleConfirmViewAll = () => {
+    setShowWarningModal(false);
+    // Navigate to katalog tab
+    router.push('/(tabs)/katalog');
+  };
+
+  const handleCancelViewAll = () => {
+    setShowWarningModal(false);
+  };
+
   const navigateToProduct = (productId: string) => {
     router.push(`/product/${productId}`);
   };
