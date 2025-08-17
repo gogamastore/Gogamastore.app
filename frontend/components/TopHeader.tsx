@@ -59,12 +59,6 @@ export default function TopHeader({ title = 'Gogama Store' }: TopHeaderProps) {
     }
   };
 
-  const fetchNotificationCount = async () => {
-    // TODO: Implement notification count from backend/firebase
-    // For now, we'll use a placeholder
-    setNotificationCount(2); // Mock data
-  };
-
   const handleCartPress = () => {
     // Navigate to cart tab in bottom navigation
     router.push('/(tabs)/cart');
@@ -73,8 +67,7 @@ export default function TopHeader({ title = 'Gogama Store' }: TopHeaderProps) {
   const handleNotificationPress = () => {
     // TODO: Navigate to notification screen or show notification panel
     console.log('Notification pressed');
-    // For now, just clear the notification badge
-    setNotificationCount(0);
+    // For now, we can create a simple notification list screen
   };
 
   const Badge = ({ count, style }: { count: number; style?: any }) => {
