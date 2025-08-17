@@ -97,34 +97,50 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     };
   }, []);
 
-  // Initialize with some sample notifications for demo
   useEffect(() => {
-    if (user) {
-      // Add sample notifications when user logs in
-      const sampleNotifications: Notification[] = [
-        {
-          id: '1',
-          title: 'Pesanan Dikonfirmasi',
-          body: 'Pesanan #12345 telah dikonfirmasi dan sedang diproses',
-          data: { orderId: '12345', type: 'order_update' },
-          timestamp: Date.now() - 3600000, // 1 hour ago
-          read: false,
-          type: 'order_update',
-        },
-        {
-          id: '2',
-          title: 'Produk Baru Tersedia',
-          body: 'Lihat koleksi produk terbaru yang telah ditambahkan',
-          data: { type: 'general' },
-          timestamp: Date.now() - 7200000, // 2 hours ago
-          read: false,
-          type: 'general',
-        },
-      ];
+    // Initialize push notification service
+    pushNotificationService.registerForPushNotifications();
+    
+    // Set up order notification listener if user is logged in
+    if (user?.uid) {
+      console.log('📱 Setting up order notifications for user:', user.uid);
       
-      setNotifications(sampleNotifications);
+      // Subscribe to order updates
+      const unsubscribe = orderNotificationService.subscribeToOrderUpdates(
+        user.uid,
+        (orderData) => {
+          // Add order notification to local state
+          const notification: Notification = {
+            id: Math.random().toString(36).substr(2, 9),
+            title: '📦 Update Pesanan',
+            body: `Pesanan #${orderData.id.slice(-6)} status: ${orderData.status}`,
+            data: { 
+              type: 'order_update', 
+              orderId: orderData.id,
+              status: orderData.status 
+            },
+            timestamp: Date.now(),
+            read: false,
+            type: 'order_update',
+          };
+          
+          setNotifications(prev => [notification, ...prev]);
+        }
+      );
+
+      // Save push token to user profile
+      if (expoPushToken && user.uid) {
+        pushNotificationService.savePushTokenToFirestore(user.uid, expoPushToken);
+      }
+
+      // Cleanup on user change
+      return () => {
+        if (unsubscribe) {
+          orderNotificationService.unsubscribeFromOrderUpdates(user.uid);
+        }
+      };
     }
-  }, [user]);
+  }, [user, expoPushToken]);
 
   const registerForPushNotificationsAsync = async () => {
     try {
