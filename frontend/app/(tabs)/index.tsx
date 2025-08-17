@@ -122,7 +122,10 @@ export default function HomeScreen() {
 
   const fetchProducts = async () => {
     try {
-      const data = await productService.getAllProducts();
+      console.log('🏠 Loading best selling products for homepage...');
+      
+      // Use new getBestSellingProducts function - limit to 200 products
+      const data = await productService.getBestSellingProducts(200);
       
       // Sort products: available stock first, out of stock last
       const sortedData = data.sort((a, b) => {
@@ -140,9 +143,10 @@ export default function HomeScreen() {
       
       setProducts(sortedData);
       setCurrentPage(1); // Reset to first page when products change
+      console.log('✅ Best selling products loaded successfully for homepage');
     } catch (error) {
-      console.error('Error fetching products:', error);
-      Alert.alert('Error', 'Gagal memuat produk');
+      console.error('Error loading best selling products:', error);
+      Alert.alert('Error', 'Gagal memuat produk terlaris');
     }
   };
 
