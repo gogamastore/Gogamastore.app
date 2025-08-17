@@ -375,49 +375,10 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* Categories */}
-      <View style={styles.categoriesSection}>
-        <FlatList
-          data={[{ id: 'all', nama: 'Semua Kategori' }, ...categories]}
-          renderItem={({ item }) => {
-            if (item.id === 'all') {
-              // Render "Semua Kategori" option
-              return (
-                <TouchableOpacity
-                  style={[
-                    styles.categoryChip,
-                    !selectedCategory && styles.categoryChipSelected,
-                  ]}
-                  onPress={() => setSelectedCategory('')}
-                >
-                  <Text
-                    style={[
-                      styles.categoryChipText,
-                      !selectedCategory && styles.categoryChipTextSelected,
-                    ]}
-                  >
-                    {item.nama}
-                  </Text>
-                </TouchableOpacity>
-              );
-            } else {
-              // Render normal category
-              return renderCategory({ item });
-            }
-          }}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.categoriesContainer}
-          contentContainerStyle={styles.categoriesContentContainer}
-        />
-      </View>
-
-      {/* Products */}
       <View style={styles.productsSection}>
         <View style={styles.productsSectionHeader}>
           <Text style={styles.sectionTitle}>
-            {selectedCategory ? `Produk ${selectedCategory}` : 'Semua Produk'}
+            Semua Produk
           </Text>
           <Text style={styles.productsCount}>
             {filteredProducts.length} produk
