@@ -17,6 +17,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { productService, bannerService, brandService } from '../../services/firestoreService';
 import { useRouter } from 'expo-router';
+import LoadingWarningModal from '../../components/LoadingWarningModal';
 
 interface Product {
   id: string;
