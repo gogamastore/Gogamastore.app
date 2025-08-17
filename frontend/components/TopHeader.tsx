@@ -65,9 +65,8 @@ export default function TopHeader({ title = 'Gogama Store' }: TopHeaderProps) {
   };
 
   const handleNotificationPress = () => {
-    // TODO: Navigate to notification screen or show notification panel
-    console.log('Notification pressed');
-    // For now, we can create a simple notification list screen
+    // Navigate to notifications screen
+    router.push('/notifications');
   };
 
   const Badge = ({ count, style }: { count: number; style?: any }) => {
