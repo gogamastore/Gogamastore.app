@@ -300,6 +300,9 @@ export default function KatalogScreen() {
             contentContainerStyle={styles.productsContainer}
           />
 
+          {/* Pagination */}
+          {renderPagination()}
+
           <View style={styles.bottomSpace} />
         </ScrollView>
       ) : (
