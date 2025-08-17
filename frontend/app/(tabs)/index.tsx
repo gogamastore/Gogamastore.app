@@ -488,6 +488,15 @@ export default function HomeScreen() {
         </View>
       </View>
       </ScrollView>
+
+      {/* Loading Warning Modal */}
+      <LoadingWarningModal
+        visible={showWarningModal}
+        onConfirm={handleConfirmViewAll}
+        onCancel={handleCancelViewAll}
+        title="Info Loading Katalog"
+        message="Halaman ini akan ada jeda dalam memuat data semua produk di awal. Mohon menunggu 30-60 detik."
+      />
     </View>
   );
 }
