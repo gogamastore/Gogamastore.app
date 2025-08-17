@@ -28,8 +28,6 @@ interface Product {
   kategori: string;
   stok: number;
 }
-
-
 interface Brand {
   id: string;
   nama: string;
@@ -202,8 +200,6 @@ export default function HomeScreen() {
   const navigateToProduct = (productId: string) => {
     router.push(`/product/${productId}`);
   };
-
-
   const filteredProducts = products.filter(product =>
     (product.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     (product.deskripsi || '').toLowerCase().includes(searchQuery.toLowerCase())
@@ -327,8 +323,6 @@ export default function HomeScreen() {
           onChangeText={setSearchQuery}
         />
       </View>
-
-
       <ScrollView 
         showsVerticalScrollIndicator={false}
         refreshControl={
