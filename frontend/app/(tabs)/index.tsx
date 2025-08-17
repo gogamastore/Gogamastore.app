@@ -255,7 +255,7 @@ export default function HomeScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -470,7 +470,7 @@ export default function HomeScreen() {
         )}
       </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
