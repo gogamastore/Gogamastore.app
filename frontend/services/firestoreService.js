@@ -16,6 +16,112 @@ import { db } from '../lib/firebase';
 
 // Products Service
 export const productService = {
+  // Get trending products from trending_products collection for homepage - limit 200
+  async getTrendingProductsForHomepage(limit = 200) {
+    try {
+      console.log('🏆 Fetching trending products from trending_products collection...');
+      
+      // Get trending product IDs from trending_products collection
+      const trendingQuery = query(
+        collection(db, 'trending_products'),
+        orderBy('trendingId', 'asc') // Order by trendingId for consistent sorting
+      );
+      
+      const trendingSnapshot = await getDocs(trendingQuery);
+      
+      if (trendingSnapshot.empty) {
+        console.log('⚠️ No trending_products found, using fallback...');
+        return await this.getFallbackProducts(limit);
+      }
+      
+      // Extract product IDs from trending_products
+      const productIds = [];
+      trendingSnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.productId) {
+          productIds.push(data.productId);
+        }
+      });
+      
+      console.log(`📋 Found ${productIds.length} trending product IDs`);
+      
+      if (productIds.length === 0) {
+        console.log('⚠️ No valid productIds found, using fallback...');
+        return await this.getFallbackProducts(limit);
+      }
+      
+      // Get product details for each trending product ID
+      const trendingProducts = [];
+      
+      for (const productId of productIds.slice(0, limit)) {
+        try {
+          const productRef = doc(db, 'products', productId);
+          const productDoc = await getDoc(productRef);
+          
+          if (productDoc.exists()) {
+            const productData = productDoc.data();
+            trendingProducts.push({
+              id: productDoc.id,
+              nama: productData.name || productData.nama || '',
+              deskripsi: productData.description || productData.deskripsi || '',
+              harga: productData.price || productData.harga || 0,
+              gambar: productData.image || productData.gambar || '',
+              kategori: productData.category || productData.kategori || '',
+              stok: productData.stock || productData.stok || 0,
+              isTrending: true // Mark as trending product
+            });
+          } else {
+            console.log(`⚠️ Product not found for ID: ${productId}`);
+          }
+        } catch (error) {
+          console.error(`❌ Error fetching product ${productId}:`, error);
+        }
+      }
+      
+      console.log(`✅ Trending products loaded: ${trendingProducts.length} products`);
+      console.log(`📈 First 3 trending products:`, trendingProducts.slice(0, 3).map(p => p.nama));
+      
+      return trendingProducts;
+      
+    } catch (error) {
+      console.error('❌ Error fetching trending products for homepage:', error);
+      return await this.getFallbackProducts(limit);
+    }
+  },
+
+  // Fallback function to get products sorted by name when trending_products is not available
+  async getFallbackProducts(limit = 200) {
+    try {
+      console.log('🔄 Using fallback: products sorted by name...');
+      const fallbackQuery = query(
+        collection(db, 'products'),
+        orderBy('nama', 'asc')
+      );
+      
+      const fallbackSnapshot = await getDocs(fallbackQuery);
+      const fallbackProducts = [];
+      
+      fallbackSnapshot.forEach((doc) => {
+        const data = doc.data();
+        fallbackProducts.push({
+          id: doc.id,
+          nama: data.name || data.nama || '',
+          deskripsi: data.description || data.deskripsi || '',
+          harga: data.price || data.harga || 0,
+          gambar: data.image || data.gambar || '',
+          kategori: data.category || data.kategori || '',
+          stok: data.stock || data.stok || 0,
+          isTrending: false
+        });
+      });
+      
+      return fallbackProducts.slice(0, limit);
+    } catch (fallbackError) {
+      console.error('❌ Fallback also failed:', fallbackError);
+      return [];
+    }
+  },
+
   // Get best selling products (most ordered) for homepage - limit 200
   async getBestSellingProducts(limit = 200) {
     try {
