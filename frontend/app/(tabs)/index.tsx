@@ -124,8 +124,8 @@ export default function HomeScreen() {
     try {
       console.log('🏠 Loading trending products for homepage from trending_products collection...');
       
-      // Use new getBestSellingProducts function - limit to 200 products
-      const data = await productService.getBestSellingProducts(200);
+      // Use new getTrendingProductsForHomepage function - limit to 200 products
+      const data = await productService.getTrendingProductsForHomepage(200);
       
       setProducts(data);
       setCurrentPage(1); // Reset to first page when products change
