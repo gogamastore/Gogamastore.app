@@ -132,7 +132,7 @@ export default function HomeScreen() {
       console.log('✅ Trending products loaded successfully for homepage');
     } catch (error) {
       console.error('Error loading trending products:', error);
-      Alert.alert('Error', 'Gagal memuat produk terlaris');
+      Alert.alert('Error', 'Gagal memuat produk trending');
     }
   };
 
