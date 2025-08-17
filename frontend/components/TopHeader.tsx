@@ -100,7 +100,7 @@ export default function TopHeader({ title = 'Gogama Store' }: TopHeaderProps) {
             activeOpacity={0.7}
           >
             <MaterialIcons name="notifications" size={24} color="#1a1a1a" />
-            <Badge count={notificationCount} />
+            <Badge count={unreadCount} />
           </TouchableOpacity>
 
           {/* Cart Icon */}
