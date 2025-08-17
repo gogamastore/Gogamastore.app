@@ -129,7 +129,7 @@ export default function HomeScreen() {
       
       setProducts(data);
       setCurrentPage(1); // Reset to first page when products change
-      console.log('✅ Best selling products loaded successfully for homepage');
+      console.log('✅ Trending products loaded successfully for homepage');
     } catch (error) {
       console.error('Error loading best selling products:', error);
       Alert.alert('Error', 'Gagal memuat produk terlaris');
