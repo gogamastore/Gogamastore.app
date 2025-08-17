@@ -1141,4 +1141,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
+  addressSelector: {
+    marginBottom: 16,
+  },
+  clearAddressButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#FFF5F5',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#FFE5E5',
+    marginBottom: 16,
+  },
+  clearAddressText: {
+    fontSize: 12,
+    color: '#FF3B30',
+    marginLeft: 4,
+    fontWeight: '500',
+  },
 });
