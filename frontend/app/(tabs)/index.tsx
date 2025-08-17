@@ -318,17 +318,6 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <MaterialIcons name="search" size={20} color="#8E8E93" />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Cari produk..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
       <ScrollView 
         showsVerticalScrollIndicator={false}
         refreshControl={
