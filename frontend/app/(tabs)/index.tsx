@@ -173,9 +173,6 @@ export default function HomeScreen() {
     setRefreshing(false);
   }, []);
 
-  const handleCategorySelect = (categoryName: string) => {
-    setSelectedCategory(categoryName === selectedCategory ? '' : categoryName);
-  };
 
   const navigateToProduct = (productId: string) => {
     router.push(`/product/${productId}`);
