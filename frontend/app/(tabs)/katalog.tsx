@@ -125,6 +125,88 @@ export default function KatalogScreen() {
     }).format(price);
   };
 
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    const getPageNumbers = () => {
+      const pages = [];
+      const maxVisiblePages = 5;
+      
+      if (totalPages <= maxVisiblePages) {
+        for (let i = 1; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        if (currentPage <= 3) {
+          for (let i = 1; i <= 4; i++) {
+            pages.push(i);
+          }
+          pages.push('...');
+          pages.push(totalPages);
+        } else if (currentPage >= totalPages - 2) {
+          pages.push(1);
+          pages.push('...');
+          for (let i = totalPages - 3; i <= totalPages; i++) {
+            pages.push(i);
+          }
+        } else {
+          pages.push(1);
+          pages.push('...');
+          for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+            pages.push(i);
+          }
+          pages.push('...');
+          pages.push(totalPages);
+        }
+      }
+      
+      return pages;
+    };
+
+    return (
+      <View style={styles.paginationContainer}>
+        <TouchableOpacity
+          style={[styles.paginationButton, currentPage === 1 && styles.paginationButtonDisabled]}
+          onPress={goToPreviousPage}
+          disabled={currentPage === 1}
+        >
+          <MaterialIcons name="chevron-left" size={20} color={currentPage === 1 ? '#C7C7CC' : '#007AFF'} />
+        </TouchableOpacity>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pageNumbersContainer}>
+          {getPageNumbers().map((page, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.pageNumberButton,
+                page === currentPage && styles.pageNumberButtonActive,
+                page === '...' && styles.pageNumberButtonDisabled
+              ]}
+              onPress={() => typeof page === 'number' && goToPage(page)}
+              disabled={page === '...'}
+            >
+              <Text style={[
+                styles.pageNumberText,
+                page === currentPage && styles.pageNumberTextActive,
+                page === '...' && styles.pageNumberTextDisabled
+              ]}>
+                {page}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <TouchableOpacity
+          style={[styles.paginationButton, currentPage === totalPages && styles.paginationButtonDisabled]}
+          onPress={goToNextPage}
+          disabled={currentPage === totalPages}
+        >
+          <MaterialIcons name="chevron-right" size={20} color={currentPage === totalPages ? '#C7C7CC' : '#007AFF'} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
   const renderProduct = ({ item }: { item: Product }) => (
     <TouchableOpacity 
       style={styles.productCard}
