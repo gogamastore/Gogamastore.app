@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,51 +6,204 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { collection, query, where, orderBy, onSnapshot, updateDoc, doc, getDocs } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
-import pushNotificationService from '../services/pushNotificationService';
-import orderNotificationService from '../services/orderNotificationService';
+
+interface OrderNotification {
+  id: string;
+  orderId: string;
+  title: string;
+  message: string;
+  status: string;
+  timestamp: number;
+  read: boolean;
+  type: 'order_status' | 'payment_status' | 'general';
+  orderData?: any;
+}
 
 export default function NotificationsScreen() {
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const [notifications, setNotifications] = useState<OrderNotification[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const { user } = useAuth();
+  const { markAllAsRead } = useNotifications();
   const router = useRouter();
 
-  const handleNotificationPress = (notification: any) => {
-    // Mark as read
-    markAsRead(notification.id);
-    
-    // Handle navigation based on notification type
-    if (notification.data?.orderId) {
-      router.push(`/order/confirmation/${notification.data.orderId}`);
+  useEffect(() => {
+    if (user) {
+      setupOrderNotificationsListener();
     }
+  }, [user]);
+
+  const setupOrderNotificationsListener = () => {
+    if (!user?.uid) return;
+
+    setLoading(true);
+    console.log('📱 Setting up real-time order notifications listener...');
+
+    // Listen to user's orders for status changes
+    const ordersQuery = query(
+      collection(db, 'orders'),
+      where('customerId', '==', user.uid),
+      orderBy('createdAt', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(
+      ordersQuery,
+      (snapshot) => {
+        const orderNotifications: OrderNotification[] = [];
+        
+        snapshot.forEach((doc) => {
+          const orderData = doc.data();
+          const orderId = doc.id;
+          
+          // Create notification based on order status
+          if (orderData.status || orderData.paymentStatus) {
+            const notification = createNotificationFromOrder(orderId, orderData);
+            if (notification) {
+              orderNotifications.push(notification);
+            }
+          }
+        });
+
+        // Sort notifications by timestamp (newest first)
+        const sortedNotifications = orderNotifications.sort((a, b) => b.timestamp - a.timestamp);
+        
+        setNotifications(sortedNotifications);
+        setLoading(false);
+        
+        console.log(`✅ Loaded ${sortedNotifications.length} order notifications`);
+      },
+      (error) => {
+        console.error('❌ Error listening to order notifications:', error);
+        setLoading(false);
+        Alert.alert('Error', 'Gagal memuat notifikasi pesanan');
+      }
+    );
+
+    return unsubscribe;
   };
 
-  const handleTestNotification = async () => {
+  const createNotificationFromOrder = (orderId: string, orderData: any): OrderNotification | null => {
+    const status = orderData.status?.toLowerCase();
+    const paymentStatus = orderData.paymentStatus?.toLowerCase();
+    const timestamp = orderData.updatedAt?.seconds * 1000 || orderData.createdAt?.seconds * 1000 || Date.now();
+    
+    let title = '';
+    let message = '';
+    let type: 'order_status' | 'payment_status' | 'general' = 'order_status';
+    
+    // Generate notification based on order status
+    switch (status) {
+      case 'confirmed':
+        title = '✅ Pesanan Dikonfirmasi';
+        message = `Pesanan #${orderId.slice(-6)} telah dikonfirmasi dan sedang diproses`;
+        break;
+      case 'processing':
+        title = '⚙️ Pesanan Diproses';
+        message = `Pesanan #${orderId.slice(-6)} sedang disiapkan oleh penjual`;
+        break;
+      case 'shipped':
+        title = '🚚 Pesanan Dikirim';
+        message = `Pesanan #${orderId.slice(-6)} dalam perjalanan ke alamat Anda`;
+        break;
+      case 'delivered':
+        title = '📦 Pesanan Sampai';
+        message = `Pesanan #${orderId.slice(-6)} telah sampai di tujuan`;
+        break;
+      case 'cancelled':
+        title = '❌ Pesanan Dibatalkan';
+        message = `Pesanan #${orderId.slice(-6)} telah dibatalkan`;
+        break;
+      case 'pending':
+        title = '⏳ Pesanan Menunggu';
+        message = `Pesanan #${orderId.slice(-6)} sedang menunggu konfirmasi`;
+        break;
+      default:
+        // Check payment status if order status is not available
+        if (paymentStatus) {
+          type = 'payment_status';
+          switch (paymentStatus) {
+            case 'paid':
+              title = '💰 Pembayaran Dikonfirmasi';
+              message = `Pembayaran untuk pesanan #${orderId.slice(-6)} telah dikonfirmasi`;
+              break;
+            case 'pending':
+              title = '⏳ Menunggu Pembayaran';
+              message = `Silakan selesaikan pembayaran untuk pesanan #${orderId.slice(-6)}`;
+              break;
+            case 'failed':
+              title = '❌ Pembayaran Gagal';
+              message = `Pembayaran untuk pesanan #${orderId.slice(-6)} gagal diproses`;
+              break;
+            default:
+              return null;
+          }
+        } else {
+          return null;
+        }
+    }
+    
+    return {
+      id: `${orderId}_${status || paymentStatus}_${timestamp}`,
+      orderId,
+      title,
+      message,
+      status: status || paymentStatus || 'unknown',
+      timestamp,
+      read: false, // All notifications start as unread
+      type,
+      orderData
+    };
+  };
+
+  const handleNotificationPress = async (notification: OrderNotification) => {
     try {
-      // Send a test local notification
-      await pushNotificationService.sendLocalNotification(
-        'Test Notification',
-        'This is a test notification from the app',
-        { type: 'general', test: true }
+      // Mark notification as read (you can implement this in Firestore if needed)
+      setNotifications(prev => 
+        prev.map(n => 
+          n.id === notification.id ? { ...n, read: true } : n
+        )
       );
       
-      Alert.alert('Success', 'Test notification sent!');
+      // Navigate to order details
+      if (notification.orderId) {
+        router.push(`/order/confirmation/${notification.orderId}`);
+      }
     } catch (error) {
-      console.error('Error sending test notification:', error);
-      Alert.alert('Error', 'Failed to send test notification');
+      console.error('Error handling notification press:', error);
     }
   };
 
-  const handleTestOrderNotification = async () => {
+  const handleMarkAllRead = async () => {
     try {
-      await orderNotificationService.triggerTestNotification('TEST123', 'confirmed');
-      Alert.alert('Success', 'Test order notification sent!');
+      setNotifications(prev => 
+        prev.map(n => ({ ...n, read: true }))
+      );
+      
+      // You can also update read status in Firestore if you store notifications there
+      markAllAsRead();
+      
+      Alert.alert('Sukses', 'Semua notifikasi telah ditandai sudah dibaca');
     } catch (error) {
-      console.error('Error sending test order notification:', error);
-      Alert.alert('Error', 'Failed to send test order notification');
+      console.error('Error marking all as read:', error);
+      Alert.alert('Error', 'Gagal menandai notifikasi sebagai dibaca');
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // The listener will automatically update the data
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
   };
 
   const formatTimestamp = (timestamp: number) => {
@@ -63,10 +216,47 @@ export default function NotificationsScreen() {
     if (minutes < 1) return 'Baru saja';
     if (minutes < 60) return `${minutes} menit lalu`;
     if (hours < 24) return `${hours} jam lalu`;
-    return `${days} hari lalu`;
+    if (days === 1) return 'Kemarin';
+    if (days < 7) return `${days} hari lalu`;
+    return new Date(timestamp).toLocaleDateString('id-ID');
   };
 
-  const renderNotification = ({ item }: { item: any }) => (
+  const getNotificationIcon = (type: string, status: string) => {
+    if (type === 'payment_status') {
+      switch (status) {
+        case 'paid': return 'payment';
+        case 'pending': return 'schedule';
+        case 'failed': return 'error';
+        default: return 'account-balance-wallet';
+      }
+    }
+    
+    switch (status) {
+      case 'confirmed': return 'check-circle';
+      case 'processing': return 'settings';
+      case 'shipped': return 'local-shipping';
+      case 'delivered': return 'inbox';
+      case 'cancelled': return 'cancel';
+      case 'pending': return 'schedule';
+      default: return 'notifications';
+    }
+  };
+
+  const getNotificationColor = (status: string) => {
+    switch (status) {
+      case 'confirmed':
+      case 'paid': return '#4CAF50';
+      case 'processing': return '#FF9800';
+      case 'shipped': return '#2196F3';
+      case 'delivered': return '#4CAF50';
+      case 'cancelled':
+      case 'failed': return '#F44336';
+      case 'pending': return '#9E9E9E';
+      default: return '#666';
+    }
+  };
+
+  const renderNotification = ({ item }: { item: OrderNotification }) => (
     <TouchableOpacity
       style={[
         styles.notificationItem,
@@ -75,11 +265,14 @@ export default function NotificationsScreen() {
       onPress={() => handleNotificationPress(item)}
       activeOpacity={0.7}
     >
-      <View style={styles.notificationIcon}>
+      <View style={[
+        styles.notificationIcon,
+        { backgroundColor: getNotificationColor(item.status) + '20' }
+      ]}>
         <MaterialIcons
-          name={item.type === 'order_update' ? 'shopping-bag' : 'info'}
+          name={getNotificationIcon(item.type, item.status) as any}
           size={24}
-          color={item.type === 'order_update' ? '#007AFF' : '#666'}
+          color={getNotificationColor(item.status)}
         />
       </View>
       
@@ -90,8 +283,8 @@ export default function NotificationsScreen() {
         ]}>
           {item.title}
         </Text>
-        <Text style={styles.notificationBody} numberOfLines={2}>
-          {item.body}
+        <Text style={styles.notificationMessage} numberOfLines={2}>
+          {item.message}
         </Text>
         <Text style={styles.notificationTime}>
           {formatTimestamp(item.timestamp)}
@@ -102,6 +295,27 @@ export default function NotificationsScreen() {
     </TouchableOpacity>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Notifikasi</Text>
+          <View style={{ width: 24 }} />
+        </View>
+        
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF" />
+          <Text style={styles.loadingText}>Memuat notifikasi pesanan...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -109,32 +323,12 @@ export default function NotificationsScreen() {
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifikasi</Text>
+        <Text style={styles.headerTitle}>Notifikasi Pesanan</Text>
         {unreadCount > 0 && (
-          <TouchableOpacity onPress={markAllAsRead}>
+          <TouchableOpacity onPress={handleMarkAllRead}>
             <Text style={styles.markAllRead}>Tandai Semua</Text>
           </TouchableOpacity>
         )}
-      </View>
-
-      {/* Test Buttons */}
-      <View style={styles.testSection}>
-        <Text style={styles.testTitle}>Test Notifications:</Text>
-        <View style={styles.testButtons}>
-          <TouchableOpacity 
-            style={styles.testButton}
-            onPress={handleTestNotification}
-          >
-            <Text style={styles.testButtonText}>Test General</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.testButton}
-            onPress={handleTestOrderNotification}
-          >
-            <Text style={styles.testButtonText}>Test Order Update</Text>
-          </TouchableOpacity>
-        </View>
       </View>
 
       {/* Notifications List */}
@@ -145,13 +339,16 @@ export default function NotificationsScreen() {
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.notificationsList}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
         />
       ) : (
         <View style={styles.emptyContainer}>
           <MaterialIcons name="notifications-none" size={64} color="#C7C7CC" />
-          <Text style={styles.emptyTitle}>Tidak ada notifikasi</Text>
+          <Text style={styles.emptyTitle}>Tidak ada notifikasi pesanan</Text>
           <Text style={styles.emptyDescription}>
-            Notifikasi untuk pesanan dan update lainnya akan muncul di sini
+            Notifikasi update status pesanan Anda akan muncul di sini
           </Text>
         </View>
       )}
