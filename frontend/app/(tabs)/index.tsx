@@ -823,6 +823,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   pageNumberTextActive: {
+    color: '#fff',
+    fontWeight: '600',
   },
   sectionSubtitle: {
     fontSize: 14,
