@@ -427,24 +427,14 @@ export default function HomeScreen() {
       )}
 
       <View style={styles.productsSection}>
-        <View style={styles.sectionContainer}>
-          <View style={styles.sectionHeader}>
-            <View style={styles.titleRow}>
-              <Text style={styles.sectionTitle}>Produk Trending</Text>
-              <TouchableOpacity
-                style={styles.topViewAllButton}
-                onPress={handleViewAllProducts}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.topViewAllText}>Lihat Semua Produk</Text>
-                <MaterialIcons name="arrow-forward" size={16} color="#007AFF" />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.sectionSubtitle}>200 produk trending terpopuler</Text>
-            <Text style={styles.productsCount}>
-              {filteredProducts.length} produk
-            </Text>
-          </View>
+        <View style={styles.productsSectionHeader}>
+          <Text style={styles.sectionTitle}>
+            Produk Trending
+          </Text>
+          <Text style={styles.sectionSubtitle}>200 produk trending terpopuler</Text>
+          <Text style={styles.productsCount}>
+            {filteredProducts.length} produk
+          </Text>
         </View>
         
         {/* Product Grid */}
