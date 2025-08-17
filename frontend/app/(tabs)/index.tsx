@@ -51,6 +51,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
