@@ -29,6 +29,15 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="katalog"
+          options={{
+            title: 'Katalog',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="apps" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="trending"
           options={{
             title: 'Trending',
