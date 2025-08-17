@@ -122,7 +122,7 @@ export default function HomeScreen() {
 
   const fetchProducts = async () => {
     try {
-      console.log('🏠 Loading best selling products for homepage...');
+      console.log('🏠 Loading trending products for homepage from trending_products collection...');
       
       // Use new getBestSellingProducts function - limit to 200 products
       const data = await productService.getBestSellingProducts(200);
