@@ -488,6 +488,20 @@ test_plan:
       - working: "NA"
         agent: "main"
         comment: "Implemented comprehensive push notification system with Firebase Cloud Messaging (V1), including notification context, push service with FCM keys, order notification service, TopHeader with notification and cart badges, and notification screen for testing. Added support for order update notifications, local notifications, and real-time notification management."
+
+  - task: "Top Header with Notification and Cart Badges"
+    implemented: true
+    working: true
+    file: "components/TopHeader.tsx, app/(tabs)/_layout.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created TopHeader component with notification and cart icons featuring badge counters. Notification badge shows unread count from NotificationContext, cart badge shows total item quantity from cart service. Added to all pages except cart page. Integrated with navigation to notification screen and cart tab. Includes real-time cart count updates using useFocusEffect."
+
+agent_communication:
   - agent: "main"
     message: "Initial implementation completed. All core backend APIs and frontend screens have been created. Need to test backend functionality first, particularly auth flow, product management, and cart operations. Frontend screens are ready but need dependency installation completion."
   - agent: "testing"
