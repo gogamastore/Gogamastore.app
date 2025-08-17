@@ -18,6 +18,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../contexts/AuthContext';
 import { cartService, orderService, bankAccountService, paymentProofService } from '../services/firestoreService';
+import AddressSelector from '../components/AddressSelector';
 
 interface CartItem {
   product_id: string;
