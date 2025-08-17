@@ -440,10 +440,6 @@ export default function HomeScreen() {
                 <MaterialIcons name="arrow-forward" size={16} color="#007AFF" />
               </TouchableOpacity>
             </View>
-            <Text style={styles.sectionSubtitle}>200 produk trending terpopuler</Text>
-            <Text style={styles.productsCount}>
-              {filteredProducts.length} produk
-            </Text>
           </View>
         </View>
         
