@@ -438,6 +438,25 @@ export default function CheckoutScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Informasi Pengiriman</Text>
             
+            {/* Address Selector */}
+            <AddressSelector
+              onAddressSelect={handleAddressSelect}
+              selectedAddress={selectedAddress}
+              style={styles.addressSelector}
+            />
+            
+            {/* Optional: Clear selected address button */}
+            {selectedAddress && (
+              <TouchableOpacity
+                style={styles.clearAddressButton}
+                onPress={clearSelectedAddress}
+                activeOpacity={0.7}
+              >
+                <MaterialIcons name="clear" size={16} color="#FF3B30" />
+                <Text style={styles.clearAddressText}>Hapus Pilihan Alamat</Text>
+              </TouchableOpacity>
+            )}
+            
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Nama Penerima *</Text>
               <TextInput
