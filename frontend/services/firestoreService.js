@@ -16,6 +16,104 @@ import { db } from '../lib/firebase';
 
 // Products Service
 export const productService = {
+  // Get best selling products (most ordered) for homepage - limit 200
+  async getBestSellingProducts(limit = 200) {
+    try {
+      console.log('🏆 Fetching best selling products for homepage...');
+      
+      // First, let's get order data to calculate product popularity
+      const ordersQuery = query(collection(db, 'orders'));
+      const ordersSnapshot = await getDocs(ordersQuery);
+      
+      // Count product orders
+      const productOrderCount = {};
+      
+      ordersSnapshot.forEach((doc) => {
+        const orderData = doc.data();
+        if (orderData.items && Array.isArray(orderData.items)) {
+          orderData.items.forEach((item) => {
+            const productId = item.productId || item.id;
+            const quantity = item.quantity || 1;
+            
+            if (productId) {
+              productOrderCount[productId] = (productOrderCount[productId] || 0) + quantity;
+            }
+          });
+        }
+      });
+      
+      console.log('📊 Product order counts calculated:', Object.keys(productOrderCount).length, 'unique products');
+      
+      // Get all products
+      const productsQuery = query(collection(db, 'products'));
+      const productsSnapshot = await getDocs(productsQuery);
+      
+      const allProducts = [];
+      productsSnapshot.forEach((doc) => {
+        const data = doc.data();
+        allProducts.push({
+          id: doc.id,
+          nama: data.name || data.nama || '',
+          deskripsi: data.description || data.deskripsi || '',
+          harga: data.price || data.harga || 0,
+          gambar: data.image || data.gambar || '',
+          kategori: data.category || data.kategori || '',
+          stok: data.stock || data.stok || 0,
+          orderCount: productOrderCount[doc.id] || 0 // Add order count
+        });
+      });
+      
+      // Sort by order count (descending), then by name (ascending) as fallback
+      const sortedProducts = allProducts.sort((a, b) => {
+        if (b.orderCount !== a.orderCount) {
+          return b.orderCount - a.orderCount; // Higher order count first
+        }
+        return (a.nama || '').localeCompare(b.nama || ''); // Alphabetical fallback
+      });
+      
+      // Limit to specified number (default 200)
+      const limitedProducts = sortedProducts.slice(0, limit);
+      
+      console.log(`✅ Best selling products loaded: ${limitedProducts.length} products`);
+      console.log(`📈 Top 5 best sellers:`, limitedProducts.slice(0, 5).map(p => ({ name: p.nama, orders: p.orderCount })));
+      
+      return limitedProducts;
+    } catch (error) {
+      console.error('❌ Error fetching best selling products:', error);
+      
+      // Fallback: get products sorted by name if order data fails
+      try {
+        console.log('🔄 Using fallback: products sorted by name...');
+        const fallbackQuery = query(
+          collection(db, 'products'),
+          orderBy('nama', 'asc')
+        );
+        
+        const fallbackSnapshot = await getDocs(fallbackQuery);
+        const fallbackProducts = [];
+        
+        fallbackSnapshot.forEach((doc) => {
+          const data = doc.data();
+          fallbackProducts.push({
+            id: doc.id,
+            nama: data.name || data.nama || '',
+            deskripsi: data.description || data.deskripsi || '',
+            harga: data.price || data.harga || 0,
+            gambar: data.image || data.gambar || '',
+            kategori: data.category || data.kategori || '',
+            stok: data.stock || data.stok || 0,
+            orderCount: 0
+          });
+        });
+        
+        return fallbackProducts.slice(0, limit);
+      } catch (fallbackError) {
+        console.error('❌ Fallback also failed:', fallbackError);
+        return [];
+      }
+    }
+  },
+
   // Get trending products from trending_products collection
   async getTrendingProducts() {
     try {
