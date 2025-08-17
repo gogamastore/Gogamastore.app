@@ -383,33 +383,16 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: '500',
   },
-  testSection: {
-    backgroundColor: '#fff',
-    padding: 16,
-    marginBottom: 8,
-  },
-  testTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 12,
-  },
-  testButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  testButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+  loadingContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
   },
-  testButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 12,
   },
   notificationsList: {
     paddingVertical: 8,
@@ -421,15 +404,17 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
+    alignItems: 'flex-start',
   },
   unreadNotification: {
     backgroundColor: '#F8F9FF',
+    borderLeftWidth: 4,
+    borderLeftColor: '#007AFF',
   },
   notificationIcon: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#F0F0F0',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -446,10 +431,10 @@ const styles = StyleSheet.create({
   unreadText: {
     fontWeight: 'bold',
   },
-  notificationBody: {
+  notificationMessage: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 4,
+    marginBottom: 6,
     lineHeight: 20,
   },
   notificationTime: {
@@ -462,7 +447,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: '#007AFF',
     marginLeft: 8,
-    alignSelf: 'center',
+    marginTop: 8,
   },
   emptyContainer: {
     flex: 1,
