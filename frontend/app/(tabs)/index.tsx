@@ -261,11 +261,6 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Gogama Store</Text>
-        <MaterialIcons name="notifications" size={24} color="#1a1a1a" />
-      </View>
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
