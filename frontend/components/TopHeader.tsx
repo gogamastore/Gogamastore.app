@@ -26,11 +26,6 @@ export default function TopHeader({ title = 'Gogama Store' }: TopHeaderProps) {
   const { unreadCount } = useNotifications();
   const [cartCount, setCartCount] = useState(0);
 
-  // Hide header on cart page
-  if (pathname === '/(tabs)/cart' || pathname === '/cart') {
-    return null;
-  }
-
   // Fetch cart count when screen gains focus
   useFocusEffect(
     useCallback(() => {
@@ -45,6 +40,11 @@ export default function TopHeader({ title = 'Gogama Store' }: TopHeaderProps) {
       fetchCartCount();
     }
   }, [user]);
+
+  // Hide header on cart page - move this after all hooks
+  if (pathname === '/(tabs)/cart' || pathname === '/cart') {
+    return null;
+  }
 
   const fetchCartCount = async () => {
     if (!user) return;
