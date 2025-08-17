@@ -44,6 +44,18 @@ interface DeliveryInfo {
   specialInstructions: string;
 }
 
+interface SavedAddress {
+  id: string;
+  name: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  province: string;
+  isDefault: boolean;
+  created_at: string;
+}
+
 interface ShippingOption {
   id: string;
   name: string;
