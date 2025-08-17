@@ -23,19 +23,26 @@ export default function TopHeader({ title = 'Gogama Store' }: TopHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuth();
+  const { unreadCount } = useNotifications();
   const [cartCount, setCartCount] = useState(0);
-  const [notificationCount, setNotificationCount] = useState(0);
 
   // Hide header on cart page
   if (pathname === '/(tabs)/cart' || pathname === '/cart') {
     return null;
   }
 
+  // Fetch cart count when screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        fetchCartCount();
+      }
+    }, [user])
+  );
+
   useEffect(() => {
     if (user) {
       fetchCartCount();
-      // TODO: Fetch notification count
-      fetchNotificationCount();
     }
   }, [user]);
 
