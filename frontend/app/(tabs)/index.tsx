@@ -29,10 +29,6 @@ interface Product {
   stok: number;
 }
 
-interface Category {
-  id: string;
-  nama: string;
-}
 
 interface Brand {
   id: string;
