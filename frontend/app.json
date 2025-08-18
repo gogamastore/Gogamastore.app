@@ -67,6 +67,16 @@
           "resizeMode": "contain",
           "backgroundColor": "#000"
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/app-icon.png",
+          "color": "#007AFF",
+          "defaultChannel": "default",
+          "enableBadgeCount": false,
+          "requestPermissionsAsync": true
+        }
       ]
     ],
     "experiments": {
