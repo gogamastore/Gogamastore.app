@@ -577,22 +577,25 @@ export const userService = {
     }
   },
 
-  // Address management
+  // Address management - Updated to use subcollection structure
   async getUserAddresses(userId) {
     try {
       console.log('🏠 Fetching addresses for userId:', userId);
-      const userDocRef = doc(db, 'user', userId);
-      const userDoc = await getDoc(userDocRef);
       
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        const addresses = userData.addresses || [];
-        console.log('📍 Found addresses:', addresses.length);
-        return addresses;
-      } else {
-        console.log('❌ User document not found');
-        return [];
-      }
+      // Get addresses from subcollection: user/{userId}/addresses/{addressId}
+      const addressesRef = collection(db, 'user', userId, 'addresses');
+      const addressesSnapshot = await getDocs(addressesRef);
+      
+      const addresses = [];
+      addressesSnapshot.forEach((doc) => {
+        addresses.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+      
+      console.log('📍 Found addresses from subcollection:', addresses.length);
+      return addresses;
     } catch (error) {
       console.error('Error getting user addresses:', error);
       throw error;
@@ -601,38 +604,45 @@ export const userService = {
 
   async addUserAddress(userId, addressData) {
     try {
-      console.log('➕ Adding address for userId:', userId);
-      const userDocRef = doc(db, 'user', userId);
+      console.log('➕ Adding address for userId:', userId, 'with data:', addressData);
       
-      // Get current addresses
-      const userDoc = await getDoc(userDocRef);
-      const currentAddresses = userDoc.exists() ? (userDoc.data().addresses || []) : [];
+      // Create new address in subcollection: user/{userId}/addresses/{addressId}
+      const addressesRef = collection(db, 'user', userId, 'addresses');
       
-      // Create new address with ID
-      const newAddress = {
-        id: Date.now().toString(),
-        ...addressData,
+      // Check if this should be the default address
+      const currentAddresses = await this.getUserAddresses(userId);
+      const shouldBeDefault = addressData.isDefault || currentAddresses.length === 0;
+      
+      // If setting as default, update existing addresses to non-default
+      if (shouldBeDefault && currentAddresses.length > 0) {
+        const updatePromises = currentAddresses.map(async (addr) => {
+          if (addr.isDefault) {
+            const addrRef = doc(db, 'user', userId, 'addresses', addr.id);
+            await updateDoc(addrRef, { isDefault: false });
+          }
+        });
+        await Promise.all(updatePromises);
+      }
+      
+      // Create new address document
+      const newAddressData = {
+        label: addressData.label || 'Alamat Baru',
+        name: addressData.name,
+        phone: addressData.phone,
+        address: addressData.address,
+        city: addressData.city,
+        postalCode: addressData.postalCode,
+        province: addressData.province,
+        isDefault: shouldBeDefault,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
-
-      // If this is the first address or isDefault is true, make sure only one is default
-      if (newAddress.isDefault || currentAddresses.length === 0) {
-        currentAddresses.forEach(addr => addr.isDefault = false);
-        newAddress.isDefault = true;
-      }
-
-      // Add new address to array
-      const updatedAddresses = [...currentAddresses, newAddress];
       
-      // Update user document
-      await updateDoc(userDocRef, {
-        addresses: updatedAddresses,
-        updated_at: new Date().toISOString()
-      });
+      // Add to Firestore subcollection
+      const docRef = await addDoc(addressesRef, newAddressData);
       
-      console.log('✅ Address added successfully');
-      return newAddress.id;
+      console.log('✅ Address added successfully with ID:', docRef.id);
+      return docRef.id;
     } catch (error) {
       console.error('Error adding user address:', error);
       throw error;
