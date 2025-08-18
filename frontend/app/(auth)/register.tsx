@@ -24,6 +24,7 @@ export default function RegisterScreen() {
   });
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const router = useRouter();
 
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
