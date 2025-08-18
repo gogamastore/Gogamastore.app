@@ -504,6 +504,8 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Initial implementation completed. All core backend APIs and frontend screens have been created. Need to test backend functionality first, particularly auth flow, product management, and cart operations. Frontend screens are ready but need dependency installation completion."
+  - agent: "main"
+    message: "🔧 OPTIMIZED AAB BUILD INITIATED: Continuing from previous session with permission optimization. Started AAB build (version 1.2.1, versionCode 6) with reduced Android permissions - from 32 permissions down to 7 essential permissions (INTERNET, ACCESS_NETWORK_STATE, CAMERA, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, READ_MEDIA_IMAGES, POST_NOTIFICATIONS, VIBRATE). Build ID: ec3e191c-6fb0-458a-88b9-0c989fc43842. Status: In progress, waiting for build completion."
   - agent: "testing"
     message: "✅ BACKEND TESTING COMPLETE: All 5 high-priority backend API groups tested successfully with 100% pass rate (11/11 tests passed). Authentication system working with JWT tokens, all CRUD operations for products/categories/cart/profile functioning correctly. Sample data properly seeded. Backend is production-ready. Created comprehensive backend_test.py for future regression testing."
   - agent: "main"
