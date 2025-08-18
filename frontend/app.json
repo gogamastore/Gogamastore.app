@@ -36,7 +36,16 @@
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
-        "READ_MEDIA_IMAGES"
+        "READ_MEDIA_IMAGES",
+        "POST_NOTIFICATIONS",
+        "VIBRATE"
+      ],
+      "blockedPermissions": [
+        "READ_APP_BADGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "WAKE_LOCK",
+        "SYSTEM_ALERT_WINDOW",
+        "RECORD_AUDIO"
       ],
       "enableProguardInReleaseBuilds": true,
       "enableHermes": true
