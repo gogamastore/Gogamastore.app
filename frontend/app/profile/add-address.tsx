@@ -50,30 +50,38 @@ export default function AddAddressScreen() {
   };
 
   const validateForm = () => {
-    if (!form.name.trim()) {
-      Alert.alert('Error', 'Nama penerima harus diisi');
+    console.log('🔍 Validating form...');
+    console.log('📝 Form data:', form);
+    
+    const requiredFields = ['name', 'phone', 'address', 'city', 'postalCode', 'province'];
+    const missingFields = [];
+    
+    for (const field of requiredFields) {
+      if (!form[field] || !form[field].toString().trim()) {
+        missingFields.push(field);
+      }
+    }
+    
+    if (missingFields.length > 0) {
+      console.log('❌ Missing required fields:', missingFields);
+      Alert.alert(
+        'Form Tidak Lengkap', 
+        `Mohon lengkapi field berikut:\n• ${missingFields.map(f => {
+          const fieldNames = {
+            name: 'Nama Penerima',
+            phone: 'Nomor Telepon',
+            address: 'Alamat Lengkap',
+            city: 'Kota',
+            postalCode: 'Kode Pos',
+            province: 'Provinsi'
+          };
+          return fieldNames[f] || f;
+        }).join('\n• ')}`
+      );
       return false;
     }
-    if (!form.phone.trim()) {
-      Alert.alert('Error', 'Nomor telepon harus diisi');
-      return false;
-    }
-    if (!form.address.trim()) {
-      Alert.alert('Error', 'Alamat lengkap harus diisi');
-      return false;
-    }
-    if (!form.city.trim()) {
-      Alert.alert('Error', 'Kota harus diisi');
-      return false;
-    }
-    if (!form.postalCode.trim()) {
-      Alert.alert('Error', 'Kode pos harus diisi');
-      return false;
-    }
-    if (!form.province.trim()) {
-      Alert.alert('Error', 'Provinsi harus diisi');
-      return false;
-    }
+    
+    console.log('✅ Form validation passed');
     return true;
   };
 
