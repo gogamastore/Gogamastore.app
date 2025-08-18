@@ -48,7 +48,9 @@
         "RECORD_AUDIO"
       ],
       "enableProguardInReleaseBuilds": true,
-      "enableHermes": true
+      "enableHermes": true,
+      "intentFilters": [],
+      "allowBackup": false
     },
     "web": {
       "bundler": "metro",
