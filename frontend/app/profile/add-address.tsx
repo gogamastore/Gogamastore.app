@@ -10,7 +10,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ToastAndroid,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -51,38 +50,30 @@ export default function AddAddressScreen() {
   };
 
   const validateForm = () => {
-    console.log('🔍 Validating form...');
-    console.log('📝 Form data:', form);
-    
-    const requiredFields = ['name', 'phone', 'address', 'city', 'postalCode', 'province'];
-    const missingFields = [];
-    
-    for (const field of requiredFields) {
-      if (!form[field] || !form[field].toString().trim()) {
-        missingFields.push(field);
-      }
-    }
-    
-    if (missingFields.length > 0) {
-      console.log('❌ Missing required fields:', missingFields);
-      Alert.alert(
-        'Form Tidak Lengkap', 
-        `Mohon lengkapi field berikut:\n• ${missingFields.map(f => {
-          const fieldNames = {
-            name: 'Nama Penerima',
-            phone: 'Nomor Telepon',
-            address: 'Alamat Lengkap',
-            city: 'Kota',
-            postalCode: 'Kode Pos',
-            province: 'Provinsi'
-          };
-          return fieldNames[f] || f;
-        }).join('\n• ')}`
-      );
+    if (!form.name.trim()) {
+      Alert.alert('Error', 'Nama penerima harus diisi');
       return false;
     }
-    
-    console.log('✅ Form validation passed');
+    if (!form.phone.trim()) {
+      Alert.alert('Error', 'Nomor telepon harus diisi');
+      return false;
+    }
+    if (!form.address.trim()) {
+      Alert.alert('Error', 'Alamat lengkap harus diisi');
+      return false;
+    }
+    if (!form.city.trim()) {
+      Alert.alert('Error', 'Kota harus diisi');
+      return false;
+    }
+    if (!form.postalCode.trim()) {
+      Alert.alert('Error', 'Kode pos harus diisi');
+      return false;
+    }
+    if (!form.province.trim()) {
+      Alert.alert('Error', 'Provinsi harus diisi');
+      return false;
+    }
     return true;
   };
 
@@ -102,8 +93,6 @@ export default function AddAddressScreen() {
 
   const handleSave = async () => {
     console.log('🔄 HandleSave called');
-    console.log('📝 Current form data:', form);
-    console.log('👤 Current user:', user?.uid);
     
     if (!validateForm()) {
       console.log('❌ Form validation failed');
@@ -129,9 +118,8 @@ export default function AddAddressScreen() {
         province: form.province.trim(),
         isDefault: form.isDefault
       };
-      
-      console.log('📦 Prepared address data:', addressData);
-      console.log('🔥 Calling userService.addUserAddress...');
+
+      console.log('📝 Saving address data:', addressData);
       
       const result = await userService.addUserAddress(user.uid, addressData);
       console.log('✅ Address saved successfully, ID:', result);
@@ -157,9 +145,8 @@ export default function AddAddressScreen() {
   const handleBack = () => {
     console.log('🔙 HandleBack called');
     
-    // Check if form has data
     const hasData = Object.values(form).some(value => 
-      typeof value === 'string' ? value.trim() : value === true
+      typeof value === 'string' ? value.trim() : value
     );
     
     console.log('📝 Form has data:', hasData);
@@ -172,17 +159,16 @@ export default function AddAddressScreen() {
           { text: 'Tetap di sini', style: 'cancel' },
           { 
             text: 'Keluar', 
-            style: 'destructive',
             onPress: () => {
-              console.log('🔙 User confirmed exit, navigating back');
-              router.back();
+              console.log('🔙 User confirmed exit, navigating back to address list');
+              router.replace('/profile/address');
             }
           }
         ]
       );
     } else {
-      console.log('🔙 No data in form, navigating back immediately');
-      router.back();
+      console.log('🔙 No data, navigating back directly to address list');
+      router.replace('/profile/address');
     }
   };
 
@@ -190,8 +176,7 @@ export default function AddAddressScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <MaterialIcons name="close" size={24} color="#666" />
-          <Text style={styles.cancelText}>Batal</Text>
+          <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Tambah Alamat</Text>
         <TouchableOpacity 
@@ -199,11 +184,9 @@ export default function AddAddressScreen() {
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
         >
-          {saving ? (
-            <ActivityIndicator size="small" color="#007AFF" />
-          ) : (
-            <Text style={styles.saveButtonText}>Simpan</Text>
-          )}
+          <Text style={[styles.saveButtonText, saving && styles.saveButtonTextDisabled]}>
+            {saving ? 'Menyimpan...' : 'Simpan'}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -333,15 +316,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E5EA',
   },
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 8,
-  },
-  cancelText: {
-    marginLeft: 4,
-    fontSize: 16,
-    color: '#666',
-    fontWeight: '500',
+    padding: 4,
   },
   headerTitle: {
     fontSize: 18,
@@ -349,23 +324,23 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     flex: 1,
     textAlign: 'center',
+    marginHorizontal: 16,
   },
   saveButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#007AFF',
-    minWidth: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   saveButtonDisabled: {
-    backgroundColor: '#C7C7CC',
+    opacity: 0.5,
   },
   saveButtonText: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+    color: '#007AFF',
+  },
+  saveButtonTextDisabled: {
+    color: '#8E8E93',
   },
   content: {
     flex: 1,
