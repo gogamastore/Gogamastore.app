@@ -102,6 +102,8 @@ export default function AddAddressScreen() {
 
   const handleSave = async () => {
     console.log('🔄 HandleSave called');
+    console.log('📝 Current form data:', form);
+    console.log('👤 Current user:', user?.uid);
     
     if (!validateForm()) {
       console.log('❌ Form validation failed');
@@ -127,8 +129,9 @@ export default function AddAddressScreen() {
         province: form.province.trim(),
         isDefault: form.isDefault
       };
-
-      console.log('📝 Saving address data:', addressData);
+      
+      console.log('📦 Prepared address data:', addressData);
+      console.log('🔥 Calling userService.addUserAddress...');
       
       const result = await userService.addUserAddress(user.uid, addressData);
       console.log('✅ Address saved successfully, ID:', result);
