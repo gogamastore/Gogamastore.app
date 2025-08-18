@@ -29,7 +29,7 @@
       "edgeToEdgeEnabled": true,
       "package": "store.gogama.app",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 5,
+      "versionCode": 6,
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
