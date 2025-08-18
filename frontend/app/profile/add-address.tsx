@@ -157,8 +157,9 @@ export default function AddAddressScreen() {
   const handleBack = () => {
     console.log('🔙 HandleBack called');
     
+    // Check if form has data
     const hasData = Object.values(form).some(value => 
-      typeof value === 'string' ? value.trim() : value
+      typeof value === 'string' ? value.trim() : value === true
     );
     
     console.log('📝 Form has data:', hasData);
@@ -171,16 +172,17 @@ export default function AddAddressScreen() {
           { text: 'Tetap di sini', style: 'cancel' },
           { 
             text: 'Keluar', 
+            style: 'destructive',
             onPress: () => {
-              console.log('🔙 User confirmed exit, navigating back to address list');
-              router.replace('/profile/address');
+              console.log('🔙 User confirmed exit, navigating back');
+              router.back();
             }
           }
         ]
       );
     } else {
-      console.log('🔙 No data, navigating back directly to address list');
-      router.replace('/profile/address');
+      console.log('🔙 No data in form, navigating back immediately');
+      router.back();
     }
   };
 
