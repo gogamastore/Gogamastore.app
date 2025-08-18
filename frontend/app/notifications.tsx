@@ -48,47 +48,105 @@ export default function NotificationsScreen() {
     setLoading(true);
     console.log('📱 Setting up real-time order notifications listener...');
 
-    // Listen to user's orders for status changes
-    const ordersQuery = query(
-      collection(db, 'orders'),
-      where('customerId', '==', user.uid),
-      orderBy('createdAt', 'desc')
-    );
+    // Try multiple queries to find orders with different field structures
+    const queries = [
+      // Try customerId field with created_at ordering
+      query(
+        collection(db, 'orders'),
+        where('customerId', '==', user.uid),
+        orderBy('created_at', 'desc')
+      ),
+      // Try userId field with created_at ordering
+      query(
+        collection(db, 'orders'),
+        where('userId', '==', user.uid),
+        orderBy('created_at', 'desc')
+      ),
+      // Try customerId field with updated_at ordering
+      query(
+        collection(db, 'orders'),
+        where('customerId', '==', user.uid),
+        orderBy('updated_at', 'desc')
+      ),
+      // Try userId field with updated_at ordering
+      query(
+        collection(db, 'orders'),
+        where('userId', '==', user.uid),
+        orderBy('updated_at', 'desc')
+      ),
+      // Fallback: simple query without ordering
+      query(
+        collection(db, 'orders'),
+        where('customerId', '==', user.uid)
+      )
+    ];
 
-    const unsubscribe = onSnapshot(
-      ordersQuery,
-      (snapshot) => {
-        const orderNotifications: OrderNotification[] = [];
-        
-        snapshot.forEach((doc) => {
-          const orderData = doc.data();
-          const orderId = doc.id;
-          
-          // Create notification based on order status
-          if (orderData.status || orderData.paymentStatus) {
-            const notification = createNotificationFromOrder(orderId, orderData);
-            if (notification) {
-              orderNotifications.push(notification);
+    let unsubscribeFunction = null;
+
+    // Try each query until one works
+    const tryQuery = async (queryIndex = 0) => {
+      if (queryIndex >= queries.length) {
+        console.error('❌ All notification queries failed');
+        setLoading(false);
+        Alert.alert('Error', 'Gagal memuat notifikasi pesanan. Pastikan koneksi internet Anda stabil.');
+        return;
+      }
+
+      const currentQuery = queries[queryIndex];
+      console.log(`🔍 Trying notification query ${queryIndex + 1}/${queries.length}`);
+
+      try {
+        unsubscribeFunction = onSnapshot(
+          currentQuery,
+          (snapshot) => {
+            console.log(`✅ Query ${queryIndex + 1} succeeded! Found ${snapshot.docs.length} orders`);
+            
+            const orderNotifications: OrderNotification[] = [];
+            
+            snapshot.forEach((doc) => {
+              const orderData = doc.data();
+              const orderId = doc.id;
+              
+              // Create notification based on order status
+              if (orderData.status || orderData.paymentStatus) {
+                const notification = createNotificationFromOrder(orderId, orderData);
+                if (notification) {
+                  orderNotifications.push(notification);
+                }
+              }
+            });
+
+            // Sort notifications by timestamp (newest first)
+            const sortedNotifications = orderNotifications.sort((a, b) => b.timestamp - a.timestamp);
+            
+            setNotifications(sortedNotifications);
+            setLoading(false);
+            
+            console.log(`✅ Loaded ${sortedNotifications.length} order notifications`);
+          },
+          (error) => {
+            console.warn(`⚠️ Query ${queryIndex + 1} failed:`, error.code, error.message);
+            
+            // If this query failed, try the next one
+            if (queryIndex < queries.length - 1) {
+              setTimeout(() => tryQuery(queryIndex + 1), 500);
+            } else {
+              console.error('❌ All notification queries failed');
+              setLoading(false);
+              Alert.alert('Error', 'Gagal memuat notifikasi pesanan');
             }
           }
-        });
-
-        // Sort notifications by timestamp (newest first)
-        const sortedNotifications = orderNotifications.sort((a, b) => b.timestamp - a.timestamp);
-        
-        setNotifications(sortedNotifications);
-        setLoading(false);
-        
-        console.log(`✅ Loaded ${sortedNotifications.length} order notifications`);
-      },
-      (error) => {
-        console.error('❌ Error listening to order notifications:', error);
-        setLoading(false);
-        Alert.alert('Error', 'Gagal memuat notifikasi pesanan');
+        );
+      } catch (error) {
+        console.warn(`⚠️ Query ${queryIndex + 1} setup failed:`, error);
+        setTimeout(() => tryQuery(queryIndex + 1), 500);
       }
-    );
+    };
 
-    return unsubscribe;
+    // Start trying queries
+    tryQuery();
+
+    return unsubscribeFunction;
   };
 
   const createNotificationFromOrder = (orderId: string, orderData: any): OrderNotification | null => {
