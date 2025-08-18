@@ -1,74 +1,100 @@
 <analysis>
-The AI engineer's trajectory showcases a complex recovery and development process. Initially, the task was to continue work on a polished Expo app, focusing on homepage and product catalog revamps. However, the conversation quickly pivoted to a critical issue: an unexpected code state after a forked task, where previous rollbacks were not reflected. A significant portion of the work involved a manual rollback to a specific previous version of the homepage and the 'trending' (formerly 'Katalog') page. This was followed by a precise re-implementation of the 'trending' page to correctly display trending products based on explicit user input and then resolving a 'search.tsx' file not found error by creating a new search page. The trajectory concluded with the successful removal of the category filter from the homepage, fulfilling the latest explicit user request. This iterative debugging and refinement process, driven by direct user feedback, highlights robust problem-solving and adaptability to unexpected environmental conditions.
+The AI engineer's trajectory demonstrates a highly iterative and responsive development process, adapting to shifting requirements and debugging complex issues within a live application context. Initially tasked with revamping existing features, the focus quickly pivoted to addressing critical rollback discrepancies and implementing new functionalities. Key challenges included rectifying unexpected code states, accurately re-implementing core pages based on user-provided code, and resolving persistent UI/navigation bugs. The engineer systematically added new features like a comprehensive top header with notification/cart badges, integrated real-time push notifications via Firebase, introduced a Katalog tab with product search and pagination, and enhanced the checkout flow with an address selector. Continuous debugging loops, often triggered by visual discrepancies or explicit user reports (e.g., layout back tab, address save failure, excessive permissions), highlight a robust problem-solving approach and meticulous attention to detail. The process concluded with the engineer addressing and optimizing application permissions for production builds.
 </analysis>
 
 <product_requirements>
-The  is an Expo React Native e-commerce mobile application replicating a website experience. It supports user authentication, product browsing, cart management, and profile customization. Key features include auto-sliding banners, brand directories, in-cart quantity controls, stock validation, and a comprehensive checkout process with payment proof uploads (Firebase Storage). Order management covers confirmation, history, and tracking, with recent updates on accurate order/payment statuses and order cancellation for Pending orders. Previous enhancements involved replacing  with custom modals, fixing app crashes, and building Android APK/AAB with custom branding. The initial major revamp aimed to dedicate the homepage to Trending Products and create a new Katalog tab for all products with pagination and search. However, due to rollback issues, the current state shifted: the homepage now displays all products without category filters, and a dedicated Trending tab displays trending products. A new search page has also been implemented.
+The  is an Expo React Native e-commerce mobile application featuring user authentication, product browsing, cart management, and profile customization. It includes auto-sliding banners, brand directories, in-cart quantity controls, stock validation, and a comprehensive checkout process with Firebase Storage-based payment proof uploads. Order management covers confirmation, history, and tracking, with recent updates on accurate order/payment statuses and order cancellation for Pending orders. Previous enhancements involved replacing  with custom modals, fixing crashes, and building Android APK/AAB with custom branding.
+
+Recent feature additions and modifications include:
+- **Homepage**: Displays 200 trending products (fallback to alphabetical if no trending data) with Produk Trending title, and dual Lihat Semua Produk buttons (top and bottom) navigating to the Katalog page, accompanied by a loading warning modal. The search bar has been removed from the homepage.
+- **Top Toolbar**: Implemented globally (except on cart page) with notification and cart icons, both displaying real-time badges for unread notifications and cart item counts.
+- **Katalog Tab**: A new bottom navigation tab, positioned next to Beranda, dedicated to displaying all products with full search functionality and pagination.
+- **Trending Tab**: Displays actual trending products, separate from the homepage's trending display.
+- **Search Page**: A newly implemented dedicated search page.
+- **Notifications Page**: Made functional and integrated with Firestore to display real-time order status updates (Confirmed, Processing, Shipped, Delivered, Cancelled) with navigation to order details.
+- **Checkout Page**: Enhanced with an Alamat Tersimpan (Saved Address) selector that auto-fills delivery information fields upon selection.
+- **Address Management**: The Tambah Alamat (Add Address) functionality was debugged and fixed to ensure addresses can be saved and navigation works correctly.
+- **Builds**: Ability to create APK and AAB production builds.
 </product_requirements>
 
 <key_technical_concepts>
-- **Frontend**: Expo, React Native, Expo Router, React Navigation, Lottie (animations).
-- **Backend**: Firebase (Authentication, Firestore, Storage).
-- **UI/UX**: Flexbox, , custom  components.
-- **Data Management**: Firebase Firestore queries (pagination, , ), .
-- **Build System**: EAS Build (APK, AAB), ProGuard, Hermes engine.
+- **Frontend**: Expo, React Native, Expo Router (file-based routing), React Navigation.
+- **Backend/Data**: Firebase (Firestore for data, Authentication, Storage), Firebase Cloud Messaging (FCM) V1 for push notifications.
+- **UI/UX**: Custom components (Modal, TopHeader, AddressSelector, LoadingWarningModal), Flexbox for layout, , safe areas.
+- **Build/Deployment**: EAS Build (APK, AAB profiles), ProGuard, Hermes engine.
 </key_technical_concepts>
 
 <code_architecture>
 
 
--   ****: Initializes Firebase SDK. No recent changes.
--   ****: Centralized service for Firebase Firestore operations.
-    -   **Summary**: Contains various data fetching and manipulation functions for Firestore.
-    -   **Changes**:  function was initially added, then removed during rollback, and finally re-added to correctly fetch products from the  collection.  is still present and used for general product display.
--   ****: Home screen.
-    -   **Summary**: Displays primary product listings, banners, and brands.
-    -   **Changes**: Initially transformed to display trending products and remove category filters. However, due to a rollback request, it was restored to show all products with category filters. Subsequently, the category filter section (imports, states, functions, UI) was completely removed, making it display all products without filtering.
--   ****: Shopping cart screen.
-    -   **Summary**: Manages cart items, quantity updates, and removal.
-    -   **Changes**: No changes in the provided trajectory. (Original changes involved  replacement and  logic.)
--   ****: Product detail screen.
-    -   **Summary**: Displays individual product details.
-    -   **Changes**: No changes in the provided trajectory. (Original changes involved HTML element replacement.)
--   ****: Checkout form.
-    -   **Summary**: Handles checkout process, including payment method and proof upload.
-    -   **Changes**: No changes in the provided trajectory. (Original changes involved HTML element replacement and payment flow updates.)
--   ****: Order confirmation details.
-    -   **Summary**: Displays order confirmation and payment proof status.
-    -   **Changes**: No changes in the provided trajectory. (Original changes involved  replacement and payment proof logic.)
--   ****: Trending products screen. (Renamed from  during rollback).
-    -   **Summary**: Intended to display trending products.
-    -   **Changes**: During rollback,  was deleted and  was created. Initially, the AI made it display categories. Following user correction, it was completely re-implemented to fetch and display actual trending products from the  collection in a 2-column grid with pull-to-refresh and empty states, using the exact code provided by the user.
--   ****: Main app tab layout.
-    -   **Summary**: Defines the main tab navigation.
-    -   **Changes**: During rollback, the Katalog tab name was changed back to Trending with its corresponding icon.
--   ****: Product search screen. (Newly created)
-    -   **Summary**: Provides comprehensive search functionality across products.
-    -   **Changes**: Newly created to resolve a file not found error. It implements a search bar, live search logic, displays results in a 2-column grid, handles loading/empty states, and navigates to product details.
+- ****: Expo application configuration.
+    - **Summary**: Defines app name, icons, Android/iOS configurations, and plugins.
+    - **Changes**: Updated , , enabled , . Explicit  array added and  plugin configured to optimize and minimize Android permissions for production builds.
+- ****: EAS Build configuration.
+    - **Summary**: Defines build profiles (e.g., , ) for different environments.
+    - **Changes**: Used to trigger production and APK builds.
+- ****: Home screen.
+    - **Summary**: Displays trending products and navigates to the full catalog.
+    - **Changes**: Transformed to display products from  collection (with fallback to alphabetical if empty). Removed category filters and the search bar. Added two Lihat Semua Produk buttons (one in header, one at bottom) that navigate to the Katalog page and show a . Removed subtitle and product count text.
+- ****: Main app tab layout.
+    - **Summary**: Defines the main tab navigation structure.
+    - **Changes**: Included the  component at the top of the tab navigation. Added a new  for the Katalog tab, positioning it after Beranda and ensuring the correct icon and title.
+- ****: Newly created full product catalog screen.
+    - **Summary**: Displays all products with search functionality and pagination.
+    - **Changes**: Created to replicate and enhance the functionality previously intended for the homepage (all products, search, pagination). It now correctly implements pagination to navigate through all products.
+- ****: Newly created notifications screen.
+    - **Summary**: Displays real-time order status notifications from Firestore.
+    - **Changes**: Implemented with  listener to  collection, mapping order and payment statuses to user-friendly notifications with proper timestamps, icons, and navigation to order details.
+- ****: Checkout form screen.
+    - **Summary**: Handles checkout, delivery information, and payment.
+    - **Changes**: Integrated  component. Added state and logic to auto-fill delivery form fields when a saved address is selected, significantly streamlining the checkout process.
+- ****: Add/edit address screen.
+    - **Summary**: Allows users to add and manage delivery addresses.
+    - **Changes**: Multiple fixes to  and  functions to resolve issues where the page would get stuck or navigation would fail after saving an address. Added  for saving state and improved error handling, ensuring robust address management.
+- ****: Newly created global header component.
+    - **Summary**: Displays notification and cart icons with real-time badges.
+    - **Changes**: Created to centralize the top navigation bar. Integrates with  and cart state to show dynamic badges. Includes navigation to  and .
+- ****: Newly created address selection modal.
+    - **Summary**: Provides a user interface to select from saved addresses.
+    - **Changes**: Created to be integrated into the checkout flow, allowing users to pick a pre-saved address which then auto-fills the delivery form.
+- ****: Newly created warning modal component.
+    - **Summary**: Displays a warning message before navigating to a heavy-loading page.
+    - **Changes**: Created to be used on the homepage before navigating to the full Katalog page, informing users about potential loading delays.
+- ****: Newly created context for notifications.
+    - **Summary**: Manages notification state and provides access to notification data.
+    - **Changes**: Created to integrate push notifications and real-time badge counts, allowing different parts of the app to interact with notification data.
+- ****: Centralized service for Firebase Firestore operations.
+    - **Summary**: Contains various data fetching and manipulation functions.
+    - **Changes**:  (for the old Trending tab) and  (initially for homepage) were modified or deprecated.  was added/refined to fetch products specifically for the homepage's Produk Trending section, pulling from the  collection and handling fallbacks. Logic within  was re-verified and debugged.
+- ****: Newly created service for push notifications.
+    - **Summary**: Handles registration for push notifications and sending notifications.
+    - **Changes**: Created to encapsulate Firebase Cloud Messaging (FCM) integration, managing device tokens and notification sending logic.
+- ****: Newly created service for order-related notifications.
+    - **Summary**: Manages the logic for generating and sending specific notifications based on order status changes.
+    - **Changes**: Created to provide structured notification content for different order lifecycle events (confirmed, shipped, etc.), integrating with Firestore listeners.
 </code_architecture>
 
 <pending_tasks>
-- Implementing Push notifications for order updates.
-- Developing Advanced order tracking with delivery estimates.
-- Implementing Order cancellation and refund flows (partial implementation done for pending orders).
-- Building an Admin dashboard for order management.
-- Test the currently implemented changes in the web preview (homepage, trending products, search).
+- Advanced order tracking with delivery estimates.
+- Order cancellation and refund flows (partial implementation done for pending orders).
+- Admin dashboard for order management.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer completed a series of critical fixes and feature adjustments stemming from a user-requested rollback and subsequent issues.
+Immediately before this summary request, the AI engineer was addressing a critical issue reported by the user regarding an excessive number of Android permissions (32 permissions in version 1.2.0 AAB build, up from 11 in version 1.0.0).
 
-The work sequence involved:
-1.  **Addressing Rollback Discrepancy**: The user reported that a previous rollback was not fully applied due to the forked task environment. The AI initiated a manual rollback process.
-2.  **Homepage Rollback & Refinement ()**: Initially, the homepage was intended to show Trending Products but was rolled back to its prior state (displaying All Products with category filters). Following the very latest user instruction, the AI then successfully removed *all* category filter functionality (imports, states, functions, and UI components) from this page, leaving it to display all products directly.
-3.  **Trending Page Re-implementation ()**: After the rollback, the  file (which replaced ) was initially set up incorrectly by the AI to show categories. The user provided explicit code to correct this. The AI then re-implemented  to correctly fetch and display products from the  Firestore collection using  from . It features a 2-column grid, pull-to-refresh, and detailed product display.
-4.  ** File Creation ()**: An  error for  was encountered. The AI resolved this by creating a new  file, implementing a full-featured product search page with live search, result display, and consistent UI.
-5.  ** Updates**: The  function was re-added/refined in this service to support the corrected  page.
-6.  ** Update**: The Katalog tab name was correctly reverted to Trending as part of the rollback.
+The current work sequence involved:
+1.  **Permission Analysis (Chat 464)**: The AI identified that the new permissions were primarily due to the  package, badge functionality for various launchers, and Firebase Cloud Messaging (FCM) integration.
+2.  **Permission Optimization ( edits, Chat 465-477)**:
+    *   The AI started by examining  to filter unnecessary permissions.
+    *   Added an explicit  array under  to list only required permissions.
+    *   Configured the  plugin in  to potentially control permission requests more granularly (, ).
+    *   Updated the app  to  and  to  in  to reflect the changes for the new optimized build.
+3.  **Initiating Optimized Build (Chat 478)**: The AI was in the process of initiating a new AAB build with the updated configuration, aiming to reduce the number of requested permissions for the Google Play Console submission.
 
-The application's current state is that the homepage () now displays all products without category filters, the Trending tab () correctly displays trending products from Firestore, and a new  page provides comprehensive product search. All identified errors have been resolved, and the frontend is running.
+The goal of this immediate work is to provide a cleaner, more secure build with minimal necessary permissions, addressing the user's concern before final deployment.
 </current_work>
 
 <optional_next_step>
-Test the implemented changes in the web preview to verify the updated homepage (no categories), the correct display of trending products on the Trending page, and the functionality of the new search page.
+The next step is to initiate the optimized AAB build (version 1.2.1, versionCode 6) with reduced permissions.
 </optional_next_step>
