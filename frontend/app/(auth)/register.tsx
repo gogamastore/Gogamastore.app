@@ -50,8 +50,30 @@ export default function RegisterScreen() {
         formData.password
       );
       
-      Alert.alert('Berhasil', 'Registrasi berhasil! Anda sekarang sudah login.');
-      // Navigation will be handled by AuthContext
+      // Show success message and redirect to login
+      Alert.alert(
+        'Berhasil', 
+        'Registrasi berhasil! Anda akan diarahkan ke halaman login.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Clear form data
+              setFormData({
+                nama_lengkap: '',
+                email: '',
+                nomor_whatsapp: '',
+                password: '',
+              });
+              
+              // Navigate to login page
+              setTimeout(() => {
+                router.push('/(auth)/login');
+              }, 500);
+            }
+          }
+        ]
+      );
     } catch (error) {
       console.error('Register error:', error);
       let errorMessage = 'Registrasi gagal';
