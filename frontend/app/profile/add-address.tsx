@@ -184,7 +184,8 @@ export default function AddAddressScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
+          <MaterialIcons name="close" size={24} color="#666" />
+          <Text style={styles.cancelText}>Batal</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Tambah Alamat</Text>
         <TouchableOpacity 
@@ -192,9 +193,11 @@ export default function AddAddressScreen() {
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
         >
-          <Text style={[styles.saveButtonText, saving && styles.saveButtonTextDisabled]}>
-            {saving ? 'Menyimpan...' : 'Simpan'}
-          </Text>
+          {saving ? (
+            <ActivityIndicator size="small" color="#007AFF" />
+          ) : (
+            <Text style={styles.saveButtonText}>Simpan</Text>
+          )}
         </TouchableOpacity>
       </View>
 
