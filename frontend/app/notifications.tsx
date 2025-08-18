@@ -152,7 +152,40 @@ export default function NotificationsScreen() {
   const createNotificationFromOrder = (orderId: string, orderData: any): OrderNotification | null => {
     const status = orderData.status?.toLowerCase();
     const paymentStatus = orderData.paymentStatus?.toLowerCase();
-    const timestamp = orderData.updatedAt?.seconds * 1000 || orderData.createdAt?.seconds * 1000 || Date.now();
+    
+    // Handle various timestamp formats
+    let timestamp = Date.now(); // Default to current time
+    
+    if (orderData.updated_at) {
+      if (typeof orderData.updated_at === 'string') {
+        timestamp = new Date(orderData.updated_at).getTime();
+      } else if (orderData.updated_at.seconds) {
+        timestamp = orderData.updated_at.seconds * 1000;
+      } else if (orderData.updated_at.toDate) {
+        timestamp = orderData.updated_at.toDate().getTime();
+      }
+    } else if (orderData.created_at) {
+      if (typeof orderData.created_at === 'string') {
+        timestamp = new Date(orderData.created_at).getTime();
+      } else if (orderData.created_at.seconds) {
+        timestamp = orderData.created_at.seconds * 1000;
+      } else if (orderData.created_at.toDate) {
+        timestamp = orderData.created_at.toDate().getTime();
+      }
+    } else if (orderData.createdAt) {
+      if (typeof orderData.createdAt === 'string') {
+        timestamp = new Date(orderData.createdAt).getTime();
+      } else if (orderData.createdAt.seconds) {
+        timestamp = orderData.createdAt.seconds * 1000;
+      } else if (orderData.createdAt.toDate) {
+        timestamp = orderData.createdAt.toDate().getTime();
+      }
+    }
+    
+    // Make sure timestamp is valid
+    if (isNaN(timestamp)) {
+      timestamp = Date.now();
+    }
     
     let title = '';
     let message = '';
@@ -196,6 +229,10 @@ export default function NotificationsScreen() {
             case 'pending':
               title = '⏳ Menunggu Pembayaran';
               message = `Silakan selesaikan pembayaran untuk pesanan #${orderId.slice(-6)}`;
+              break;
+            case 'unpaid':
+              title = '💳 Belum Dibayar';
+              message = `Pesanan #${orderId.slice(-6)} masih menunggu pembayaran`;
               break;
             case 'failed':
               title = '❌ Pembayaran Gagal';
