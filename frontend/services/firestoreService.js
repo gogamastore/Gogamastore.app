@@ -652,36 +652,29 @@ export const userService = {
   async updateUserAddress(userId, addressId, addressData) {
     try {
       console.log('📝 Updating address:', addressId, 'for userId:', userId);
-      const userDocRef = doc(db, 'user', userId);
-      const userDoc = await getDoc(userDocRef);
       
-      if (userDoc.exists()) {
-        const currentAddresses = userDoc.data().addresses || [];
-        const addressIndex = currentAddresses.findIndex(addr => addr.id === addressId);
-        
-        if (addressIndex !== -1) {
-          // If setting as default, make others non-default
-          if (addressData.isDefault) {
-            currentAddresses.forEach(addr => addr.isDefault = false);
-          }
-          
-          // Update the address
-          currentAddresses[addressIndex] = {
-            ...currentAddresses[addressIndex],
-            ...addressData,
-            updated_at: new Date().toISOString()
-          };
-          
-          await updateDoc(userDocRef, {
-            addresses: currentAddresses,
-            updated_at: new Date().toISOString()
+      // Reference to specific address document in subcollection
+      const addressRef = doc(db, 'user', userId, 'addresses', addressId);
+      
+      // If setting as default, update other addresses to non-default
+      if (addressData.isDefault) {
+        const currentAddresses = await this.getUserAddresses(userId);
+        const updatePromises = currentAddresses
+          .filter(addr => addr.id !== addressId && addr.isDefault)
+          .map(async (addr) => {
+            const addrRef = doc(db, 'user', userId, 'addresses', addr.id);
+            await updateDoc(addrRef, { isDefault: false });
           });
-          
-          console.log('✅ Address updated successfully');
-        } else {
-          throw new Error('Address not found');
-        }
+        await Promise.all(updatePromises);
       }
+      
+      // Update the specific address
+      await updateDoc(addressRef, {
+        ...addressData,
+        updated_at: new Date().toISOString()
+      });
+      
+      console.log('✅ Address updated successfully');
     } catch (error) {
       console.error('Error updating user address:', error);
       throw error;
@@ -691,20 +684,12 @@ export const userService = {
   async deleteUserAddress(userId, addressId) {
     try {
       console.log('🗑️ Deleting address:', addressId, 'for userId:', userId);
-      const userDocRef = doc(db, 'user', userId);
-      const userDoc = await getDoc(userDocRef);
       
-      if (userDoc.exists()) {
-        const currentAddresses = userDoc.data().addresses || [];
-        const updatedAddresses = currentAddresses.filter(addr => addr.id !== addressId);
-        
-        await updateDoc(userDocRef, {
-          addresses: updatedAddresses,
-          updated_at: new Date().toISOString()
-        });
-        
-        console.log('✅ Address deleted successfully');
-      }
+      // Reference to specific address document in subcollection
+      const addressRef = doc(db, 'user', userId, 'addresses', addressId);
+      await deleteDoc(addressRef);
+      
+      console.log('✅ Address deleted successfully');
     } catch (error) {
       console.error('Error deleting user address:', error);
       throw error;
@@ -714,25 +699,17 @@ export const userService = {
   async setDefaultAddress(userId, addressId) {
     try {
       console.log('⭐ Setting default address:', addressId, 'for userId:', userId);
-      const userDocRef = doc(db, 'user', userId);
-      const userDoc = await getDoc(userDocRef);
       
-      if (userDoc.exists()) {
-        const currentAddresses = userDoc.data().addresses || [];
-        
-        // Set all addresses to non-default, then set the selected one as default
-        const updatedAddresses = currentAddresses.map(addr => ({
-          ...addr,
-          isDefault: addr.id === addressId
-        }));
-        
-        await updateDoc(userDocRef, {
-          addresses: updatedAddresses,
-          updated_at: new Date().toISOString()
-        });
-        
-        console.log('✅ Default address updated successfully');
-      }
+      // First, set all addresses to non-default
+      const currentAddresses = await this.getUserAddresses(userId);
+      const updatePromises = currentAddresses.map(async (addr) => {
+        const addrRef = doc(db, 'user', userId, 'addresses', addr.id);
+        await updateDoc(addrRef, { isDefault: addr.id === addressId });
+      });
+      
+      await Promise.all(updatePromises);
+      
+      console.log('✅ Default address updated successfully');
     } catch (error) {
       console.error('Error setting default address:', error);
       throw error;
