@@ -327,7 +327,15 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E5EA',
   },
   backButton: {
-    padding: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 8,
+  },
+  cancelText: {
+    marginLeft: 4,
+    fontSize: 16,
+    color: '#666',
+    fontWeight: '500',
   },
   headerTitle: {
     fontSize: 18,
@@ -335,23 +343,23 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     flex: 1,
     textAlign: 'center',
-    marginHorizontal: 16,
   },
   saveButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 8,
+    backgroundColor: '#007AFF',
+    minWidth: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   saveButtonDisabled: {
-    opacity: 0.5,
+    backgroundColor: '#C7C7CC',
   },
   saveButtonText: {
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-    color: '#007AFF',
-  },
-  saveButtonTextDisabled: {
-    color: '#8E8E93',
   },
   content: {
     flex: 1,
