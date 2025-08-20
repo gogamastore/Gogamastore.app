@@ -112,7 +112,7 @@ export default function RegisterScreen() {
           <View style={styles.logoContainer}>
             <Image
               source={{
-                uri: 'https://firebasestorage.googleapis.com/v0/b/orderflow-r7jsk.firebasestorage.app/o/ic_gogama_logo.png?alt=media&token=firebase-shop',
+                uri: 'https://customer-assets.emergentagent.com/job_gogama-ecommerce/artifacts/16jucfmy_GO.png',
               }}
               style={styles.logo}
               resizeMode="contain"
