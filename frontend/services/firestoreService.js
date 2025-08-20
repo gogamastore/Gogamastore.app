@@ -730,6 +730,72 @@ export const brandService = {
       console.error('Error getting brands:', error);
       throw error;
     }
+  },
+
+  // Get brand by ID
+  async getBrandById(brandId) {
+    try {
+      console.log('🏢 Fetching brand details for brandId:', brandId);
+      const docRef = doc(db, 'brands', brandId);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const brandData = {
+          id: docSnap.id,
+          ...docSnap.data()
+        };
+        console.log('✅ Brand data retrieved:', brandData);
+        return brandData;
+      } else {
+        throw new Error('Brand not found');
+      }
+    } catch (error) {
+      console.error('Error getting brand by ID:', error);
+      throw error;
+    }
+  },
+
+  // Get products by brand ID
+  async getProductsByBrandId(brandId) {
+    try {
+      console.log('📦 Fetching products for brandId:', brandId);
+      const q = query(
+        collection(db, 'products'),
+        where('brandId', '==', brandId)
+      );
+      const querySnapshot = await getDocs(q);
+      
+      const products = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Map fields to match our app expectations
+          nama: data.name || data.nama || '',
+          deskripsi: data.description || data.deskripsi || '',
+          gambar: data.image || data.gambar || '',
+          kategori: data.category || data.kategori || '',
+          harga: this.parsePrice(data.price || data.harga),
+          stok: typeof (data.stock || data.stok) !== 'undefined' ? (data.stock || data.stok) : 0
+        };
+      });
+      
+      console.log(`✅ Found ${products.length} products for brand ${brandId}`);
+      return products;
+    } catch (error) {
+      console.error('Error getting products by brand ID:', error);
+      throw error;
+    }
+  },
+
+  // Parse price helper function (moved from productService for brand service use)
+  parsePrice(priceString) {
+    if (typeof priceString === 'number') return priceString;
+    if (typeof priceString === 'string') {
+      // Remove "Rp", dots, commas and convert to number
+      return parseInt(priceString.replace(/[Rp\s\.,]/g, '')) || 0;
+    }
+    return 0;
   }
 };
 
