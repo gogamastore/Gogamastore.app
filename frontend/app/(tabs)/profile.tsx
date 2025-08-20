@@ -155,6 +155,14 @@ export default function ProfileScreen() {
       onPress: () => router.push('/profile/address'),
     },
     {
+      title: 'Contact',
+      subtitle: 'Hubungi kami dan akun official',
+      icon: 'phone',
+      iconColor: '#25D366',
+      backgroundColor: '#F0FFF4',
+      onPress: () => router.push('/contact'),
+    },
+    {
       title: 'Pusat Bantuan',
       subtitle: 'FAQ dan dukungan pelanggan',
       icon: 'help-outline',
