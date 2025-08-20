@@ -135,7 +135,7 @@ export default function HomeScreen() {
         // Fallback to all products sorted by name
         const fallbackData = await productService.getAllProducts();
         const sortedData = fallbackData.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
-        setProducts(sortedData.slice(0, 200));
+        setProducts(sortedData.slice(0, 14));
         setCurrentPage(1);
         console.log('✅ Fallback products loaded for homepage');
         return;
