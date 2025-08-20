@@ -140,7 +140,13 @@ export default function ContactScreen() {
         <View style={styles.heroSection}>
           <View style={styles.heroContent}>
             <View style={styles.logoContainer}>
-              <MaterialIcons name="store" size={48} color="#fff" />
+              <Image 
+                source={{
+                  uri: 'https://customer-assets.emergentagent.com/job_gogama-ecommerce/artifacts/6ny9vxnp_ic_gogama_logo.png'
+                }}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
             </View>
             <Text style={styles.heroTitle}>Gogama Store</Text>
             <Text style={styles.heroSubtitle}>Hubungi kami melalui berbagai platform</Text>
