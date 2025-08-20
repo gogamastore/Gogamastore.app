@@ -136,12 +136,7 @@ export default function ContactScreen() {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Hero Section */}
-        <LinearGradient
-          colors={['#075664', '#2aadc4']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.heroSection}
-        >
+        <View style={styles.heroSection}>
           <View style={styles.heroContent}>
             <View style={styles.logoContainer}>
               <MaterialIcons name="store" size={48} color="#fff" />
@@ -149,7 +144,7 @@ export default function ContactScreen() {
             <Text style={styles.heroTitle}>Gogama Store</Text>
             <Text style={styles.heroSubtitle}>Hubungi kami melalui berbagai platform</Text>
           </View>
-        </LinearGradient>
+        </View>
 
         {/* Social Media Contacts */}
         {renderContactSection('Akun Official Kami :', socialMediaContacts, '#f8f9fa')}
