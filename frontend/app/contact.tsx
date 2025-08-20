@@ -7,12 +7,9 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
-  ImageBackground,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 
 interface ContactItem {
   title: string;
