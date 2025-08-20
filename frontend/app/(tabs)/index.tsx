@@ -150,7 +150,7 @@ export default function HomeScreen() {
       console.log('📋 Found trending product IDs:', trendingData.length);
       
       // Get product details - limit to 14 products for homepage display
-      const productPromises = trendingData.slice(0, 200).map(async (trending) => {
+      const productPromises = trendingData.slice(0, 14).map(async (trending) => {
         try {
           console.log('🔍 Fetching product data for ID:', trending.productId);
           const productData = await productService.getProductById(trending.productId);
