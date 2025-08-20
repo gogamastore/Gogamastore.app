@@ -1059,14 +1059,72 @@ export const orderService = {
   }
 };
 
-// Initialize sample data - Updated to match your structure
-export const initializeSampleData = async () => {
-  // This function is no longer used as data should come from existing Firebase collections
-  // Banners should be managed from /banners/{bannerId} collection
-  // Brands should be managed from /brands/{brandId} collection
-  // Products should be managed from /products/{productId} collection
-  // Categories should be managed from /product_categories/{categoryId} collection
-  console.log('Sample data initialization disabled - using existing Firebase data');
+// Promotions Service - New service for checking promotions/discounts
+export const promotionService = {
+  // Check if products have active promotions
+  async checkProductPromotions(productIds) {
+    try {
+      console.log('🎉 Checking promotions for products:', productIds);
+      
+      if (!productIds || productIds.length === 0) {
+        return {};
+      }
+
+      // Get all promotions
+      const promotionsQuery = query(collection(db, 'promotions'));
+      const promotionsSnapshot = await getDocs(promotionsQuery);
+      
+      const activePromotions = {};
+      const currentDate = new Date();
+      
+      promotionsSnapshot.forEach((doc) => {
+        const promoData = doc.data();
+        
+        // Check if promotion is active
+        const startDate = promoData.startDate?.toDate() || new Date(promoData.startDate);
+        const endDate = promoData.endDate?.toDate() || new Date(promoData.endDate);
+        const isActive = promoData.active && currentDate >= startDate && currentDate <= endDate;
+        
+        if (isActive && promoData.productIds && Array.isArray(promoData.productIds)) {
+          // Check which products are in this promotion
+          promoData.productIds.forEach(productId => {
+            if (productIds.includes(productId)) {
+              activePromotions[productId] = {
+                id: doc.id,
+                ...promoData,
+                discountPrice: promoData.discountPrice || 0,
+                discountPercentage: promoData.discountPercentage || 0,
+                promoText: promoData.promoText || 'Promo'
+              };
+            }
+          });
+        }
+      });
+      
+      console.log(`✅ Found promotions for ${Object.keys(activePromotions).length} products`);
+      return activePromotions;
+    } catch (error) {
+      console.error('Error checking product promotions:', error);
+      return {};
+    }
+  },
+
+  // Get single promotion by ID
+  async getPromotionById(promoId) {
+    try {
+      const docRef = doc(db, 'promotions', promoId);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error getting promotion by ID:', error);
+      return null;
+    }
+  }
 };
 
 // Bank Account Service - New service for dynamic bank account management
