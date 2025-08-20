@@ -160,7 +160,7 @@ export default function ProfileScreen() {
       icon: 'help-outline',
       iconColor: '#5856D6',
       backgroundColor: '#F5F4FF',
-      onPress: () => Alert.alert('Bantuan', 'Hubungi customer service untuk bantuan'),
+      onPress: () => router.push('/help-center'),
     },
     {
       title: 'Tentang Aplikasi',
