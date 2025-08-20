@@ -391,7 +391,12 @@ export default function HomeScreen() {
             {brands.map((brand) => {
               console.log('Rendering brand:', brand);
               return (
-                <TouchableOpacity key={brand.id} style={styles.brandCard}>
+                <TouchableOpacity 
+                  key={brand.id} 
+                  style={styles.brandCard}
+                  onPress={() => router.push(`/brands/${brand.id}`)}
+                  activeOpacity={0.7}
+                >
                   {(brand.logoUrl || brand.logo || brand.gambar || brand.image) ? (
                     <Image 
                       source={{ uri: brand.logoUrl || brand.logo || brand.gambar || brand.image }} 
