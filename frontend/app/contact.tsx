@@ -157,14 +157,9 @@ export default function ContactScreen() {
 
         {/* Customer Service Section */}
         <View style={styles.section}>
-          <LinearGradient
-            colors={['#075664', '#2aadc4']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.sectionHeader}
-          >
+          <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Customer Service 24/7</Text>
-          </LinearGradient>
+          </View>
           
           <View style={[styles.contactsContainer, { backgroundColor: '#e6f3ff' }]}>
             <TouchableOpacity
