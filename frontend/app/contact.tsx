@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 40,
     alignItems: 'center',
+    backgroundColor: '#2aadc4', // Gradient replacement
   },
   heroContent: {
     alignItems: 'center',
@@ -310,6 +311,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     paddingHorizontal: 20,
     paddingVertical: 16,
+    backgroundColor: '#2aadc4', // Gradient replacement
   },
   sectionTitle: {
     fontSize: 18,
