@@ -93,14 +93,9 @@ export default function ContactScreen() {
 
   const renderContactSection = (title: string, contacts: ContactItem[], backgroundColor: string) => (
     <View style={styles.section}>
-      <LinearGradient
-        colors={['#075664', '#2aadc4']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.sectionHeader}
-      >
+      <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>{title}</Text>
-      </LinearGradient>
+      </View>
       
       <View style={[styles.contactsContainer, { backgroundColor }]}>
         {contacts.map((contact, index) => (
