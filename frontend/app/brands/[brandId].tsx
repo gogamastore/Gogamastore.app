@@ -474,6 +474,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  placeholderText: {
+    fontSize: 10,
+    color: '#ccc',
+    marginTop: 4,
+    textAlign: 'center',
+  },
   promoBadge: {
     position: 'absolute',
     top: 8,
