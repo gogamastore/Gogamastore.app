@@ -170,10 +170,20 @@ export default function BrandDetailScreen() {
         {/* Product Image */}
         <View style={styles.imageContainer}>
           {item.gambar ? (
-            <Image source={{ uri: item.gambar }} style={styles.productImage} />
+            <Image 
+              source={{ uri: item.gambar }} 
+              style={styles.productImage}
+              onError={(error) => {
+                console.log('❌ Failed to load image for product:', item.nama, 'URL:', item.gambar, 'Error:', error);
+              }}
+              onLoad={() => {
+                console.log('✅ Successfully loaded image for product:', item.nama);
+              }}
+            />
           ) : (
             <View style={[styles.productImage, styles.placeholderImage]}>
               <MaterialIcons name="image" size={40} color="#ccc" />
+              <Text style={styles.placeholderText}>Tidak ada gambar</Text>
             </View>
           )}
           
