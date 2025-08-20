@@ -767,13 +767,19 @@ export const brandService = {
       
       const products = querySnapshot.docs.map(doc => {
         const data = doc.data();
+        console.log('📦 Raw product data:', data);
+        
+        // Get image with multiple fallbacks
+        const imageUrl = data.image || data.gambar || data.imageUrl || data.photo || data.thumbnail || '';
+        console.log(`📷 Image URL for product ${doc.id}:`, imageUrl);
+        
         return {
           id: doc.id,
           ...data,
           // Map fields to match our app expectations
           nama: data.name || data.nama || '',
           deskripsi: data.description || data.deskripsi || '',
-          gambar: data.image || data.gambar || '',
+          gambar: imageUrl,
           kategori: data.category || data.kategori || '',
           harga: this.parsePrice(data.price || data.harga),
           stok: typeof (data.stock || data.stok) !== 'undefined' ? (data.stock || data.stok) : 0
