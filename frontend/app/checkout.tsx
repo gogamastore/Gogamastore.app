@@ -212,8 +212,37 @@ export default function CheckoutScreen() {
     
     try {
       setProcessing(true);
+      console.log('🛒 Starting order processing...');
       
-      // Prepare order data according to your Firestore structure
+      // Step 1: Validate and update product stocks FIRST
+      console.log('📦 Step 1: Validating and updating product stocks...');
+      
+      // Prepare products for stock update
+      const productsForStockUpdate = cart.items.map(item => ({
+        productId: item.product_id || item.id,
+        name: item.nama,
+        quantity: item.quantity
+      }));
+      
+      console.log('📋 Products to update stock:', productsForStockUpdate);
+      
+      // Update stocks - this will throw error if insufficient stock
+      try {
+        const stockUpdateResults = await productService.batchUpdateStock(productsForStockUpdate);
+        console.log('✅ Stock update successful:', stockUpdateResults);
+      } catch (stockError) {
+        console.error('❌ Stock update failed:', stockError);
+        Alert.alert(
+          'Stok Tidak Mencukupi', 
+          stockError.message || 'Stok produk tidak mencukupi untuk pesanan ini. Silakan kurangi jumlah atau hapus produk dari keranjang.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+      
+      console.log('📝 Step 2: Creating order after successful stock update...');
+      
+      // Step 2: Create order data (only after successful stock update)
       const selectedShippingOption = getSelectedShippingOption();
       const subtotal = calculateSubtotal();
       const shippingCost = calculateShippingCost();
@@ -228,9 +257,9 @@ export default function CheckoutScreen() {
         },
         customerId: user.uid,
         date: new Date(),
-        paymentMethod: selectedPayment, // Set payment method: "bank_transfer" or "cod"
+        paymentMethod: selectedPayment,
         paymentProofUrl: "",
-        paymentStatus: "Unpaid", // Default payment status (changed from "Pending")
+        paymentStatus: "Unpaid",
         productIds: cart.items.map(item => item.product_id || item.id),
         products: cart.items.map(item => ({
           productId: item.product_id || item.id,
@@ -243,18 +272,50 @@ export default function CheckoutScreen() {
         shippingMethod: selectedShippingOption?.name || 'Pengiriman oleh Kurir',
         status: "Pending",
         subtotal: subtotal,
-        total: total
+        total: total,
+        stockUpdated: true, // Flag to indicate stock was updated
+        stockUpdateTimestamp: new Date().toISOString()
       };
       
-      const orderId = await orderService.createOrder(orderData);
+      console.log('💾 Creating order with data:', orderData);
       
-      // Clear cart and go directly to order history
+      // Step 3: Create order in Firestore
+      const orderId = await orderService.createOrder(orderData);
+      console.log('✅ Order created successfully with ID:', orderId);
+      
+      // Step 4: Clear cart and navigate
+      console.log('🧹 Clearing cart...');
       await cartService.clearCart(user.uid);
-      router.replace('/order/history');
+      
+      console.log('🎉 Order processing completed successfully!');
+      
+      // Show success message
+      Alert.alert(
+        'Pesanan Berhasil Dibuat!', 
+        `Pesanan Anda telah berhasil dibuat dengan ID: ${orderId}. Stok produk telah dikurangi otomatis.`,
+        [
+          { 
+            text: 'OK', 
+            onPress: () => router.replace('/order/history') 
+          }
+        ]
+      );
       
     } catch (error) {
-      console.error('Error processing order:', error);
-      Alert.alert('Error', `Gagal memproses pesanan: ${error.message}`);
+      console.error('❌ Error processing order:', error);
+      
+      // Provide user-friendly error messages
+      let errorMessage = 'Gagal memproses pesanan';
+      
+      if (error.message.includes('Insufficient stock')) {
+        errorMessage = 'Stok produk tidak mencukupi. Silakan periksa keranjang Anda.';
+      } else if (error.message.includes('Product') && error.message.includes('not found')) {
+        errorMessage = 'Produk tidak ditemukan. Silakan refresh halaman dan coba lagi.';
+      } else {
+        errorMessage = `Gagal memproses pesanan: ${error.message}`;
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setProcessing(false);
     }
