@@ -18,7 +18,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "store.gogama.app",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "icon": "./assets/images/app-icon.png",
