@@ -670,22 +670,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  cancelOrderButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: '#FFF5F5',
-    borderWidth: 1,
-    borderColor: '#FF3B30',
-  },
-  cancelOrderText: {
-    fontSize: 12,
-    color: '#FF3B30',
-    fontWeight: '600',
-    marginLeft: 4,
-  },
+  // cancelOrderButton & cancelOrderText styles removed - admin only cancellation
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
