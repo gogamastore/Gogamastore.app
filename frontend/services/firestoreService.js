@@ -395,6 +395,43 @@ export const productService = {
     }
   },
 
+  // Restore product stock when order is cancelled - NEW FUNCTION
+  async restoreProductStock(productId, quantityToRestore) {
+    try {
+      console.log(`📦 Restoring stock for product ${productId}, adding back ${quantityToRestore}`);
+      
+      const productRef = doc(db, 'products', productId);
+      const productSnap = await getDoc(productRef);
+      
+      if (!productSnap.exists()) {
+        console.warn(`⚠️ Product ${productId} not found, skipping stock restore`);
+        return 0; // Don't throw error, just skip
+      }
+      
+      const productData = productSnap.data();
+      const currentStock = productData.stock || productData.stok || 0;
+      const newStock = currentStock + quantityToRestore;
+      
+      console.log(`📊 Restoring stock for ${productId}: ${currentStock} -> ${newStock} (+${quantityToRestore})`);
+      
+      // Update both possible field names for compatibility
+      const updateData = {
+        stock: newStock,
+        stok: newStock,
+        updated_at: new Date().toISOString()
+      };
+      
+      await updateDoc(productRef, updateData);
+      
+      console.log(`✅ Stock restored for ${productId}: ${currentStock} -> ${newStock}`);
+      return newStock;
+      
+    } catch (error) {
+      console.error(`❌ Error restoring stock for product ${productId}:`, error);
+      throw error;
+    }
+  },
+
   // Batch update stocks for multiple products - For order processing
   async batchUpdateStock(products) {
     try {
