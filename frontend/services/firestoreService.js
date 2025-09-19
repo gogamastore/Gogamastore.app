@@ -330,6 +330,7 @@ export const productService = {
   // Get product by ID
   async getProductById(productId) {
     try {
+      console.log('📦 Fetching product by ID:', productId);
       const docRef = doc(db, 'products', productId);
       const docSnap = await getDoc(docRef);
       
@@ -338,19 +339,98 @@ export const productService = {
         return {
           id: docSnap.id,
           ...data,
-          // Map fields to match our app expectations
-          nama: data.name || data.nama || '',
-          deskripsi: data.description || data.deskripsi || '',
-          gambar: data.image || data.gambar || '',
-          kategori: data.category || data.kategori || '',
+          nama: data.name || data.nama,
+          deskripsi: data.description || data.deskripsi,
+          gambar: data.image || data.gambar,
           harga: this.parsePrice(data.price || data.harga),
-          stok: typeof (data.stock || data.stok) !== 'undefined' ? (data.stock || data.stok) : 0 // Use actual stock value, default to 0
+          stok: typeof (data.stock || data.stok) !== 'undefined' ? (data.stock || data.stok) : 0
         };
       } else {
         throw new Error('Product not found');
       }
     } catch (error) {
-      console.error('Error getting product:', error);
+      console.error('Error getting product by ID:', error);
+      throw error;
+    }
+  },
+
+  // Update product stock - NEW FUNCTION for order processing
+  async updateProductStock(productId, quantityToDeduct) {
+    try {
+      console.log(`📦 Updating stock for product ${productId}, deducting ${quantityToDeduct}`);
+      
+      const productRef = doc(db, 'products', productId);
+      const productSnap = await getDoc(productRef);
+      
+      if (!productSnap.exists()) {
+        throw new Error(`Product ${productId} not found`);
+      }
+      
+      const productData = productSnap.data();
+      const currentStock = productData.stock || productData.stok || 0;
+      
+      console.log(`📊 Current stock for ${productId}: ${currentStock}`);
+      
+      if (currentStock < quantityToDeduct) {
+        throw new Error(`Insufficient stock for product ${productData.name || productData.nama}. Available: ${currentStock}, Required: ${quantityToDeduct}`);
+      }
+      
+      const newStock = currentStock - quantityToDeduct;
+      
+      // Update both possible field names for compatibility
+      const updateData = {
+        stock: newStock,
+        stok: newStock,
+        updated_at: new Date().toISOString()
+      };
+      
+      await updateDoc(productRef, updateData);
+      
+      console.log(`✅ Stock updated for ${productId}: ${currentStock} -> ${newStock}`);
+      return newStock;
+      
+    } catch (error) {
+      console.error(`❌ Error updating stock for product ${productId}:`, error);
+      throw error;
+    }
+  },
+
+  // Batch update stocks for multiple products - For order processing
+  async batchUpdateStock(products) {
+    try {
+      console.log('📦 Starting batch stock update for', products.length, 'products');
+      
+      const results = [];
+      
+      // Process each product sequentially to ensure stock validation
+      for (const product of products) {
+        try {
+          const newStock = await this.updateProductStock(product.productId, product.quantity);
+          results.push({
+            productId: product.productId,
+            success: true,
+            newStock,
+            quantityDeducted: product.quantity
+          });
+        } catch (error) {
+          console.error(`❌ Failed to update stock for ${product.productId}:`, error);
+          results.push({
+            productId: product.productId,
+            success: false,
+            error: error.message,
+            quantityRequested: product.quantity
+          });
+          
+          // If any product fails, throw error to stop the process
+          throw new Error(`Stock update failed for ${product.name || product.productId}: ${error.message}`);
+        }
+      }
+      
+      console.log('✅ Batch stock update completed successfully');
+      return results;
+      
+    } catch (error) {
+      console.error('❌ Batch stock update failed:', error);
       throw error;
     }
   },
@@ -379,7 +459,6 @@ export const productService = {
     }
   },
 
-  // Helper function to parse price from string format
   parsePrice(priceString) {
     if (typeof priceString === 'number') return priceString;
     if (typeof priceString === 'string') {
