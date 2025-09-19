@@ -925,27 +925,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E5E5EA',
   },
-  cancelButton: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: '#FF3B30',
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: '#FFF5F5',
-  },
-  cancelButtonText: {
-    color: '#FF3B30',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-  buttonHalf: {
-    flex: 0.5,
-  },
+  // cancelButton & related styles removed - admin only cancellation
   secondaryButton: {
     flex: 1,
     flexDirection: 'row',
