@@ -1157,7 +1157,7 @@ export const orderService = {
         // Step 3: Restore stock for each product
         for (const product of productsToRestore) {
           try {
-            await this.restoreProductStock(product.productId, product.quantity);
+            await productService.restoreProductStock(product.productId, product.quantity);
             console.log(`✅ Stock restored for ${product.productId}: +${product.quantity}`);
           } catch (stockError) {
             console.error(`❌ Failed to restore stock for ${product.productId}:`, stockError);
