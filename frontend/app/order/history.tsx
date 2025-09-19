@@ -306,9 +306,20 @@ Tindakan ini tidak dapat dibatalkan.`,
             try {
               console.log('🚫 Cancelling order and restoring stock:', order.id);
               console.log('📦 Products in order:', order.products);
+              console.log('📊 Order details:', {
+                orderId: order.id,
+                status: order.status,
+                productsCount: order.products?.length || 0,
+                products: order.products?.map(p => ({
+                  productId: p.productId,
+                  name: p.name,
+                  quantity: p.quantity
+                }))
+              });
               
               // Use the new function that cancels order and restores stock
-              await orderService.cancelOrderAndRestoreStock(order.id);
+              const result = await orderService.cancelOrderAndRestoreStock(order.id);
+              console.log('✅ Cancel order result:', result);
               
               Alert.alert(
                 'Pesanan Dibatalkan', 
@@ -319,7 +330,12 @@ Tindakan ini tidak dapat dibatalkan.`,
               // Refresh orders after cancellation
               await fetchOrders();
             } catch (error) {
-              console.error('Error cancelling order:', error);
+              console.error('❌ Error cancelling order:', error);
+              console.error('❌ Error details:', {
+                message: error.message,
+                stack: error.stack,
+                orderId: order.id
+              });
               
               let errorMessage = 'Gagal membatalkan pesanan. Silakan coba lagi.';
               
