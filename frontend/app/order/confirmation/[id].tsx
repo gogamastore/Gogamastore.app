@@ -362,76 +362,7 @@ export default function OrderConfirmationScreen() {
     }
   };
 
-  const handleCancelOrder = () => {
-    console.log('🔄 handleCancelOrder called');
-    console.log('📋 Order details:', {
-      orderId: order?.id,
-      status: order?.status,
-      paymentStatus: order?.paymentStatus
-    });
-    
-    // Match the same condition as the button display
-    if (!(order?.status === 'pending' || order?.status === 'Pending' || !order?.status || order?.status === '')) {
-      console.log('❌ Cannot cancel order with current status:', order?.status);
-      Alert.alert(
-        'Tidak Dapat Dibatalkan',
-        'Pesanan dengan status saat ini tidak dapat dibatalkan.',
-        [{ text: 'OK' }]
-      );
-      return;
-    }
-
-    console.log('🔄 Showing cancel confirmation modal for order:', order?.id);
-    // Show custom cancel modal
-    setCancelModalVisible(true);
-  };
-
-  const confirmCancelOrder = async () => {
-    if (!order) return;
-    
-    try {
-      console.log('🚫 Cancelling order:', order.id);
-      console.log('🔄 Current order status:', order.status);
-      
-      setCancelModalVisible(false);
-      
-      // Update order status to 'Cancelled' (matching Firebase data structure)
-      await orderService.updateOrderStatus(order.id, 'Cancelled');
-      
-      console.log('✅ Order cancelled successfully');
-      
-      // Show success feedback
-      Alert.alert(
-        'Pesanan Dibatalkan',
-        'Pesanan Anda telah berhasil dibatalkan.',
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              // Navigate back to order history
-              router.replace('/order/history');
-            }
-          }
-        ]
-      );
-      
-    } catch (error) {
-      console.error('❌ Error cancelling order:', error);
-      setCancelModalVisible(false);
-      
-      // Show error feedback
-      Alert.alert(
-        'Gagal Membatalkan',
-        'Terjadi kesalahan saat membatalkan pesanan. Silakan coba lagi.',
-        [{ text: 'OK' }]
-      );
-    }
-  };
-
-  const cancelCancelOrder = () => {
-    console.log('❌ Order cancel cancelled by user');
-    setCancelModalVisible(false);
-  };
+  // Cancel order functions removed - admin only cancellation
 
   if (loading) {
     return (
