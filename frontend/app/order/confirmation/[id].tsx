@@ -728,19 +728,10 @@ export default function OrderConfirmationScreen() {
 
       {/* Action Buttons */}
       <View style={styles.actionButtons}>
-        {/* Action Buttons - Only for orders that haven't been processed yet */}
-        {(order.status === 'pending' || order.status === 'Pending' || !order.status || order.status === '') && (
-          <TouchableOpacity 
-            style={styles.cancelButton}
-            onPress={handleCancelOrder}
-          >
-            <MaterialIcons name="cancel" size={20} color="#FF3B30" />
-            <Text style={styles.cancelButtonText}>Batalkan Pesanan</Text>
-          </TouchableOpacity>
-        )}
+        {/* Cancel button removed - admin only cancellation */}
         
         <TouchableOpacity 
-          style={[styles.secondaryButton, order.status === 'pending' && styles.buttonHalf]}
+          style={styles.secondaryButton}
           onPress={() => router.push('/order/history')}
         >
           <MaterialIcons name="history" size={20} color="#007AFF" />
