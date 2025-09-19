@@ -427,16 +427,8 @@ Tindakan ini tidak dapat dibatalkan.`,
       </View>
 
       <View style={styles.orderFooter}>
-        {item.status === 'pending' && (
-          <TouchableOpacity 
-            style={styles.cancelOrderButton}
-            onPress={() => handleCancelOrder(item)}
-            activeOpacity={0.7}
-          >
-            <MaterialIcons name="cancel" size={16} color="#FF3B30" />
-            <Text style={styles.cancelOrderText}>Batalkan</Text>
-          </TouchableOpacity>
-        )}
+        {/* Tombol Batalkan Pesanan dihilangkan - Admin yang bertindak untuk membatalkan */}
+        <View style={{ flex: 1 }} />
         <MaterialIcons name="chevron-right" size={20} color="#C7C7CC" />
       </View>
     </TouchableOpacity>
