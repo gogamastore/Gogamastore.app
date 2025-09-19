@@ -1154,11 +1154,36 @@ export const orderService = {
       } else {
         console.log('📦 Products to restore stock:', productsToRestore);
         
-        // Step 3: Restore stock for each product
+        // Step 3: Restore stock for each product - INLINE IMPLEMENTATION
         for (const product of productsToRestore) {
           try {
-            await productService.restoreProductStock(product.productId, product.quantity);
-            console.log(`✅ Stock restored for ${product.productId}: +${product.quantity}`);
+            console.log(`📦 Restoring stock for product ${product.productId}, adding back ${product.quantity}`);
+            
+            const productRef = doc(db, 'products', product.productId);
+            const productSnap = await getDoc(productRef);
+            
+            if (!productSnap.exists()) {
+              console.warn(`⚠️ Product ${product.productId} not found, skipping stock restore`);
+              continue; // Skip this product and continue with others
+            }
+            
+            const productData = productSnap.data();
+            const currentStock = productData.stock || productData.stok || 0;
+            const newStock = currentStock + product.quantity;
+            
+            console.log(`📊 Restoring stock for ${product.productId}: ${currentStock} -> ${newStock} (+${product.quantity})`);
+            
+            // Update both possible field names for compatibility
+            const updateData = {
+              stock: newStock,
+              stok: newStock,
+              updated_at: new Date().toISOString()
+            };
+            
+            await updateDoc(productRef, updateData);
+            
+            console.log(`✅ Stock restored for ${product.productId}: ${currentStock} -> ${newStock}`);
+            
           } catch (stockError) {
             console.error(`❌ Failed to restore stock for ${product.productId}:`, stockError);
             // Continue with other products even if one fails
