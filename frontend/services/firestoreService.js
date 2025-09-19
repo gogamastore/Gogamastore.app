@@ -1084,6 +1084,74 @@ export const orderService = {
     }
   },
 
+  // Cancel order and restore product stock
+  async cancelOrderAndRestoreStock(orderId) {
+    try {
+      console.log('🚫 Cancelling order and restoring stock for order:', orderId);
+      
+      // Step 1: Get order details
+      const orderRef = doc(db, 'orders', orderId);
+      const orderSnap = await getDoc(orderRef);
+      
+      if (!orderSnap.exists()) {
+        throw new Error('Order not found');
+      }
+      
+      const orderData = orderSnap.data();
+      console.log('📋 Order data retrieved:', orderData);
+      
+      // Check if order can be cancelled
+      if (orderData.status === 'cancelled') {
+        throw new Error('Order is already cancelled');
+      }
+      
+      if (orderData.status === 'delivered' || orderData.status === 'shipped') {
+        throw new Error('Cannot cancel order that has been shipped or delivered');
+      }
+      
+      // Step 2: Prepare products for stock restoration
+      const productsToRestore = orderData.products || [];
+      
+      if (productsToRestore.length === 0) {
+        console.warn('⚠️ No products found in order to restore stock');
+      } else {
+        console.log('📦 Products to restore stock:', productsToRestore);
+        
+        // Step 3: Restore stock for each product
+        for (const product of productsToRestore) {
+          try {
+            await this.restoreProductStock(product.productId, product.quantity);
+            console.log(`✅ Stock restored for ${product.productId}: +${product.quantity}`);
+          } catch (stockError) {
+            console.error(`❌ Failed to restore stock for ${product.productId}:`, stockError);
+            // Continue with other products even if one fails
+          }
+        }
+      }
+      
+      // Step 4: Update order status to cancelled
+      await updateDoc(orderRef, {
+        status: 'cancelled',
+        cancelledAt: new Date().toISOString(),
+        stockRestored: true,
+        stockRestoredAt: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+      
+      console.log('✅ Order cancelled and stock restored successfully');
+      return {
+        success: true,
+        orderId,
+        productsRestored: productsToRestore.length,
+        message: 'Order cancelled and stock restored successfully'
+      };
+      
+    } catch (error) {
+      console.error('❌ Error cancelling order and restoring stock:', error);
+      throw error;
+    }
+  },
+
   // Update payment status
   async updatePaymentStatus(orderId, paymentStatus) {
     try {
