@@ -289,7 +289,11 @@ export default function OrderHistoryScreen() {
 
     Alert.alert(
       'Batalkan Pesanan',
-      `Apakah Anda yakin ingin membatalkan pesanan #${order.id.slice(-8).toUpperCase()}? Tindakan ini tidak dapat dibatalkan.`,
+      `Apakah Anda yakin ingin membatalkan pesanan #${order.id.slice(-8).toUpperCase()}? 
+
+Pesanan akan dibatalkan dan stok produk akan dikembalikan otomatis.
+
+Tindakan ini tidak dapat dibatalkan.`,
       [
         {
           text: 'Batal',
@@ -300,14 +304,34 @@ export default function OrderHistoryScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              console.log('🚫 Cancelling order from history:', order.id);
-              await orderService.updateOrderStatus(order.id, 'cancelled');
-              Alert.alert('Pesanan Dibatalkan', 'Pesanan Anda telah berhasil dibatalkan');
+              console.log('🚫 Cancelling order and restoring stock:', order.id);
+              console.log('📦 Products in order:', order.products);
+              
+              // Use the new function that cancels order and restores stock
+              await orderService.cancelOrderAndRestoreStock(order.id);
+              
+              Alert.alert(
+                'Pesanan Dibatalkan', 
+                'Pesanan Anda telah berhasil dibatalkan dan stok produk telah dikembalikan.',
+                [{ text: 'OK' }]
+              );
+              
               // Refresh orders after cancellation
               await fetchOrders();
             } catch (error) {
               console.error('Error cancelling order:', error);
-              Alert.alert('Error', 'Gagal membatalkan pesanan. Silakan coba lagi.');
+              
+              let errorMessage = 'Gagal membatalkan pesanan. Silakan coba lagi.';
+              
+              if (error.message.includes('already cancelled')) {
+                errorMessage = 'Pesanan sudah dibatalkan sebelumnya.';
+              } else if (error.message.includes('shipped') || error.message.includes('delivered')) {
+                errorMessage = 'Tidak dapat membatalkan pesanan yang sudah dikirim atau sampai.';
+              } else if (error.message.includes('Order not found')) {
+                errorMessage = 'Pesanan tidak ditemukan.';
+              }
+              
+              Alert.alert('Error', errorMessage);
             }
           },
         },
