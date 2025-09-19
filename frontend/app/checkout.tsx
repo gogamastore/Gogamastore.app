@@ -17,7 +17,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../contexts/AuthContext';
-import { cartService, orderService, bankAccountService, paymentProofService } from '../services/firestoreService';
+import { cartService, orderService, bankAccountService, paymentProofService, productService } from '../services/firestoreService';
 import AddressSelector from '../components/AddressSelector';
 
 interface CartItem {
