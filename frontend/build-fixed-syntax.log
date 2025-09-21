@@ -1,0 +1,48 @@
+The field "cli.appVersionSource" is not set, but it will be required in the future. Learn more: https://docs.expo.dev/build-reference/app-versions/
+Resolved "preview" environment for the build. Learn more: https://docs.expo.dev/eas/environment-variables/#setting-the-environment-for-your-builds
+No environment variables with visibility "Plain text" and "Sensitive" found for the "preview" environment on EAS.
+
+The field "cli.appVersionSource" is not set, but it will be required in the future. Learn more: https://docs.expo.dev/build-reference/app-versions/
+✔ Using remote Android credentials (Expo server)
+✔ Using Keystore from configuration: Build Credentials hkVJoqZ19o (default)
+
+Compressing project files and uploading to EAS Build. Learn more: https://expo.fyi/eas-build-archive
+- Uploading to EAS Build (0 / 5.3 MB)
+✔ Uploaded to EAS 
+- Computing project fingerprint
+✔ Computed project fingerprint
+
+See logs: https://expo.dev/accounts/gogamastore/projects/gogama-store/builds/19f1c9f3-dd54-4c87-9376-13b957356755
+
+Waiting for build to complete. You can press Ctrl+C to exit.
+- Waiting for build to complete.
+  Build queued...
+
+Waiting in priority queue
+
+- Build is about to start
+✔ Build finished
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  █ ▄▄▄▄▄ █▄▄▄ ▀▀▀█ █▀▀▄▄▄██▄▀█▀█ ▄▄▄▄▄ █
+  █ █   █ ██▄▀ ▀   ▀▀█▄█ █▄▀ ▄▄ █ █   █ █
+  █ █▄▄▄█ ██▀▄ ▄▀███▄▄▄ ██▀██▀█▄█ █▄▄▄█ █
+  █▄▄▄▄▄▄▄█ ▀▄█▄▀▄▀ █ █▄█ ▀▄▀ █ █▄▄▄▄▄▄▄█
+  █▄ ▀▄▄█▄█▀▄▀▀▀██ ▀▄▄▀▀█▀ ▄▀ ▀▄█▄▀▀██▀▄█
+  █▄▀ ▀ ▀▄▄ ▀█ █▄▀▄▀ ▄▀█▄█▄█▄▀▄ ▄▄▄▄▄ ▄▄█
+  █▄▄▄▄ ▀▄█ ▀▄ ▀▀▄▀██▀▄█▀▄ ▄▀█  █▄▄▀ ▀ ▄█
+  █▀▄▄ ▀ ▄▀▀█▀▀██  ▀▄▄▄█▄█▀██▀ █▀▄▀▄█▀▄ █
+  █ █  ▄▄▄▄ ▀▀▄▀ ▄ ██▄▀ █▄█ ▄█ █▀▄██ ▄▄▄█
+  ██▀▄▄ ▀▄▀██▄ ▄ █▄ ▄▄ ▄█  ▀ █ ▀▀█▄▀▀██ █
+  ██▀▄█▄█▄█▄  ▀▀██ ▀▄▀▀███▀█▀▀▀▄ ▄▀  ▀ ▄█
+  █   ▀ █▄▄▀██ ██ ▄▄▀▀██▄  ▄▄▀ ▄█  ▄▀▀▀ █
+  █▀▄▄███▄█▄██ ▀▀▄▀▄█▄█▄▀█ █▀█  █▄▄▀█▀▀▄█
+  █ ▄▄▄ ▄▄▄█▀▀▀▀██▄▄▄▄▄▄██▀▀▄▀ █▄█ ▀  ▄ █
+  █▄█▄▄██▄█ ██▄▀▄█  █ ▀▀█▄▄▄▄▀█ ▄▄▄ █  ██
+  █ ▄▄▄▄▄ ██▄▄ █▀ ▄▀▄█▄ █▄▄█▀ █ █▄█  ▄▀▄█
+  █ █   █ █ █▄▀▀▀█ ▀▄▀ ██▀▀▄▀  ▄  ▄▄ █▄▄█
+  █ █▄▄▄█ █▀▀█ ██ ▄█ ▀▀▀▄▄▄ ▄▀ ██▀▄ █ ▀ █
+  █▄▄▄▄▄▄▄█▄██▄██▄▄▄███▄█▄█▄███▄▄▄██▄██▄█
+
+
+🤖 Open this link on your Android devices (or scan the QR code) to install the app:
+https://expo.dev/accounts/gogamastore/projects/gogama-store/builds/19f1c9f3-dd54-4c87-9376-13b957356755

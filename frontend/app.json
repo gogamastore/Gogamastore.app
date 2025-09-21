@@ -2,7 +2,7 @@
   "expo": {
     "name": "Gogama Store",
     "slug": "gogama-store",
-    "version": "3.2.2",
+    "version": "3.3.2",
     "orientation": "portrait",
     "icon": "./assets/images/app-icon.png",
     "scheme": "gogama-store",
@@ -32,7 +32,7 @@
       "edgeToEdgeEnabled": true,
       "package": "store.gogama.app",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 8,
+      "versionCode": 9,
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
